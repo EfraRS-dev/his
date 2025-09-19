@@ -1,0 +1,119 @@
+version: '3.8'
+services:
+  patients-db:
+    image: postgres:16-alpine
+    container_name: patients-db
+    environment:
+      POSTGRES_DB: patients
+      POSTGRES_USER: patients_user
+      POSTGRES_PASSWORD: patients_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - patients-db-data:/var/lib/postgresql/data
+
+  users-db:
+    image: postgres:16-alpine
+    container_name: users-db
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: users_user
+      POSTGRES_PASSWORD: users_pass
+    ports:
+      - "5434:5432"
+    volumes:
+      - users-db-data:/var/lib/postgresql/data
+
+  triage-db:
+    image: postgres:16-alpine
+    container_name: triage-db
+    environment:
+      POSTGRES_DB: triage
+      POSTGRES_USER: triage_user
+      POSTGRES_PASSWORD: triage_pass
+    ports:
+      - "5435:5432"
+    volumes:
+      - triage-db-data:/var/lib/postgresql/data
+
+  ehr-db:
+    image: postgres:16-alpine
+    container_name: ehr-db
+    environment:
+      POSTGRES_DB: ehr
+      POSTGRES_USER: ehr_user
+      POSTGRES_PASSWORD: ehr_pass
+    ports:
+      - "5436:5432"
+    volumes:
+      - ehr-db-data:/var/lib/postgresql/data
+
+  patients:
+    build:
+      context: .
+      dockerfile: apps/patients/Dockerfile
+    container_name: patients
+    ports:
+      - "3001:3000"
+    environment:
+      DB_HOST: patients-db
+      DB_PORT: 5432
+      DB_NAME: patients
+      DB_USER: patients_user
+      DB_PASS: patients_pass
+    depends_on:
+      - patients-db
+
+  users:
+    build:
+      context: .
+      dockerfile: apps/users/Dockerfile
+    container_name: users
+    ports:
+      - "3002:3000"
+    environment:
+      DB_HOST: users-db
+      DB_PORT: 5432
+      DB_NAME: users
+      DB_USER: users_user
+      DB_PASS: users_pass
+    depends_on:
+      - users-db
+
+  triage:
+    build:
+      context: .
+      dockerfile: apps/triage/Dockerfile
+    container_name: triage
+    ports:
+      - "3003:3000"
+    environment:
+      DB_HOST: triage-db
+      DB_PORT: 5432
+      DB_NAME: triage
+      DB_USER: triage_user
+      DB_PASS: triage_pass
+    depends_on:
+      - triage-db
+
+  ehr:
+    build:
+      context: .
+      dockerfile: apps/ehr/Dockerfile
+    container_name: ehr
+    ports:
+      - "3004:3000"
+    environment:
+      DB_HOST: ehr-db
+      DB_PORT: 5432
+      DB_NAME: ehr
+      DB_USER: ehr_user
+      DB_PASS: ehr_pass
+    depends_on:
+      - ehr-db
+
+volumes:
+  patients-db-data:
+  users-db-data:
+  triage-db-data:
+  ehr-db-data:
