@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TriageController } from './triage.controller';
-import { TriageService } from './triage.service';
+import { TriageService } from '../../application/services/triage.service';
 
 describe('TriageController', () => {
   let triageController: TriageController;
