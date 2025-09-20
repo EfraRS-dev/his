@@ -3,6 +3,15 @@
   "collection": "@nestjs/schematics",
   "monorepo": true,
   "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
     "ehr": {
       "type": "application",
       "root": "apps/ehr",

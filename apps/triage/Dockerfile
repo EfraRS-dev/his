@@ -1,9 +1,16 @@
 # Dockerfile for Triage microservice
-FROM node:20-alpine
-WORKDIR /app
-COPY ../../.. .
-WORKDIR /app/apps/triage
-RUN npm install --omit=dev
-RUN npm run build
+FROM node:20-alpine AS development
+WORKDIR /usr/src/app
+COPY . .
+RUN npm install
+RUN npx nest build triage
+
+FROM node:20-alpine AS production
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+WORKDIR /usr/src/app
+COPY --from=development /usr/src/app/package*.json ./
+RUN npm install --only=production --omit=dev
+COPY --from=development /usr/src/app/dist ./dist
 EXPOSE 3000
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/apps/triage/main.js"]
