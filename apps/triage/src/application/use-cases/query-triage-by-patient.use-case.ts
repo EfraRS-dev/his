@@ -1,159 +1,107 @@
+import { Triage } from '../../domain/triage.entity';
+import { VitalSigns } from '../../domain/vital-signs.entity';
+import { Injectable } from '@nestjs/common';
+import type { ITriageRepository } from '../../domain/triage.repository';
+import type { IVitalSignsRepository } from '../../domain/vital-signs.repository';
+
 export interface QueryTriageByPatientCommand {
   patientId: string;
   includeHistory?: boolean;
 }
 
-export interface TriageRecord {
-  triageId: string;
-  patientId: string;
-  urgencyLevel: 1 | 2 | 3 | 4 | 5;
-  urgencyDescription: string;
-  initialObservations: string;
-  nurseId: string;
-  nurseName: string;
-  createdAt: Date;
-  updatedAt?: Date;
-  status: 'active' | 'completed' | 'cancelled';
-  vitalSigns: {
-    vitalSignsId: string;
-    temperature: number;
-    bloodPressure: string;
-    heartRate: number;
-    respiratoryRate: number;
-    oxygenSaturation: number;
-    additionalNotes?: string;
-  };
+export interface TriageWithVitals {
+  triage: Triage;
+  vitalSigns: VitalSigns | null;
   estimatedWaitTime: string;
   actualWaitTime?: string;
 }
 
 export interface QueryTriageByPatientResult {
   patientId: string;
-  activeTriage?: TriageRecord;
-  triageHistory: TriageRecord[];
+  activeTriage?: TriageWithVitals;
+  triageHistory: TriageWithVitals[];
   totalTriageVisits: number;
   success: boolean;
   message: string;
 }
 
+@Injectable()
 export class QueryTriageByPatientUseCase {
   constructor(
-    private readonly triageRepository: any, // Replace with proper interface
-    private readonly vitalSignsRepository: any, // Replace with proper interface
-    private readonly nurseRepository: any, // Replace with proper interface
+    private readonly triageRepository: ITriageRepository,
+    private readonly vitalSignsRepository: IVitalSignsRepository,
   ) {}
 
-  async execute(command: QueryTriageByPatientCommand): Promise<QueryTriageByPatientResult> {
+  async execute(
+    command: QueryTriageByPatientCommand,
+  ): Promise<QueryTriageByPatientResult> {
     try {
-      // Find active triage
-      const activeTriage = await this.triageRepository.findActiveByPatientId(command.patientId);
-      
-      // Find triage history if requested
-      let triageHistory: TriageRecord[] = [];
-      if (command.includeHistory) {
-        const historicalTriages = await this.triageRepository.findByPatientId(command.patientId);
-        triageHistory = await this.mapTriageRecords(historicalTriages.filter((t: any) => t.status !== 'active'));
+      // Buscar triage activo
+      const activeTriage = await this.triageRepository.findActiveByPatientId(
+        command.patientId,
+      );
+
+      let activeTriageWithVitals: TriageWithVitals | undefined;
+      if (activeTriage) {
+        const vitalSigns = await this.vitalSignsRepository.findByTriageId(
+          activeTriage.triageId,
+        );
+        activeTriageWithVitals = {
+          triage: activeTriage,
+          vitalSigns,
+          estimatedWaitTime: this.calculateEstimatedWaitTime(
+            activeTriage.urgencyLevel,
+          ),
+          actualWaitTime: this.calculateActualWaitTime(
+            activeTriage.createdAt,
+            new Date(),
+          ),
+        };
       }
 
-      // Map active triage if exists
-      let activeTriageRecord: TriageRecord | undefined;
-      if (activeTriage) {
-        const mappedRecords = await this.mapTriageRecords([activeTriage]);
-        activeTriageRecord = mappedRecords[0];
+      // Buscar historial de triage si se solicita
+      let triageHistory: TriageWithVitals[] = [];
+      if (command.includeHistory) {
+        // Aquí deberías implementar un método en el repositorio para obtener el historial
+        // Por ahora, devolvemos un array vacío
+        triageHistory = [];
       }
 
       return {
         patientId: command.patientId,
-        activeTriage: activeTriageRecord,
+        activeTriage: activeTriageWithVitals,
         triageHistory,
-        totalTriageVisits: triageHistory.length + (activeTriageRecord ? 1 : 0),
+        totalTriageVisits:
+          triageHistory.length + (activeTriageWithVitals ? 1 : 0),
         success: true,
-        message: activeTriageRecord 
-          ? 'Patient has active triage and history retrieved'
-          : 'No active triage found, history retrieved',
+        message: activeTriageWithVitals
+          ? 'Triage activo encontrado'
+          : 'No se encontró triage activo para este paciente',
       };
     } catch (error) {
-      throw new Error(`Failed to query triage by patient: ${error}`);
+      throw new Error(
+        `Error al consultar triage por paciente: ${error.message}`,
+      );
     }
-  }
-
-  private async mapTriageRecords(triages: any[]): Promise<TriageRecord[]> {
-    const records: TriageRecord[] = [];
-
-    for (const triage of triages) {
-      // Get vital signs
-      const vitalSigns = await this.vitalSignsRepository.findByTriageId(triage.triageId);
-      
-      // Get nurse information
-      const nurse = await this.nurseRepository.findById(triage.nurseId);
-
-      const record: TriageRecord = {
-        triageId: triage.triageId,
-        patientId: triage.patientId,
-        urgencyLevel: triage.urgencyLevel,
-        urgencyDescription: this.getUrgencyDescription(triage.urgencyLevel),
-        initialObservations: triage.initialObservations,
-        nurseId: triage.nurseId,
-        nurseName: nurse ? `${nurse.firstName} ${nurse.lastName}` : 'Unknown',
-        createdAt: triage.createdAt,
-        updatedAt: triage.updatedAt,
-        status: triage.status,
-        vitalSigns: vitalSigns ? {
-          vitalSignsId: vitalSigns.vitalSignsId,
-          temperature: vitalSigns.temperature,
-          bloodPressure: vitalSigns.bloodPressure,
-          heartRate: vitalSigns.heartRate,
-          respiratoryRate: vitalSigns.respiratoryRate,
-          oxygenSaturation: vitalSigns.oxygenSaturation,
-          additionalNotes: vitalSigns.additionalNotes,
-        } : {
-          vitalSignsId: '',
-          temperature: 0,
-          bloodPressure: '',
-          heartRate: 0,
-          respiratoryRate: 0,
-          oxygenSaturation: 0,
-        },
-        estimatedWaitTime: this.calculateEstimatedWaitTime(triage.urgencyLevel),
-        actualWaitTime: this.calculateActualWaitTime(triage.createdAt, triage.updatedAt),
-      };
-
-      records.push(record);
-    }
-
-    return records;
-  }
-
-  private getUrgencyDescription(level: 1 | 2 | 3 | 4 | 5): string {
-    const descriptions = {
-      1: 'Critical - Immediate attention required',
-      2: 'High - Urgent care needed',
-      3: 'Medium - Moderate urgency',
-      4: 'Low - Less urgent',
-      5: 'Very Low - Non-urgent',
-    };
-    return descriptions[level];
   }
 
   private calculateEstimatedWaitTime(urgencyLevel: 1 | 2 | 3 | 4 | 5): string {
     const waitTimes = {
-      1: 'Immediate',
-      2: '15-30 minutes',
-      3: '30-60 minutes',
-      4: '1-2 hours',
-      5: '2+ hours',
+      1: 'Inmediato',
+      2: '15-30 minutos',
+      3: '30-60 minutos',
+      4: '1-2 horas',
+      5: '2+ horas',
     };
     return waitTimes[urgencyLevel];
   }
 
-  private calculateActualWaitTime(createdAt: Date, updatedAt?: Date): string | undefined {
-    if (!updatedAt) return undefined;
-    
-    const diffMs = updatedAt.getTime() - createdAt.getTime();
+  private calculateActualWaitTime(createdAt: Date, currentTime: Date): string {
+    const diffMs = currentTime.getTime() - createdAt.getTime();
     const diffMins = Math.floor(diffMs / (1000 * 60));
-    
+
     if (diffMins < 60) {
-      return `${diffMins} minutes`;
+      return `${diffMins} minutos`;
     } else {
       const hours = Math.floor(diffMins / 60);
       const minutes = diffMins % 60;

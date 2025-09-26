@@ -5,6 +5,12 @@ import { TriageService } from '../../application/services/triage.service';
 export class TriageController {
   constructor(private readonly triageService: TriageService) {}
 
+  // GET /triage
+  @Get()
+  health() {
+    return { status: 'Triage service is running' };
+  }
+
   // POST /triage/register
   @Post('register')
   registerTriage(@Body() registerDto: any) {

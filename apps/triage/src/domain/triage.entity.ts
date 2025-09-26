@@ -40,7 +40,7 @@ export class Triage {
     const updatedObservations = this.initialObservations
       ? `${this.initialObservations}\n${additionalObservations}`
       : additionalObservations;
-    
+
     return new Triage(
       this.triageId,
       this.patientId,
@@ -53,13 +53,13 @@ export class Triage {
 
   getUrgencyDescription(): string {
     const descriptions = {
-      1: 'Critical - Immediate attention required',
-      2: 'High - Urgent care needed',
-      3: 'Medium - Moderate urgency',
-      4: 'Low - Less urgent',
-      5: 'Very Low - Non-urgent',
+      1: 'Critical',
+      2: 'High',
+      3: 'Medium',
+      4: 'Low',
+      5: 'Very Low',
     };
-    
+
     return descriptions[this.urgencyLevel];
   }
 }
