@@ -1,13 +1,13 @@
 import { Controller, Get, Post, Param, Body, Query, ParseIntPipe } from '@nestjs/common';
-import { ArchivePatientUseCase } from '../../application/use-cases/archivePatient.use-case';
-import { GetMedicalHistoryByPatientUseCase } from '../../application/use-cases/getMedicalHistoryByPatient.dto';
-import { GetPatientUseCase } from '../../application/use-cases/getPatient.use-case';
-import { GetTriageByPatientUseCase } from '../../application/use-cases/getTriageByPatient.use-case';
-import { PatientRegisterUseCase } from '../../application/use-cases/registerPatient.use-case';
-import { UpdatePatientUseCase } from '../../application/use-cases/updatePatient.use-case';
-import { PatientRegisterDto } from '../../application/dto/registerPatient.dto';
-import { UpdatePatientDto } from '../../application/dto/updatePatient.dto';
-import { GetPatientDto } from '../../application/dto/getPatient.dto';
+import { ArchivePatientUseCase } from '../application/use-cases/archivePatient.use-case';
+import { GetMedicalHistoryByPatientUseCase } from '../application/use-cases/getMedicalHistoryByPatient.use-case';
+import { GetPatientUseCase } from '../application/use-cases/getPatient.use-case';
+import { GetTriageByPatientUseCase } from '../application/use-cases/getTriageByPatient.use-case';
+import { PatientRegisterUseCase } from '../application/use-cases/registerPatient.use-case';
+import { UpdatePatientUseCase } from '../application/use-cases/updatePatient.use-case';
+import { PatientRegisterDto } from '../application/dto/registerPatient.dto';
+import { UpdatePatientDto } from '../application/dto/updatePatient.dto';
+import { GetPatientDto } from '../application/dto/getPatient.dto';
 
 @Controller('patients')
 export class PatientsController{

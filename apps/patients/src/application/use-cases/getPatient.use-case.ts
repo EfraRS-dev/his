@@ -1,10 +1,13 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { Patient } from '../../domain/patient';
-import { PatientRepository } from '../../domain/patient.repository';
+import type { PatientRepository } from '../../domain/patient.repository';
 import { GetPatientDto } from '../dto/getPatient.dto';
+import { PATIENT_REPOSITORY } from '../token';
 
+@Injectable()
 export class GetPatientUseCase {
     constructor(
-        private readonly patientRepo: PatientRepository
+        @Inject(PATIENT_REPOSITORY) private readonly patientRepo: PatientRepository
     ) {}
 
     async execute(searchInput: GetPatientDto): Promise<Patient | null> {

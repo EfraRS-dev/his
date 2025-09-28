@@ -1,9 +1,12 @@
-import { PatientRepository } from '../../domain/patient.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import type { PatientRepository } from '../../domain/patient.repository';
 import { Triage } from '../dto/triage.dto';
+import { PATIENT_REPOSITORY } from '../token';
 
+@Injectable()
 export class GetTriageByPatientUseCase{
     constructor(
-        private readonly patientRepo: PatientRepository
+        @Inject(PATIENT_REPOSITORY) private readonly patientRepo: PatientRepository
     ) {}
 
     async execute(Id: number): Promise<Triage[]>{

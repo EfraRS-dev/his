@@ -1,9 +1,12 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { Patient } from '../../domain/patient';
-import { PatientRepository } from '../../domain/patient.repository';
+import type { PatientRepository } from '../../domain/patient.repository';
+import { PATIENT_REPOSITORY } from '../token';
 
+@Injectable()
 export class ArchivePatientUseCase {
     constructor(
-        private readonly patientRepo: PatientRepository
+        @Inject(PATIENT_REPOSITORY) private readonly patientRepo: PatientRepository
     ) {}
 
     async execute(Id: number): Promise<Patient> {
