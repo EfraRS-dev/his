@@ -1,73 +1,28 @@
-export interface DisableUserCommand {
-  userId: string;
-  reason?: string;
-  disabledBy: string; // Admin user ID who performs the action
-}
 
-export interface DisableUserResult {
-  userId: string;
-  username: string;
-  previousStatus: 'active' | 'inactive' | 'blocked';
-  newStatus: 'inactive' | 'blocked';
-  disabledAt: Date;
-  disabledBy: string;
-  reason?: string;
-  success: boolean;
-  message: string;
-}
+import { UserRepository } from '../../domain/repositories/user.repository';
+import { User } from '../../domain/entities/user.entity';
 
 export class DisableUserUseCase {
-  constructor(
-    private readonly userRepository: any, // Replace with proper interface
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
-  async execute(command: DisableUserCommand): Promise<DisableUserResult> {
-    // Find the user to disable
-    const existingUser = await this.userRepository.findById(command.userId);
-    if (!existingUser) {
-      throw new Error('User not found');
+  async execute(UserId:number): Promise<User> {
+    // 1. Buscar usuario
+    const user = await this.userRepository.findById(UserId);
+    if (!user) {
+      throw new Error('Usuario no encontrado');
     }
 
-    // Check if user is already inactive or blocked
-    if (existingUser.status === 'inactive' || existingUser.status === 'blocked') {
-      return {
-        userId: command.userId,
-        username: existingUser.username,
-        previousStatus: existingUser.status,
-        newStatus: existingUser.status,
-        disabledAt: new Date(),
-        disabledBy: command.disabledBy,
-        reason: command.reason,
-        success: false,
-        message: `User is already ${existingUser.status}`,
-      };
+    // 2. Validar estado actual
+    if (user.status === 'inactive' || user.status === 'blocked') {
+      throw new Error(`El usuario ya está ${user.status}`);
     }
 
-    // Determine new status - default to 'blocked' for security
-    const newStatus = 'blocked';
+    // 3. Cambiar estado a inactivo usando método de la entidad
+    const disabledUser = user.deactivate();
 
-    // Update user status
-    const updatedUser = {
-      ...existingUser,
-      status: newStatus,
-      disabledAt: new Date(),
-      disabledBy: command.disabledBy,
-      disabledReason: command.reason,
-      jwtToken: null, // Invalidate any existing tokens
-    };
+    // 4. Guardar cambios
+    await this.userRepository.save(disabledUser);
 
-    await this.userRepository.update(command.userId, updatedUser);
-
-    return {
-      userId: updatedUser.userId,
-      username: updatedUser.username,
-      previousStatus: existingUser.status,
-      newStatus: newStatus,
-      disabledAt: updatedUser.disabledAt,
-      disabledBy: command.disabledBy,
-      reason: command.reason,
-      success: true,
-      message: 'User has been successfully disabled',
-    };
+    return disabledUser;
   }
 }

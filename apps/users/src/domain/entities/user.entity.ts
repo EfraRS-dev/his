@@ -1,6 +1,6 @@
 export class User {
   constructor(
-    public readonly userId: string,
+    public readonly userId: number,
     public readonly username: string,
     public readonly passwordHash: string,
     public readonly roleId: string,
@@ -8,10 +8,11 @@ export class User {
     public readonly status: 'active' | 'inactive' | 'blocked',
     public readonly jwtToken?: string,
     public readonly createdAt?: Date,
+    
   ) {}
 
   static create(
-    userId: string,
+    userId: number,
     username: string,
     passwordHash: string,
     roleId: string,

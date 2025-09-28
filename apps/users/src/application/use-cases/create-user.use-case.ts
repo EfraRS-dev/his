@@ -1,67 +1,62 @@
-export interface RegisterUserCommand {
-  username: string;
-  password: string;
-  email: string;
-  role: 'Admin' | 'Doctor' | 'Nurse' | 'Patient';
-  firstName?: string;
-  lastName?: string;
+import { CreateUserDto } from '../dto/create-user.dto';
+import { User } from '../../domain/entities/user.entity';
+import { UserRepository } from '../../domain/repositories/user.repository';
+import { RoleRepository } from '../../domain/repositories/role.repository';
+
+// Interfaz para el servicio de hashing de contraseñas
+export interface PasswordHashService {
+  hash(password: string): Promise<string>;
 }
 
-export interface RegisterUserResult {
-  userId: string;
-  username: string;
-  email: string;
-  role: string;
-  status: string;
-  createdAt: Date;
-}
-
-export class RegisterUserUseCase {
+export class CreateUserUseCase {
   constructor(
-    private readonly userRepository: any, // Replace with proper interface
-    private readonly passwordHashService: any, // Replace with proper interface
-    private readonly roleRepository: any, // Replace with proper interface
+    private readonly userRepository: UserRepository,
+    private readonly roleRepository: RoleRepository,
+    private readonly passwordHashService: PasswordHashService,
   ) {}
 
-  async execute(command: RegisterUserCommand): Promise<RegisterUserResult> {
-    // Hash the password
-    const passwordHash = await this.passwordHashService.hash(command.password);
-    
-    // Generate user ID
-    const userId = this.generateUserId();
-    
-    // Get role ID by role name
-    const role = await this.roleRepository.findByName(command.role);
-    if (!role) {
-      throw new Error(`Role ${command.role} not found`);
+  async execute(dto: CreateUserDto): Promise<User> {
+    // 1. Verificar que el username no exista
+    const existingUserByUsername = await this.userRepository.findByUsername(dto.username);
+    if (existingUserByUsername) {
+      throw new Error('Username already exists');
     }
-    
-    // Create user domain entity
-    const user = {
+
+    // 2. Verificar que el email no exista
+    const existingUserByEmail = await this.userRepository.findByEmail(dto.email);
+    if (existingUserByEmail) {
+      throw new Error('Email already exists');
+    }
+
+    // 3. Verificar que el rol exista
+    const role = await this.roleRepository.findByName(dto.role);
+    if (!role) {
+      throw new Error(`Role ${dto.role} not found`);
+    }
+
+    // 4. Hashear la contraseña
+    const passwordHash = await this.passwordHashService.hash(dto.password);
+
+    // 5. Crear el usuario usando el factory method de la entidad
+    const userId = this.generateUserId();
+    const user = User.create(
       userId,
-      username: command.username,
+      dto.username,
       passwordHash,
-      roleId: role.roleId,
-      email: command.email,
-      status: 'active' as const,
-      createdAt: new Date(),
-    };
-    
-    // Save user
+      role.roleId, // 🔑 usamos el roleId del Role encontrado
+      dto.email,
+      'active',
+    );
+
+    // 6. Guardar en el repositorio
     await this.userRepository.save(user);
-    
-    return {
-      userId: user.userId,
-      username: user.username,
-      email: user.email,
-      role: command.role,
-      status: user.status,
-      createdAt: user.createdAt,
-    };
+
+    // 7. Retornar el usuario creado (puedes mapearlo a un DTO de salida si prefieres)
+    return user;
   }
-  
-  private generateUserId(): string {
-    // Simple UUID generation - replace with proper UUID library
-    return 'user-' + Math.random().toString(36).substr(2, 9);
+
+  private generateUserId(): number {
+    return this.userRepository.generateUserId();
   }
 }
+
