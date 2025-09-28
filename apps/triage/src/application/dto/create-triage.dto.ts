@@ -1,16 +1,11 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsNumber,
-  IsOptional,
-  IsUUID,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateTriageDto {
   @IsNotEmpty()
-  @IsUUID()
-  patientId: string;
+  @IsNumber()
+  @Type(() => Number)
+  patientId: number;
 
   @IsNotEmpty()
   @IsNumber()
@@ -22,6 +17,7 @@ export class CreateTriageDto {
   initialObservations: string;
 
   @IsNotEmpty()
-  @IsString()
-  nurseId: string;
+  @IsNumber()
+  @Type(() => Number)
+  nurseId: number;
 }

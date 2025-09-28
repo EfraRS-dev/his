@@ -1,18 +1,15 @@
 import { Triage } from '../../domain/triage.entity';
-import { ITriageRepository } from '../../domain/triage.repository';
-import { randomUUID } from 'crypto';
+import type { ITriageRepository } from '../../domain/triage.repository';
 import { CreateTriageDto } from '../dto/create-triage.dto';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CreateTriageUseCase {
   constructor(private readonly triageRepository: ITriageRepository) {}
 
   async execute(data: CreateTriageDto): Promise<Triage> {
-    if (!data.patientId || !data.urgencyLevel) {
-      throw new Error('Invalid data: patientId and urgencyLevel are required.');
-    }
-
     const triage = Triage.create(
-      randomUUID(),
+      0, // Id temporal
       data.patientId,
       data.urgencyLevel,
       data.initialObservations || '',

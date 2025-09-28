@@ -8,41 +8,51 @@ export class InMemoryTriageRepository implements ITriageRepository {
 
   async create(triage: Triage): Promise<Triage> {
     this.triages.set(triage.triageId, triage);
-    return triage;
+    return new Promise((resolve) => resolve(triage));
   }
 
   async findById(id: string): Promise<Triage | null> {
-    return this.triages.get(id) || null;
+    return new Promise((resolve) => resolve(this.triages.get(id) || null));
   }
 
   async findByPatientId(patientId: string): Promise<Triage | null> {
     const triages = Array.from(this.triages.values());
-    return triages.find((triage) => triage.patientId === patientId) || null;
+    return new Promise((resolve) =>
+      resolve(triages.find((triage) => triage.patientId === patientId) || null),
+    );
   }
 
   async findActiveByPatientId(patientId: string): Promise<Triage | null> {
     const triages = Array.from(this.triages.values());
-    return triages.find((triage) => triage.patientId === patientId) || null;
+    return new Promise((resolve) =>
+      resolve(triages.find((triage) => triage.patientId === patientId) || null),
+    );
   }
 
   async findAll(): Promise<Triage[]> {
-    return Array.from(this.triages.values());
+    return new Promise((resolve) => resolve(Array.from(this.triages.values())));
   }
 
   async findByUrgencyLevel(urgencyLevel: 1 | 2 | 3 | 4 | 5): Promise<Triage[]> {
     const triages = Array.from(this.triages.values());
-    return triages.filter((triage) => triage.urgencyLevel === urgencyLevel);
+    return new Promise((resolve) =>
+      resolve(triages.filter((triage) => triage.urgencyLevel === urgencyLevel)),
+    );
   }
 
   async findAllSortedByPriority(): Promise<Triage[]> {
     const triages = Array.from(this.triages.values());
-    return triages.sort((a, b) => {
-      // Ordenar por nivel de urgencia (1 = más urgente, 5 = menos urgente)
-      if (a.urgencyLevel !== b.urgencyLevel) {
-        return a.urgencyLevel - b.urgencyLevel;
-      }
-      // En caso de mismo nivel, ordenar por tiempo de llegada
-      return a.createdAt.getTime() - b.createdAt.getTime();
+    return new Promise((resolve) => {
+      resolve(
+        triages.sort((a, b) => {
+          // Ordenar por nivel de urgencia (1 = más urgente, 5 = menos urgente)
+          if (a.urgencyLevel !== b.urgencyLevel) {
+            return a.urgencyLevel - b.urgencyLevel;
+          }
+          // En caso de mismo nivel, ordenar por tiempo de llegada
+          return a.createdAt.getTime() - b.createdAt.getTime();
+        }),
+      );
     });
   }
 
@@ -66,10 +76,10 @@ export class InMemoryTriageRepository implements ITriageRepository {
     }
 
     this.triages.set(id, updatedTriage);
-    return updatedTriage;
+    return new Promise((resolve) => resolve(updatedTriage));
   }
 
   async delete(id: string): Promise<boolean> {
-    return this.triages.delete(id);
+    return new Promise((resolve) => resolve(this.triages.delete(id)));
   }
 }

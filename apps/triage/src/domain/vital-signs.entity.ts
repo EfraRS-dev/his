@@ -1,7 +1,7 @@
 export class VitalSigns {
   constructor(
-    public readonly vitalSignsId: string,
-    public readonly triageId: string,
+    public readonly vitalSignsId: number,
+    public readonly triageId: number,
     public readonly temperature: number,
     public readonly bloodPressure: string,
     public readonly heartRate: number,
@@ -11,8 +11,8 @@ export class VitalSigns {
   ) {}
 
   static create(
-    vitalSignsId: string,
-    triageId: string,
+    vitalSignsId: number,
+    triageId: number,
     temperature: number,
     bloodPressure: string,
     heartRate: number,

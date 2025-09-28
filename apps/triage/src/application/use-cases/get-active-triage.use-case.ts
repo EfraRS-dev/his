@@ -3,10 +3,10 @@ import type { ITriageRepository } from '../../domain/triage.repository';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GetTriageUseCase {
+export class GetActiveTriageUseCase {
   constructor(private readonly triageRepository: ITriageRepository) {}
 
-  async execute(triageId: number): Promise<Triage | null> {
-    return this.triageRepository.findById(triageId);
+  async execute(patientId: number): Promise<Triage | null> {
+    return this.triageRepository.findActiveByPatientId(patientId);
   }
 }

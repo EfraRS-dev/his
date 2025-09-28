@@ -2,11 +2,11 @@ import { VitalSigns } from './vital-signs.entity';
 
 export interface IVitalSignsRepository {
   create(vitalSigns: VitalSigns): Promise<VitalSigns>;
-  findById(id: string): Promise<VitalSigns | null>;
-  findByTriageId(triageId: string): Promise<VitalSigns | null>;
+  findById(id: number): Promise<VitalSigns | null>;
+  findByTriageId(triageId: number): Promise<VitalSigns | null>;
   update(
-    id: string,
+    id: number,
     vitalSigns: Partial<VitalSigns>,
   ): Promise<VitalSigns | null>;
-  delete(id: string): Promise<boolean>;
+  delete(id: number): Promise<boolean>;
 }

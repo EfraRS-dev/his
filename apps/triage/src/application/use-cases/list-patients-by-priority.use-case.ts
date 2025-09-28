@@ -12,13 +12,13 @@ export interface ListPatientsByPriorityCommand {
 }
 
 export interface PatientTriageInfo {
-  patientId: string;
-  triageId: string;
+  patientId: number;
+  triageId: number;
   urgencyLevel: 1 | 2 | 3 | 4 | 5;
   urgencyDescription: string;
   createdAt: Date;
   waitTime: string;
-  nurseId: string;
+  nurseId: number;
   initialObservations: string;
   vitalSigns: VitalSigns | null;
 }
