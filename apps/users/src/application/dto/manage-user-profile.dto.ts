@@ -1,8 +1,8 @@
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ManageUserProfileDto {
-  @IsString()
-  userId: string; // Usuario a actualizar
+  @IsNumber()
+  userId: number; // Usuario a actualizar
 
   @IsOptional()
   @IsString()

@@ -36,6 +36,4 @@ export interface UserRepository {
    * Generar un nuevo ID único para un usuario.
    */
     generateUserId(): number;
-
-
 }
