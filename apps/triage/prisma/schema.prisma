@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Triage {
+  id         Int          @id @default(autoincrement())
+  patientId  Int
+  nurseId    Int
+  isActive   Boolean      @default(true)
+  urgencyLevel Int        @db.SmallInt 
+  initialObservations String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  vitalSigns VitalSigns[]
+
+  @@index([patientId])
+  @@index([nurseId])
+}
+
+model VitalSigns {
+  id               Int      @id @default(autoincrement())
+  triageId         Int
+  temperature      Float
+  bloodPressure    String
+  heartRate        Int
+  respiratoryRate  Int
+  oxygenSaturation Int
+  additionalNotes  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  triage Triage @relation(fields: [triageId], references: [id], onDelete: Cascade)
+
+  @@index([triageId])
+}

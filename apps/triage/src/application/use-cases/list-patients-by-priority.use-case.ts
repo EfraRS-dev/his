@@ -1,8 +1,12 @@
 import { Triage } from '../../domain/triage.entity';
 import { VitalSigns } from '../../domain/vital-signs.entity';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { ITriageRepository } from '../../domain/triage.repository';
 import type { IVitalSignsRepository } from '../../domain/vital-signs.repository';
+import {
+  TRIAGE_REPOSITORY_TOKEN,
+  VITAL_SIGNS_REPOSITORY_TOKEN,
+} from '../tokens';
 
 export interface ListPatientsByPriorityCommand {
   urgencyLevel?: 1 | 2 | 3 | 4 | 5;
@@ -47,7 +51,9 @@ export interface ListPatientsByPriorityResult {
 @Injectable()
 export class ListPatientsByPriorityUseCase {
   constructor(
+    @Inject(TRIAGE_REPOSITORY_TOKEN)
     private readonly triageRepository: ITriageRepository,
+    @Inject(VITAL_SIGNS_REPOSITORY_TOKEN)
     private readonly vitalSignsRepository: IVitalSignsRepository,
   ) {}
 
@@ -108,10 +114,14 @@ export class ListPatientsByPriorityUseCase {
         success: true,
         message: `Se encontraron ${patients.length} pacientes en la cola de triage`,
       };
-    } catch (error) {
-      throw new Error(
-        `Error al listar pacientes por prioridad: ${error.message}`,
-      );
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : typeof error === 'string'
+            ? error
+            : 'Error desconocido';
+      throw new Error(`Error al listar pacientes por prioridad: ${message}`);
     }
   }
 
@@ -154,8 +164,6 @@ export class ListPatientsByPriorityUseCase {
     level4: string;
     level5: string;
   } {
-    // Esto normalmente involucraría análisis estadístico de datos históricos
-    // Por ahora, devolvemos promedios estimados basados en el nivel de urgencia
     return {
       level1: 'Inmediato',
       level2: '22 minutos',

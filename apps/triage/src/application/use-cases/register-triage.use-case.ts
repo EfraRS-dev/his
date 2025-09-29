@@ -1,15 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Triage } from '../../domain/triage.entity';
 import { VitalSigns } from '../../domain/vital-signs.entity';
 import type { ITriageRepository } from '../../domain/triage.repository';
 import type { IVitalSignsRepository } from '../../domain/vital-signs.repository';
 import { RegisterTriageDto } from '../dto/register-triage.dto';
 import { RegisterTriageResponseDto } from '../dto/register-triage-response.dto';
+import {
+  TRIAGE_REPOSITORY_TOKEN,
+  VITAL_SIGNS_REPOSITORY_TOKEN,
+} from '../tokens';
 
 @Injectable()
 export class RegisterTriageUseCase {
   constructor(
+    @Inject(TRIAGE_REPOSITORY_TOKEN)
     private readonly triageRepository: ITriageRepository,
+    @Inject(VITAL_SIGNS_REPOSITORY_TOKEN)
     private readonly vitalSignsRepository: IVitalSignsRepository,
   ) {}
 
@@ -30,13 +36,11 @@ export class RegisterTriageUseCase {
       dto.nurseId,
     );
 
-    // Save triage first to get the actual ID
     const savedTriage = await this.triageRepository.create(triage);
 
-    // Now create vital signs with the actual triage ID
     const vitalSigns = VitalSigns.create(
       0, // Id temporal
-      savedTriage.triageId, // Use the actual triage ID
+      savedTriage.triageId,
       dto.vitalSigns.temperature,
       dto.vitalSigns.bloodPressure,
       dto.vitalSigns.heartRate,

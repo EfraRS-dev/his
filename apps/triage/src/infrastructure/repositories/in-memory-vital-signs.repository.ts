@@ -4,29 +4,28 @@ import { VitalSigns } from '../../domain/vital-signs.entity';
 
 @Injectable()
 export class InMemoryVitalSignsRepository implements IVitalSignsRepository {
-  private vitalSigns: Map<string, VitalSigns> = new Map();
+  private vitalSigns: Map<number, VitalSigns> = new Map();
 
-  async create(vitalSigns: VitalSigns): Promise<VitalSigns> {
+  create(vitalSigns: VitalSigns): Promise<VitalSigns> {
     this.vitalSigns.set(vitalSigns.vitalSignsId, vitalSigns);
-    return vitalSigns;
+    return Promise.resolve(vitalSigns);
   }
 
-  async findById(id: string): Promise<VitalSigns | null> {
-    return this.vitalSigns.get(id) || null;
+  findById(id: number): Promise<VitalSigns | null> {
+    return Promise.resolve(this.vitalSigns.get(id) || null);
   }
 
-  async findByTriageId(triageId: string): Promise<VitalSigns | null> {
+  findByTriageId(triageId: number): Promise<VitalSigns | null> {
     const signs = Array.from(this.vitalSigns.values());
-    return signs.find((vital) => vital.triageId === triageId) || null;
+    return Promise.resolve(
+      signs.find((vital) => vital.triageId === triageId) || null,
+    );
   }
 
-  async update(
-    id: string,
-    updates: Partial<VitalSigns>,
-  ): Promise<VitalSigns | null> {
+  update(id: number, updates: Partial<VitalSigns>): Promise<VitalSigns | null> {
     const existingVitalSigns = this.vitalSigns.get(id);
     if (!existingVitalSigns) {
-      return null;
+      return Promise.resolve(null);
     }
 
     // Crear nuevos signos vitales con las actualizaciones
@@ -42,10 +41,10 @@ export class InMemoryVitalSignsRepository implements IVitalSignsRepository {
     );
 
     this.vitalSigns.set(id, updatedVitalSigns);
-    return updatedVitalSigns;
+    return Promise.resolve(updatedVitalSigns);
   }
 
-  async delete(id: string): Promise<boolean> {
-    return this.vitalSigns.delete(id);
+  delete(id: number): Promise<boolean> {
+    return Promise.resolve(this.vitalSigns.delete(id));
   }
 }

@@ -1,11 +1,15 @@
 import { Triage } from '../../domain/triage.entity';
 import type { ITriageRepository } from '../../domain/triage.repository';
 import { CreateTriageDto } from '../dto/create-triage.dto';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { TRIAGE_REPOSITORY_TOKEN } from '../tokens';
 
 @Injectable()
 export class CreateTriageUseCase {
-  constructor(private readonly triageRepository: ITriageRepository) {}
+  constructor(
+    @Inject(TRIAGE_REPOSITORY_TOKEN)
+    private readonly triageRepository: ITriageRepository,
+  ) {}
 
   async execute(data: CreateTriageDto): Promise<Triage> {
     const triage = Triage.create(

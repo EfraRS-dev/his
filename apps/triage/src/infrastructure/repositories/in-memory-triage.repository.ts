@@ -4,25 +4,25 @@ import { Triage } from '../../domain/triage.entity';
 
 @Injectable()
 export class InMemoryTriageRepository implements ITriageRepository {
-  private triages: Map<string, Triage> = new Map();
+  private triages: Map<number, Triage> = new Map();
 
   async create(triage: Triage): Promise<Triage> {
     this.triages.set(triage.triageId, triage);
     return new Promise((resolve) => resolve(triage));
   }
 
-  async findById(id: string): Promise<Triage | null> {
+  async findById(id: number): Promise<Triage | null> {
     return new Promise((resolve) => resolve(this.triages.get(id) || null));
   }
 
-  async findByPatientId(patientId: string): Promise<Triage | null> {
+  async findByPatientId(patientId: number): Promise<Triage | null> {
     const triages = Array.from(this.triages.values());
     return new Promise((resolve) =>
       resolve(triages.find((triage) => triage.patientId === patientId) || null),
     );
   }
 
-  async findActiveByPatientId(patientId: string): Promise<Triage | null> {
+  async findActiveByPatientId(patientId: number): Promise<Triage | null> {
     const triages = Array.from(this.triages.values());
     return new Promise((resolve) =>
       resolve(triages.find((triage) => triage.patientId === patientId) || null),
@@ -56,7 +56,7 @@ export class InMemoryTriageRepository implements ITriageRepository {
     });
   }
 
-  async update(id: string, updates: Partial<Triage>): Promise<Triage | null> {
+  async update(id: number, updates: Partial<Triage>): Promise<Triage | null> {
     const existingTriage = this.triages.get(id);
     if (!existingTriage) {
       return null;
@@ -79,7 +79,7 @@ export class InMemoryTriageRepository implements ITriageRepository {
     return new Promise((resolve) => resolve(updatedTriage));
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: number): Promise<boolean> {
     return new Promise((resolve) => resolve(this.triages.delete(id)));
   }
 }

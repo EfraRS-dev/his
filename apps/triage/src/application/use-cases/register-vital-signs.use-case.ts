@@ -1,14 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { VitalSigns } from '../../domain/vital-signs.entity';
 import type { IVitalSignsRepository } from '../../domain/vital-signs.repository';
 import type { ITriageRepository } from '../../domain/triage.repository';
 import { CreateVitalSignsDto } from '../dto/create-vital-signs.dto';
 import { VitalSignsDto } from '../dto/vital-signs.dto';
+import {
+  TRIAGE_REPOSITORY_TOKEN,
+  VITAL_SIGNS_REPOSITORY_TOKEN,
+} from '../tokens';
 
 @Injectable()
 export class RegisterVitalSignsUseCase {
   constructor(
+    @Inject(VITAL_SIGNS_REPOSITORY_TOKEN)
     private readonly vitalSignsRepository: IVitalSignsRepository,
+    @Inject(TRIAGE_REPOSITORY_TOKEN)
     private readonly triageRepository: ITriageRepository,
   ) {}
 
