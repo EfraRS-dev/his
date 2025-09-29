@@ -1,5 +1,5 @@
 import { ClinicalDocumentType } from "apps/ehr/src/domain/entities/clinical-document.entity";
-import { IsInt, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class DocumentMetadataDto {
     @IsString()
@@ -12,10 +12,6 @@ export class DocumentMetadataDto {
 }
 
 export class UpdateClinicalDocumentDto  {
-
-        @IsInt()
-        @IsNotEmpty()
-        documentId: number;
 
         @IsString()
         @IsOptional()

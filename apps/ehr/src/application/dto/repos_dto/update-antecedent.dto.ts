@@ -3,10 +3,6 @@ import { IsInt, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class UpdateAntecedentDto {
 
-    @IsNotEmpty()
-    @IsInt()
-    antecedentId: number;
-
     @IsString()
     @IsOptional()
     type: AntecedentType;

@@ -1,11 +1,8 @@
 import { ClinicalEntryType } from "apps/ehr/src/domain/entities/clinical-entry.entity";
-import { IsInt, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class UpdateClinicalEntryDto {
 
-    @IsInt()
-    @IsNotEmpty()
-    entryId: number;
 
     @IsString()
     @IsOptional()

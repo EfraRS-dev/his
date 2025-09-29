@@ -5,8 +5,8 @@ import { ClinicalEntry } from "apps/ehr/src/domain/entities/clinical-entry.entit
 export class UpdateClinicalEntryUseCase {
     constructor(private readonly clinicalEntryPort: ClinicalEntryRepositoryPort){}
 
-    async execute(input: UpdateClinicalEntryDto): Promise<ClinicalEntry>{
-        const clinicalEntry = await this.clinicalEntryPort.findById(input.entryId)
+    async execute(entryId: number, input: UpdateClinicalEntryDto): Promise<ClinicalEntry>{
+        const clinicalEntry = await this.clinicalEntryPort.findById(entryId)
         if(clinicalEntry){
             const changes: ClinicalEntry = {
                 historyId: clinicalEntry.historyId,
