@@ -1,6 +1,6 @@
 export class Patient {
   constructor(
-    public readonly patientId: number,
+    public readonly patientId: number | null,
     public readonly userId: number,
     public readonly documentType: string,
     public readonly documentNumber: string,
@@ -12,7 +12,7 @@ export class Patient {
     public readonly phone: string,
     public readonly email: string,
     public readonly emergencyContact: string,
-    public readonly registeredAt: Date,
+    public readonly createdAt: Date,
     public readonly status: 'active' | 'archived',
   ) {}
 }

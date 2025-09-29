@@ -1,6 +1,6 @@
 import { UpdatePatientDto } from '../dto/updatePatient.dto';
 import { Patient } from '../../domain/patient';
-import type { PatientRepository } from '../../domain/patient.repository';
+import type { PatientRepository } from '../../domain/patient.repository.port';
 import { Injectable, Inject } from '@nestjs/common';
 import { PATIENT_REPOSITORY } from '../token';
 
@@ -30,7 +30,7 @@ export class UpdatePatientUseCase {
             updateInput.phone ?? patient.phone,
             updateInput.email ?? patient.email,
             updateInput.emergencyContact ?? patient.emergencyContact,
-            patient.registeredAt,
+            patient.createdAt,
             patient.status
         )
 

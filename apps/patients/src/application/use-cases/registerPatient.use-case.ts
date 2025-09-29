@@ -1,5 +1,5 @@
 import { Patient } from "../../domain/patient";
-import type { PatientRepository } from "../../domain/patient.repository";
+import type { PatientRepository } from "../../domain/patient.repository.port";
 import { PatientRegisterDto } from '../dto/registerPatient.dto';
 import { Injectable, Inject } from "@nestjs/common";
 import { PATIENT_REPOSITORY } from "../token";
@@ -15,9 +15,8 @@ export class PatientRegisterUseCase {
         if (existingPatient !== null) {
             throw new Error(`Patient with document already exists`);
         }
-        const patientId = await this.patientRepo.generatePatientId();
         const patient = new Patient(
-            patientId,
+            null,
             patientInput.userId,
             patientInput.documentType,
             patientInput.documentNumber,

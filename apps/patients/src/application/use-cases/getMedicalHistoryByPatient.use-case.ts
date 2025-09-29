@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { PatientRepository } from '../../domain/patient.repository';
+import type { PatientRepository } from '../../domain/patient.repository.port';
 import { MedicalHistory } from '../dto/medicalHistory.dto';
 import { PATIENT_REPOSITORY } from '../token';
 
