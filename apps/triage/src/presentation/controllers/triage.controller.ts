@@ -136,7 +136,7 @@ export class TriageController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a triage' })
+  @ApiOperation({ summary: 'Delete a triage entity' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: DeleteTriageDto })
   @ApiOkResponse({ description: 'Deletion result' })

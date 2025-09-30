@@ -36,7 +36,10 @@
       "entryFile": "main",
       "sourceRoot": "apps/triage/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/triage/tsconfig.app.json"
+        "tsConfigPath": "apps/triage/tsconfig.app.json",
+        "assets": ["prisma/schema.prisma", "generated/prisma/**/*"],
+        "watchAssets": true,
+        "deleteOutDir": true
       }
     },
     "users": {

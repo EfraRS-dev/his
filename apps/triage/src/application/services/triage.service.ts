@@ -179,7 +179,7 @@ export class TriageService {
   getHealthCheck(): { status: string; service: string; timestamp: Date } {
     return {
       status: 'OK',
-      service: 'Triage Service',
+      service: 'Servicio funcionando...',
       timestamp: new Date(),
     };
   }

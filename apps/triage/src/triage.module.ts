@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { join } from 'path';
 import { TriageController } from './presentation/controllers/triage.controller';
 import { TriageService } from './application/services/triage.service';
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
@@ -22,7 +24,14 @@ import { GetVitalSignsUseCase } from './application/use-cases/get-vital-signs.us
 import { GetVitalSignsByTriageUseCase } from './application/use-cases/get-vital-signs-by-triage.use-case';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: join(__dirname, '..', '.env'), // apps/triage/.env
+      isGlobal: true,
+      cache: true,
+    }),
+    PrismaModule,
+  ],
   controllers: [TriageController],
   providers: [
     // Service

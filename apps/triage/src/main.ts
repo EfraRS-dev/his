@@ -2,13 +2,16 @@ import { NestFactory } from '@nestjs/core';
 import { TriageModule } from './triage.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(TriageModule);
 
+  const configService = app.get<ConfigService>(ConfigService);
+
   const config = new DocumentBuilder()
-    .setTitle('Triage Service API')
-    .setDescription('API documentation for Triage Microservice')
+    .setTitle('Servicio de Triage')
+    .setDescription('Documentación para microservicio de triage.')
     .setVersion('1.0')
     .addTag('triage')
     .build();
@@ -23,6 +26,7 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  const port = configService.get<number>('PORT');
+  await app.listen(port ?? 3000);
 }
 void bootstrap();
