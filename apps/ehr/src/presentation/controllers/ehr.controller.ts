@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, Query, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Query, Delete, ParseIntPipe } from '@nestjs/common';
 import { CreateAntecedentUseCase } from '../../application/use-cases/antecedent/create-antecedent.usecase';
 import { DeleteAntecedentUseCase } from '../../application/use-cases/antecedent/delete-antecedent.usecase';
 import { UpdateAntecedentUseCase } from '../../application/use-cases/antecedent/update-antecedent.usecase';
@@ -32,12 +32,12 @@ export class EhrController {
   }
 
   @Delete('antecedent/delete/:id')
-  async deleteAntecedent(@Param('id') id:number){
+  async deleteAntecedent(@Param('id', ParseIntPipe) id:number){
     return this.deleteAntecedentUC.execute(id);
   }
 
   @Put('antecedent/update/:id')
-  async updateAntecedent(@Param('id') id:number, @Body() body: UpdateAntecedentDto){
+  async updateAntecedent(@Param('id',ParseIntPipe) id:number, @Body() body: UpdateAntecedentDto){
     return this.updateAntecedentUC.execute(id, body);
   }
 
@@ -47,22 +47,22 @@ export class EhrController {
   }
 
   @Put('clinicalEntry/update/:id')
-  async updateClinicalEntry(@Param('id') id:number, @Body() body: UpdateClinicalEntryDto){
+  async updateClinicalEntry(@Param('id',ParseIntPipe) id:number, @Body() body: UpdateClinicalEntryDto){
     return this.updateClinicalEntryUC.execute(id, body);
   }
 
   @Post(':id')
-  async createMedicalHistory(@Param('id') patientId:number){
+  async createMedicalHistory(@Param('id',ParseIntPipe) patientId:number){
     return this.createMedicalHistoryUC.execute(patientId);
   }
 
   @Put('archive/:id')
-  async archiveMedicalHistory(@Param('id') id:number){
+  async archiveMedicalHistory(@Param('id',ParseIntPipe) id:number){
     return this.archiveMedicalHistoryUC.execute(id);
   }
 
   @Get(':id')
-  async getMedicalHistoryComplete(@Param('id') patientId:number){
+  async getMedicalHistoryComplete(@Param('id',ParseIntPipe) patientId:number){
     return this.getMedicalHistoryUC.execute(patientId);
   }
 
