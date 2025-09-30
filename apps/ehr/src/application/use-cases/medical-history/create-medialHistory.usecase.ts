@@ -1,8 +1,8 @@
 import { MedicalHistory } from "apps/ehr/src/domain/entities/medical-history.entity";
-import { medicalHistoryRepositoryPort } from "apps/ehr/src/domain/repositories/medical-history.repository.port";
+import { MedicalHistoryRepositoryPort } from "apps/ehr/src/domain/repositories/medical-history.repository.port";
 
 export class CreateMedicalHistoryUseCase {
-    constructor(private readonly medicalHistoryPort: medicalHistoryRepositoryPort){}
+    constructor(private readonly medicalHistoryPort: MedicalHistoryRepositoryPort){}
 
     async execute(patientId: number): Promise<MedicalHistory>{
         const validation = await this.medicalHistoryPort.findByPatientId(patientId);

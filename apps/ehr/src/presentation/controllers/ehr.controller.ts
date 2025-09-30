@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Put, Body, Param, Query, Delete } from '@nestjs/common';
-import { EhrService } from '../../application/services/ehr.service';
 import { CreateAntecedentUseCase } from '../../application/use-cases/antecedent/create-antecedent.usecase';
 import { DeleteAntecedentUseCase } from '../../application/use-cases/antecedent/delete-antecedent.usecase';
 import { UpdateAntecedentUseCase } from '../../application/use-cases/antecedent/update-antecedent.usecase';
