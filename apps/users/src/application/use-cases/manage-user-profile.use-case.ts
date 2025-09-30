@@ -1,11 +1,16 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { ManageUserProfileDto } from '../dto/manage-user-profile.dto';
-import { UserRepository } from '../../domain/repositories/user.repository';
+import type { UserRepository } from '../../domain/repositories/user.repository';
 import { User } from '../../domain/entities/user.entity';
+import { USER_REPOSITORY } from '../tokens';
 
+@Injectable()
 export class ManageUserProfileUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    @Inject(USER_REPOSITORY) private readonly userRepository: UserRepository,
+  ) {}
 
-  async execute(dto: ManageUserProfileDto): Promise<User> {
+  async execute(userId:number ,dto: ManageUserProfileDto): Promise<User> {
     // 1. Buscar usuario
     const user = await this.userRepository.findById(dto.userId);
     if (!user) {
@@ -30,3 +35,4 @@ export class ManageUserProfileUseCase {
     return updatedUser;
   }
 }
+

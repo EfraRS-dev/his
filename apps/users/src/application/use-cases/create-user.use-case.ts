@@ -1,18 +1,20 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { User } from '../../domain/entities/user.entity';
-import { UserRepository } from '../../domain/repositories/user.repository';
-import { RoleRepository } from '../../domain/repositories/role.repository';
+import type { UserRepository } from '../../domain/repositories/user.repository';
+import type { RoleRepository } from '../../domain/repositories/role.repository';
+import { ROLE_REPOSITORY, USER_REPOSITORY } from '../tokens';
 
 // Interfaz para el servicio de hashing de contraseñas
 export interface PasswordHashService {
   hash(password: string): Promise<string>;
 }
 
+@Injectable()
 export class CreateUserUseCase {
   constructor(
-    private readonly userRepository: UserRepository,
-    private readonly roleRepository: RoleRepository,
-    private readonly passwordHashService: PasswordHashService,
+    @Inject(USER_REPOSITORY) private readonly userRepository: UserRepository,
+    @Inject(ROLE_REPOSITORY) private readonly roleRepository: RoleRepository,
   ) {}
 
   async execute(dto: CreateUserDto): Promise<User> {
@@ -35,15 +37,15 @@ export class CreateUserUseCase {
     }
 
     // 4. Hashear la contraseña
-    const passwordHash = await this.passwordHashService.hash(dto.password);
+    const passwordHash = await this.userRepository.passwordHash(dto.password);
 
     // 5. Crear el usuario usando el factory method de la entidad
-    const userId = this.generateUserId();
+    const userId = await this.generateUserId();
     const user = User.create(
       userId,
       dto.username,
       passwordHash,
-      role.roleId, // 🔑 usamos el roleId del Role encontrado
+      role.roleId,
       dto.email,
       'active',
     );
@@ -51,12 +53,12 @@ export class CreateUserUseCase {
     // 6. Guardar en el repositorio
     await this.userRepository.save(user);
 
-    // 7. Retornar el usuario creado (puedes mapearlo a un DTO de salida si prefieres)
     return user;
   }
 
-  private generateUserId(): number {
+  private generateUserId(): Promise<number> {
     return this.userRepository.generateUserId();
   }
 }
+
 

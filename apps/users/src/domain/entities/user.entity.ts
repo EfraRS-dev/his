@@ -3,7 +3,7 @@ export class User {
     public readonly userId: number,
     public readonly username: string,
     public readonly passwordHash: string,
-    public readonly roleId: string,
+    public readonly roleId: number,
     public readonly email: string,
     public readonly status: 'active' | 'inactive' | 'blocked',
     public readonly jwtToken?: string,
@@ -15,7 +15,7 @@ export class User {
     userId: number,
     username: string,
     passwordHash: string,
-    roleId: string,
+    roleId: number,
     email: string,
     status: 'active' | 'inactive' | 'blocked' = 'active',
   ): User {

@@ -1,8 +1,8 @@
 export class UserResponseDto {
-  userId: string;
+  userId: number;
   username: string;
   email: string;
-  role: string;
+  role: number;
   status: string;
   createdAt: Date;
 }

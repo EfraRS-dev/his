@@ -14,6 +14,6 @@ export class ManageUserProfileDto {
 
   @IsOptional()
   @IsString()
-  roleId?: string; // Se permite cambiar el rol
+  roleId?: number; // Se permite cambiar el rol
 }
 

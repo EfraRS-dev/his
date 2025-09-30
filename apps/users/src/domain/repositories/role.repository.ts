@@ -9,7 +9,7 @@ export interface RoleRepository {
   /**
    * Busca un rol por su ID único.
    */
-  findById(roleId: string): Promise<Role | null>;
+  findById(roleId: number): Promise<Role | null>;
 
   /**
    * Busca un rol por su nombre (Admin, Doctor, Nurse, Patient).
@@ -24,5 +24,5 @@ export interface RoleRepository {
   /**
    * Elimina un rol por su ID.
    */
-  delete(roleId: string): Promise<void>;
+  delete(roleId: number): Promise<void>;
 }

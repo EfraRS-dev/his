@@ -4,7 +4,7 @@ export interface UserRepository {
   /**
    * Guarda un nuevo usuario o actualiza uno existente.
    */
-  save(user: User): Promise<void>;
+  save(user: User): Promise<User>;
 
   /**
    * Busca un usuario por su ID único.
@@ -35,5 +35,7 @@ export interface UserRepository {
   /**
    * Generar un nuevo ID único para un usuario.
    */
-    generateUserId(): number;
+    generateUserId(): Promise<number>;
+
+    passwordHash(password: string): Promise<string>;
 }

@@ -1,10 +1,15 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { GetUserDto } from '../dto/get-user.dto';
 import { UserResponseDto } from '../dto/user-response.dto';
-import { UserRepository } from '../../domain/repositories/user.repository';
+import type { UserRepository } from '../../domain/repositories/user.repository';
 import { User } from '../../domain/entities/user.entity';
+import { USER_REPOSITORY } from '../tokens';
 
+@Injectable()
 export class GetUserUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    @Inject(USER_REPOSITORY) private readonly userRepository: UserRepository,
+  ) {}
 
   async execute(dto: GetUserDto): Promise<UserResponseDto> {
     let user: User | null = null;
@@ -45,6 +50,7 @@ export class GetUserUseCase {
     };
   }
 }
+
 
 
 

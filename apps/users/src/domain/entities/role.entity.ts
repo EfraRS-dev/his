@@ -1,12 +1,12 @@
 export class Role {
   constructor(
-    public readonly roleId: string,
+    public readonly roleId: number,
     public readonly name: 'Admin' | 'Doctor' | 'Nurse' | 'Patient',
     public readonly permissions: string[],
   ) {}
 
   static create(
-    roleId: string,
+    roleId: number,
     name: 'Admin' | 'Doctor' | 'Nurse' | 'Patient',
     permissions: string[] = [],
   ): Role {

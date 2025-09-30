@@ -1,28 +1,25 @@
-
-import { UserRepository } from '../../domain/repositories/user.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserRepository } from '../../domain/repositories/user.repository';
+import { USER_REPOSITORY } from '../tokens';
 import { User } from '../../domain/entities/user.entity';
 
+@Injectable()
 export class DisableUserUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    @Inject(USER_REPOSITORY) private readonly userRepository: UserRepository,
+  ) {}
 
-  async execute(UserId:number): Promise<User> {
-    // 1. Buscar usuario
-    const user = await this.userRepository.findById(UserId);
+  async execute(userId: number): Promise<User> {
+    const user = await this.userRepository.findById(userId);
+
     if (!user) {
       throw new Error('Usuario no encontrado');
     }
 
-    // 2. Validar estado actual
-    if (user.status === 'inactive' || user.status === 'blocked') {
-      throw new Error(`El usuario ya está ${user.status}`);
-    }
-
-    // 3. Cambiar estado a inactivo usando método de la entidad
     const disabledUser = user.deactivate();
-
-    // 4. Guardar cambios
     await this.userRepository.save(disabledUser);
 
     return disabledUser;
   }
 }
+
