@@ -1,11 +1,14 @@
+import { Inject, Injectable } from "@nestjs/common";
 import { User } from "../../domain/entities/user.entity";
-import { UserRepository } from "../../domain/repositories/user.repository.port";
+import type { UserRepository } from "../../domain/repositories/user.repository.port";
 import { UpdateUserDto } from "../dto/updateUser.dto";
 import * as bcrypt from "bcrypt";
+import { USER_REPOSITORY } from "../tokens";
 
+@Injectable()
 export class UpdateUserUseCase{
     constructor(
-        private readonly userRepo: UserRepository
+        @Inject(USER_REPOSITORY) private readonly userRepo: UserRepository
     ){}
     
     async execute(updateInput: UpdateUserDto): Promise<User>{

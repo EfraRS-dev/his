@@ -1,10 +1,13 @@
+import { Inject, Injectable } from "@nestjs/common";
 import { User } from "../../domain/entities/user.entity";
-import { UserRepository } from "../../domain/repositories/user.repository.port";
+import type { UserRepository } from "../../domain/repositories/user.repository.port";
 import { GetUserDto } from "../dto/getUser.dto";
+import { USER_REPOSITORY } from "../tokens";
 
+@Injectable()
 export class GetUserUseCase{
   constructor (
-    private readonly userRepo:UserRepository
+    @Inject(USER_REPOSITORY) private readonly userRepo:UserRepository
   ){}
 
   async execute(searchInput:GetUserDto): Promise<User | null>{
