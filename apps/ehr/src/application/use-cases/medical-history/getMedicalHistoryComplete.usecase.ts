@@ -8,7 +8,7 @@ export class GetMedicalHistoryCompleteUseCase {
     constructor(private readonly medicalHistoryPort: MedicalHistoryRepositoryPort){}
     
     async execute(patientId: number): Promise<MedicalHistory> {
-        const medicalHistory = await this.medicalHistoryPort.findByPatientId(patientId)
+        const medicalHistory = await this.medicalHistoryPort.GetMedicalHistoryComplete(patientId)
         if(!medicalHistory){
             throw new Error("No medical history found for patient ${patientId}") 
         }

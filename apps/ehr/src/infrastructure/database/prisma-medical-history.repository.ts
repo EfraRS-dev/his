@@ -38,11 +38,40 @@ export class PrismaMedicalHistory implements MedicalHistoryRepositoryPort {
         )
     }
 
+    async findByHistoryId(historyId: number): Promise<MedicalHistory | null> {
+        const history = await this.prisma.medicalHistory.findUnique({
+            where: {historyId}
+        });
+        if(!history) return null
+        return new MedicalHistory(
+            history.patientId,
+            history.openedAt,
+            history.status,
+            history.historyId
+        )
+    }
+
     async archive(historyId: number): Promise<MedicalHistory> {
         const history = await this.prisma.medicalHistory.update({
             where: {historyId},
             data:{
                 status: false,
+            }
+        });
+
+        return new MedicalHistory(
+            history.patientId,
+            history.openedAt,
+            history.status,
+            history.historyId
+        )
+    }
+
+    async unarchive(historyId: number): Promise<MedicalHistory> {
+        const history = await this.prisma.medicalHistory.update({
+            where: {historyId},
+            data:{
+                status: true,
             }
         });
 
