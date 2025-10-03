@@ -44,7 +44,7 @@ export class TriageController {
   @ApiOkResponse({
     description: 'Aggregate statistics including counts and averages',
   })
-  getStats() {
+  async getStats() {
     return this.triageService.getTriageStats();
   }
 
@@ -62,7 +62,7 @@ export class TriageController {
     description: 'If true, include all levels in summary',
   })
   @ApiOkResponse({ description: 'Queue and aggregates' })
-  listQueue(
+  async listQueue(
     @Query('urgencyLevel') urgencyLevel?: string,
     @Query('includeAllLevels') includeAllLevels?: string,
   ) {
@@ -82,7 +82,7 @@ export class TriageController {
   @ApiOperation({ summary: 'Create a basic triage record' })
   @ApiBody({ type: CreateTriageDto })
   @ApiCreatedResponse({ description: 'Triage created' })
-  create(@Body() dto: CreateTriageDto) {
+  async create(@Body() dto: CreateTriageDto) {
     return this.triageService.createTriage(dto);
   }
 
@@ -90,7 +90,7 @@ export class TriageController {
   @ApiOperation({ summary: 'Register a triage with initial vital signs' })
   @ApiBody({ type: RegisterTriageDto })
   @ApiCreatedResponse({ description: 'Triage and vital signs registered' })
-  register(@Body() dto: RegisterTriageDto) {
+  async register(@Body() dto: RegisterTriageDto) {
     return this.triageService.registerTriage(dto);
   }
 
@@ -98,7 +98,7 @@ export class TriageController {
   @ApiOperation({ summary: 'Get a triage by ID' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ description: 'Triage details' })
-  getById(@Param('id', ParseIntPipe) id: number) {
+  async getById(@Param('id', ParseIntPipe) id: number) {
     return this.triageService.getTriage(id);
   }
 
@@ -128,7 +128,7 @@ export class TriageController {
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdatePriorityDto })
   @ApiOkResponse({ description: 'Priority updated' })
-  updatePriority(
+  async updatePriority(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdatePriorityDto,
   ) {
@@ -140,7 +140,10 @@ export class TriageController {
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: DeleteTriageDto })
   @ApiOkResponse({ description: 'Deletion result' })
-  remove(@Param('id', ParseIntPipe) id: number, @Body() body: DeleteTriageDto) {
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: DeleteTriageDto,
+  ) {
     return this.triageService.deleteTriage(
       id,
       Number(body.userId),
@@ -153,7 +156,7 @@ export class TriageController {
   @ApiOperation({ summary: 'Get the triage history by patient' })
   @ApiParam({ name: 'patientId', type: Number })
   @ApiOkResponse({ description: 'Latest or historical triage for the patient' })
-  getByPatient(@Param('patientId', ParseIntPipe) patientId: number) {
+  async getByPatient(@Param('patientId', ParseIntPipe) patientId: number) {
     return this.triageService.getTriageByPatient(patientId);
   }
 
@@ -161,7 +164,7 @@ export class TriageController {
   @ApiOperation({ summary: 'Get the active triage by patient' })
   @ApiParam({ name: 'patientId', type: Number })
   @ApiOkResponse({ description: 'Active triage if any' })
-  getActive(@Param('patientId', ParseIntPipe) patientId: number) {
+  async getActive(@Param('patientId', ParseIntPipe) patientId: number) {
     return this.triageService.getActiveTriage(patientId);
   }
 
@@ -171,7 +174,7 @@ export class TriageController {
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: CreateVitalSignsDto })
   @ApiCreatedResponse({ description: 'Vital signs stored' })
-  addVitalSigns(
+  async addVitalSigns(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: CreateVitalSignsDto,
   ) {
@@ -182,7 +185,7 @@ export class TriageController {
   @ApiOperation({ summary: 'Get vital signs by triage ID' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ description: 'Vital signs for the triage if any' })
-  getVitalSignsByTriage(@Param('id', ParseIntPipe) id: number) {
+  async getVitalSignsByTriage(@Param('id', ParseIntPipe) id: number) {
     return this.triageService.getVitalSignsByTriage(id);
   }
 
@@ -190,7 +193,9 @@ export class TriageController {
   @ApiOperation({ summary: 'Get vital signs by ID' })
   @ApiParam({ name: 'vitalSignsId', type: Number })
   @ApiOkResponse({ description: 'Vital signs record' })
-  getVitalSigns(@Param('vitalSignsId', ParseIntPipe) vitalSignsId: number) {
+  async getVitalSigns(
+    @Param('vitalSignsId', ParseIntPipe) vitalSignsId: number,
+  ) {
     return this.triageService.getVitalSigns(vitalSignsId);
   }
 }
