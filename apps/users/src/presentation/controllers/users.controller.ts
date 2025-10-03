@@ -7,7 +7,9 @@ import { GetUserUseCase } from '../../application/use-cases/get-user.use-case';
 import { UpdateUserUseCase } from '../../application/use-cases/updateUser.use-case';
 import { BlockUserUseCase } from '../../application/use-cases/blockUser.use-case';
 import { InactivateUserUseCase } from '../../application/use-cases/inactivateUser.user-case';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags("Users")
 @Controller('users')
 export class UsersController{
   constructor(
@@ -19,6 +21,8 @@ export class UsersController{
   ){}
 
   @Post('/create')
+  @ApiOperation({summary:"User Creation"})
+  @ApiOkResponse({description: "The user was created correctly "})
   async create(@Body() body: CreateUserDto){
     const user = await this.createUser.execute({
       username: body.username,
@@ -30,6 +34,9 @@ export class UsersController{
   }
 
   @Post('/update/:id')
+  @ApiOperation({summary:"Update User"})
+  @ApiOkResponse({description:"User updated correctly"})
+
   async update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateUserDto){
     const updatedUser = await this.updateUser.execute({
       userId: id,
@@ -41,18 +48,24 @@ export class UsersController{
   }
 
   @Post('/block/:id')
+  @ApiOperation({summary:"Block User"})
+  @ApiOkResponse({description:"User Blocked Correctly"})
   async BlockUserById(@Param('id', ParseIntPipe) id: number){
     const blockedUser = await this.blockUser.execute(id)
     return blockedUser
   }
 
   @Post('/inactivate/:id')
+  @ApiOperation({summary:"Inactivate User"})
+  @ApiOkResponse({description:"User Inactivated Correctly"})
   async InactivateUserById(@Param('id', ParseIntPipe) id: number){
     const inactivatedUser = await this.inactivateUser.execute(id)
     return inactivatedUser
   }
 
   @Get('/:id')
+  @ApiOperation({summary: "Find Id"})
+  @ApiOkResponse({description:"User Found Correctly"})
   async GetUserById(@Param('id', ParseIntPipe) id: number){
     const user = await this.getUser.execute({
       userId: id,
@@ -61,6 +74,8 @@ export class UsersController{
     return user
   }
 
+  @ApiOperation({summary:"Find Email"})
+  @ApiOkResponse({description:"User Found Correctly"})
   @Get('/email/:email')
   async GetUserByEmail(@Param("email") email: string){
     const user = await this.getUser.execute({
