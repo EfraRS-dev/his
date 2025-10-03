@@ -2,8 +2,6 @@ import { Controller, Get, Post, Body, Param, Query, ParseIntPipe } from '@nestjs
 import { CreateRoleDto } from '../../application/dto/createRole.dto';
 import { CreateRoleUseCase } from '../../application/use-cases/createRole.use-case';
 import { GetRoleUseCase } from '../../application/use-cases/getRole.use-case';
-import { create } from 'domain';
-import { permission } from 'process';
 
 @Controller ("roles")
 export class RolesController{
