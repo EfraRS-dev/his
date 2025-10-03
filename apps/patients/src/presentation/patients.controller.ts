@@ -8,7 +8,9 @@ import { UpdatePatientUseCase } from '../application/use-cases/updatePatient.use
 import { PatientRegisterDto } from '../application/dto/registerPatient.dto';
 import { UpdatePatientDto } from '../application/dto/updatePatient.dto';
 import { GetPatientDto } from '../application/dto/getPatient.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('patients')
 @Controller('patients')
 export class PatientsController{
     constructor(
