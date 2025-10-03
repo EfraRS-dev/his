@@ -36,7 +36,7 @@ model User {
 model Role {
   roleId                Int       @id @default(autoincrement()) @db.Integer
   name                  RolesName    
-  permissions           String[]
+  permissions           String?
 
   users                 User[]    
 }

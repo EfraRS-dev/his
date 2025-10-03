@@ -58,13 +58,15 @@ export class UsersController{
       userId: id,
       criteria: 'id'
     })
+    return user
   }
 
-  @Get('/email')
-  async GetUserByEmail(@Query() query: GetUserDto){
+  @Get('/email/:email')
+  async GetUserByEmail(@Param("email") email: string){
     const user = await this.getUser.execute({
-      email: query.email,
+      email: email,
       criteria: 'email'
     })
+    return user
   }
 }

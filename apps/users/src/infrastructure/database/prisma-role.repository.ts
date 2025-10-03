@@ -11,9 +11,8 @@ export class PrismaRoleRepository implements RoleRepository {
 
     async save(role: Role): Promise<Role> {
             const saved = await this.prisma.role.create({
-                roledata:{
-                   roleId: role.roleId,
-                   name: role.name 
+                data:{
+                  name: role.name 
                 }
             });
             return new Role (

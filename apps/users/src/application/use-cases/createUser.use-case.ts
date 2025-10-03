@@ -26,6 +26,6 @@ export class CreateUserUseCase {
       'active',
       new Date()
     );
-    return user;
+    return this.userRepo.save(user);
   }
 }

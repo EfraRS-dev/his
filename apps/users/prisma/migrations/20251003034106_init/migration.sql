@@ -22,7 +22,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Role" (
     "roleId" SERIAL NOT NULL,
     "name" "RolesName" NOT NULL,
-    "permissions" TEXT[],
+    "permissions" TEXT,
 
     CONSTRAINT "Role_pkey" PRIMARY KEY ("roleId")
 );

@@ -11,15 +11,11 @@ export class CreateRoleUseCase{
     ){}
 
     async execute(roleInput: CreateRoleDto ): Promise<Role>{
-        const existingRole = await this.roleRepo.findRoleById(roleInput.roleId);
-        if (existingRole !==null){
-            throw new Error('this Role already exists')
-        }
-        const role = new Role (
-            roleInput.roleId,
-            roleInput.name,
-        );
-        return role
+        const role = new Role(
+            null,
+            roleInput.name
+        )
+        return this.roleRepo.save(role);
 
 
 

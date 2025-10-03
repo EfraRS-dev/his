@@ -8,7 +8,7 @@ import { RolesModule } from './presentation/modules/roles.module';
   imports: [
     ConfigModule.forRoot({ 
       isGlobal: true,
-      envFilePath: join(__dirname, '..', '.env')
+      
      }),
     UsersModule,RolesModule
   ],

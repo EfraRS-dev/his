@@ -2,7 +2,7 @@ import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-valid
 
 export class GetUserDto{
 
-    @IsNumber()
+    @IsString()
     @IsOptional()
     @IsEmail()
     email?:string

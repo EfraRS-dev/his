@@ -13,7 +13,6 @@ export class RolesController{
     @Post('/create')
     async create(@Body() body:CreateRoleDto){
         const role = await this.createRole.execute({
-            roleId: body.roleId,
             name: body.name
         })
         return role;
