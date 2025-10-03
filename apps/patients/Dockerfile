@@ -1,8 +1,8 @@
 FROM node:20-alpine AS development
 WORKDIR /usr/src/app
 
-COPY package.json ./
-COPY tsconfig.json ./
+COPY package*.json ./
+COPY tsconfig*.json ./
 COPY nest-cli.json ./
 
 COPY apps/patients ./apps/patients
@@ -19,8 +19,8 @@ ENV NODE_ENV=${NODE_ENV}
 WORKDIR /usr/src/app
 
 #Copy package files and install production dependencies
-COPY --from=development /usr/src/app/package.json ./
-RUN npm install --only=production --omit=dev
+COPY --from=development /usr/src/app/package*.json ./
+RUN npm install --omit=dev
 
 #Copy built app
 COPY --from=development /usr/src/app/dist ./dist

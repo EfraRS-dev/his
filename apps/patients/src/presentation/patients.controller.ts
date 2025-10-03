@@ -58,15 +58,6 @@ export class PatientsController{
         return archivedPatient;
     }
 
-    @Get('/:id')
-    async GetPatientById(@Param('id', ParseIntPipe) id: number){
-        const patient = await this.getPatient.execute({
-            patientId: id, 
-            criteria: 'id'
-        });
-        return patient;
-    }
-
     @Get('/document')
     async GetPatientByDocument(@Query() query: GetPatientDto){
         const patient = await this.getPatient.execute({
@@ -97,5 +88,14 @@ export class PatientsController{
     async GetMedicalHistory(@Param('id', ParseIntPipe) id: number){
         const medicalHistory = await this.getMedicalHistory.execute(id);
         return medicalHistory;
+    }
+
+    @Get('/:id')
+    async GetPatientById(@Param('id', ParseIntPipe) id: number){
+        const patient = await this.getPatient.execute({
+            patientId: id, 
+            criteria: 'id'
+        });
+        return patient;
     }
 }
