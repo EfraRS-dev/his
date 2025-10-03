@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 
-import { CreateTriageUseCase } from '../use-cases/create-triage.use-case';
-import { RegisterTriageUseCase } from '../use-cases/register-triage.use-case';
-import { GetTriageUseCase } from '../use-cases/get-triage.use-case';
-import { GetActiveTriageUseCase } from '../use-cases/get-active-triage.use-case';
-import { GetTriageByPatientUseCase } from '../use-cases/get-triage-by-patient';
-import { ListPatientsByPriorityUseCase } from '../use-cases/list-patients-by-priority.use-case';
-import { UpdateTriageUseCase } from '../use-cases/update-triage.use-case';
-import { UpdatePriorityUseCase } from '../use-cases/update-priority.use-case';
-import { DeleteTriageUseCase } from '../use-cases/delete-triage.use-case';
-
-import { RegisterVitalSignsUseCase } from '../use-cases/register-vital-signs.use-case';
-import { GetVitalSignsUseCase } from '../use-cases/get-vital-signs.use-case';
-import { GetVitalSignsByTriageUseCase } from '../use-cases/get-vital-signs-by-triage.use-case';
+import {
+  CreateTriageUseCase,
+  RegisterTriageUseCase,
+  GetTriageUseCase,
+  GetActiveTriageUseCase,
+  GetTriageByPatientUseCase,
+  ListPatientsByPriorityUseCase,
+  UpdateTriageUseCase,
+  UpdatePriorityUseCase,
+  DeleteTriageUseCase,
+  RegisterVitalSignsUseCase,
+  GetVitalSignsUseCase,
+  GetVitalSignsByTriageUseCase,
+} from '../use-cases';
 
 import { CreateTriageDto } from '../dto/create-triage.dto';
 import { RegisterTriageDto } from '../dto/register-triage.dto';
@@ -170,7 +171,6 @@ export class TriageService {
     return {
       totalPatients: allPatients.patients?.length || 0,
       urgencyLevelCounts: allPatients.urgencyLevelCounts || {},
-      averageWaitTimes: allPatients.averageWaitTimes || {},
       success: true,
       message: 'Estadísticas obtenidas exitosamente',
     };

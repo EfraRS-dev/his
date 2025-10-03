@@ -37,13 +37,6 @@ export interface ListPatientsByPriorityResult {
     level4: number;
     level5: number;
   };
-  averageWaitTimes: {
-    level1: string;
-    level2: string;
-    level3: string;
-    level4: string;
-    level5: string;
-  };
   success: boolean;
   message: string;
 }
@@ -102,15 +95,12 @@ export class ListPatientsByPriorityUseCase {
         patients.push(patientInfo);
       }
 
-      // Calcular estadísticas
       const urgencyLevelCounts = this.calculateUrgencyLevelCounts(triages);
-      const averageWaitTimes = this.calculateAverageWaitTimes();
 
       return {
         patients,
         totalCount: triages.length,
         urgencyLevelCounts,
-        averageWaitTimes,
         success: true,
         message: `Se encontraron ${patients.length} pacientes en la cola de triage`,
       };
@@ -155,22 +145,6 @@ export class ListPatientsByPriorityUseCase {
     });
 
     return counts;
-  }
-
-  private calculateAverageWaitTimes(): {
-    level1: string;
-    level2: string;
-    level3: string;
-    level4: string;
-    level5: string;
-  } {
-    return {
-      level1: 'Inmediato',
-      level2: '22 minutos',
-      level3: '45 minutos',
-      level4: '1h 30m',
-      level5: '2h 45m',
-    };
   }
 
   private calculateWaitTime(createdAt: Date): string {

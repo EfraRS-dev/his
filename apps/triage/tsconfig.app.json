@@ -4,9 +4,7 @@
     "declaration": false,
     "outDir": "../../dist/apps/triage",
     "baseUrl": "./",
-    "paths": {
-      "@prisma/client/generated": ["generated/prisma"]
-    },
+    "paths": {}
   },
   "include": ["src/**/*", "generated/prisma/**/*", "prisma/schema.prisma"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
