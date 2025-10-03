@@ -7,10 +7,20 @@ import { GetUserUseCase } from "../../application/use-cases/get-user.use-case";
 import { UpdateUserUseCase } from "../../application/use-cases/updateUser.use-case";
 import { BlockUserUseCase } from "../../application/use-cases/blockUser.use-case";
 import { InactivateUserUseCase } from "../../application/use-cases/inactivateUser.user-case";
+import { PrismaService } from "../../infrastructure/database/prisma.service";
+import { PrismaUserRepository } from "../../infrastructure/database/prisma-user.repository";
 
 @Module({
     controllers: [UsersController],
     providers: [
+        PrismaService,
+
+        {
+            provide: USER_REPOSITORY,
+            useFactory: (prisma: PrismaService) => new PrismaUserRepository(prisma),
+            inject: [PrismaService],
+        },
+
         {
             provide: CreateUserUseCase,
             useFactory: (repo: UserRepository) => new CreateUserUseCase(repo),
