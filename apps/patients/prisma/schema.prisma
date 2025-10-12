@@ -21,7 +21,7 @@ enum Status {
 
 model Patient {
   patientId        Int      @id @default(autoincrement()) @db.Integer
-  userId           Int
+  userId           Int?
   documentType     String
   documentNumber   String   @unique
   firstName        String

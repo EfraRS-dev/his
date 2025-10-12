@@ -6,7 +6,7 @@ export class PatientRegisterDto {
     @IsNotEmpty()
     @IsNumber()
     @ApiProperty()
-    userId: number;
+    userId?: number;
 
     @IsNotEmpty()
     @IsNumber()

@@ -1,7 +1,7 @@
 export class Patient {
   constructor(
     public readonly patientId: number | null,
-    public readonly userId: number,
+    public readonly userId: number | null,
     public readonly documentType: string,
     public readonly documentNumber: string,
     public readonly firstName: string,

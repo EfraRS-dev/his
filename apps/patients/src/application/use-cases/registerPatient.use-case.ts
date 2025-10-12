@@ -17,7 +17,7 @@ export class PatientRegisterUseCase {
         }
         const patient = new Patient(
             null,
-            patientInput.userId,
+            patientInput.userId ?? null,
             patientInput.documentType,
             patientInput.documentNumber,
             patientInput.firstName,
