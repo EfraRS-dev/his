@@ -8,6 +8,10 @@ import { UpdateUserUseCase } from '../../application/use-cases/updateUser.use-ca
 import { BlockUserUseCase } from '../../application/use-cases/blockUser.use-case';
 import { InactivateUserUseCase } from '../../application/use-cases/inactivateUser.user-case';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ActivateUserUseCase } from '../../application/use-cases/activateUser.user-case';
+import { LoginUseCase } from '../../application/use-cases/login.use-case';
+import { LoginDto } from '../../application/dto/login.dto';
+import { User } from '@prisma/client';
 
 @ApiTags("Users")
 @Controller('users')
@@ -17,8 +21,29 @@ export class UsersController{
     private readonly getUser: GetUserUseCase,
     private readonly updateUser: UpdateUserUseCase,
     private readonly blockUser: BlockUserUseCase,
-    private readonly inactivateUser: InactivateUserUseCase
+    private readonly inactivateUser: InactivateUserUseCase,
+    private readonly activateUser: ActivateUserUseCase,
+    private readonly login: LoginUseCase
+    
   ){}
+
+
+  @Post ("login")
+  async Login(@Body() body:LoginDto): Promise<{user:User;token:String}> {
+    const result = await this.login.execute(body);
+    return {
+      user: result.user as User & { userId: number },
+      token: result.token
+    }
+  }
+
+  @Post('/inactivate/:id')
+  @ApiOperation({summary:"Inactivate User"})
+  @ApiOkResponse({description:"User Inactivated Correctly"})
+  async ActivateUserById(@Param('id', ParseIntPipe) id: number){
+    const ActivateUser = await this.activateUser.execute(id)
+    return ActivateUser
+  }
 
   @Post('/create')
   @ApiOperation({summary:"User Creation"})
