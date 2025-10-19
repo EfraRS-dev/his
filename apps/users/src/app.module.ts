@@ -3,12 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './presentation/modules/users.module';
 import { join } from 'path';
 import { RolesModule } from './presentation/modules/roles.module';
-
+import * as path from "path"
 @Module({
   imports: [
     ConfigModule.forRoot({ 
-      isGlobal: true,
-      
+      envFilePath: path.resolve(__dirname, '../../../.env'),
+      isGlobal: true
      }),
     UsersModule,RolesModule
   ],
