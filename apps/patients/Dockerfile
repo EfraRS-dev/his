@@ -25,8 +25,11 @@ RUN npm install --omit=dev
 #Copy built app
 COPY --from=development /usr/src/app/dist ./dist
 
+# Copy the generated Prisma client (custom output)
+COPY --from=development /usr/src/app/apps/patients/src/infrastructure/database/generated ./apps/patients/src/infrastructure/database/generated
+
 #Copy the generated Prisma client (both locations)
-COPY --from=development /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+#COPY --from=development /usr/src/app/node_modules/.prisma ./node_modules/.prisma efra's ver
 
 #Copy the Prisma schema (needed for some Prisma operations)
 COPY --from=development /usr/src/app/apps/patients/prisma ./apps/patients/prisma

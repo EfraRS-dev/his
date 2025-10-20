@@ -11,7 +11,7 @@ import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ActivateUserUseCase } from '../../application/use-cases/activateUser.user-case';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { LoginDto } from '../../application/dto/login.dto';
-import { User } from '@prisma/client';
+import { User } from '../../../prisma/generated/client';
 
 @ApiTags("Users")
 @Controller('users')
