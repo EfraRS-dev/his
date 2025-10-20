@@ -29,11 +29,11 @@
       "compilerOptions": {
         "tsConfigPath": "apps/patients/tsconfig.app.json",
         "assets": [
-      {
-        "include": "apps/patients/prisma/generated/**/*",
-        "outDir": "dist"
-      }
-    ]
+          {
+            "include": "apps/patients/prisma/**/*",
+            "outDir": "dist/apps/patients/prisma"
+          }
+        ]
       }
     },
     "triage": {
@@ -43,7 +43,10 @@
       "sourceRoot": "apps/triage/src",
       "compilerOptions": {
         "tsConfigPath": "apps/triage/tsconfig.app.json",
-        "assets": ["prisma/schema.prisma", "generated/prisma/**/*"],
+        "assets": [
+          "prisma/schema.prisma",
+          "generated/prisma/**/*"
+        ],
         "watchAssets": true,
         "deleteOutDir": true
       }
