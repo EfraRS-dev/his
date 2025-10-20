@@ -1,25 +1,112 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
-import { UsersService } from '../../application/services/users.service';
+import { Controller, Get, Post, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { CreateUserDto } from '../../application/dto/createUser.dto';
+import { GetUserDto } from '../../application/dto/getUser.dto';
+import { UpdateUserDto } from '../../application/dto/updateUser.dto';
+import { CreateUserUseCase } from '../../application/use-cases/createUser.use-case';
+import { GetUserUseCase } from '../../application/use-cases/get-user.use-case';
+import { UpdateUserUseCase } from '../../application/use-cases/updateUser.use-case';
+import { BlockUserUseCase } from '../../application/use-cases/blockUser.use-case';
+import { InactivateUserUseCase } from '../../application/use-cases/inactivateUser.user-case';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ActivateUserUseCase } from '../../application/use-cases/activateUser.user-case';
+import { LoginUseCase } from '../../application/use-cases/login.use-case';
+import { LoginDto } from '../../application/dto/login.dto';
+import { User } from '@prisma/client';
 
+@ApiTags("Users")
 @Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+export class UsersController{
+  constructor(
+    private readonly createUser: CreateUserUseCase,
+    private readonly getUser: GetUserUseCase,
+    private readonly updateUser: UpdateUserUseCase,
+    private readonly blockUser: BlockUserUseCase,
+    private readonly inactivateUser: InactivateUserUseCase,
+    private readonly activateUser: ActivateUserUseCase,
+    private readonly login: LoginUseCase
+    
+  ){}
 
-  // POST /users/register
-  @Post('register')
-  registerUser(@Body() registerDto: any) {
-    return { message: 'User registration endpoint' };
+
+  @Post ("login")
+  async Login(@Body() body:LoginDto): Promise<{user:User;token:String}> {
+    const result = await this.login.execute(body);
+    return {
+      user: result.user as User & { userId: number },
+      token: result.token
+    }
   }
 
-  // GET /users/search
-  @Get('search')
-  queryUsers(@Query() queryDto: any) {
-    return { message: 'User search endpoint' };
+  @Post('/inactivate/:id')
+  @ApiOperation({summary:"Inactivate User"})
+  @ApiOkResponse({description:"User Inactivated Correctly"})
+  async ActivateUserById(@Param('id', ParseIntPipe) id: number){
+    const ActivateUser = await this.activateUser.execute(id)
+    return ActivateUser
   }
 
-  // GET /users/:userId
-  @Get(':userId')
-  getUserById(@Param('userId') userId: string) {
-    return { message: `Get user ${userId} endpoint` };
+  @Post('/create')
+  @ApiOperation({summary:"User Creation"})
+  @ApiOkResponse({description: "The user was created correctly "})
+  async create(@Body() body: CreateUserDto){
+    const user = await this.createUser.execute({
+      username: body.username,
+      password: body.password,
+      roleId: body.roleId,
+      email: body.email
+    })
+    return user;
+  }
+
+  @Post('/update/:id')
+  @ApiOperation({summary:"Update User"})
+  @ApiOkResponse({description:"User updated correctly"})
+
+  async update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateUserDto){
+    const updatedUser = await this.updateUser.execute({
+      userId: id,
+      email: body.email,
+      username: body.username,
+      password: body.password
+    })
+    return updatedUser;
+  }
+
+  @Post('/block/:id')
+  @ApiOperation({summary:"Block User"})
+  @ApiOkResponse({description:"User Blocked Correctly"})
+  async BlockUserById(@Param('id', ParseIntPipe) id: number){
+    const blockedUser = await this.blockUser.execute(id)
+    return blockedUser
+  }
+
+  @Post('/inactivate/:id')
+  @ApiOperation({summary:"Inactivate User"})
+  @ApiOkResponse({description:"User Inactivated Correctly"})
+  async InactivateUserById(@Param('id', ParseIntPipe) id: number){
+    const inactivatedUser = await this.inactivateUser.execute(id)
+    return inactivatedUser
+  }
+
+  @Get('/:id')
+  @ApiOperation({summary: "Find Id"})
+  @ApiOkResponse({description:"User Found Correctly"})
+  async GetUserById(@Param('id', ParseIntPipe) id: number){
+    const user = await this.getUser.execute({
+      userId: id,
+      criteria: 'id'
+    })
+    return user
+  }
+
+  @ApiOperation({summary:"Find Email"})
+  @ApiOkResponse({description:"User Found Correctly"})
+  @Get('/email/:email')
+  async GetUserByEmail(@Param("email") email: string){
+    const user = await this.getUser.execute({
+      email: email,
+      criteria: 'email'
+    })
+    return user
   }
 }
