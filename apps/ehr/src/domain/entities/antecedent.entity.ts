@@ -1,26 +1,17 @@
+export enum AntecedentType {
+  FAMILY = "familly",
+  PATHOLOGICAL = "pathological",
+  SURGICAL = "surgical",
+  ALLERGIC = "allergic",
+  PHARMACOLOGICAL = "pharmacological",
+  GYNECO_OBSTETRIC = "gyneco_obstetric",
+}
+
 export class Antecedent {
   constructor(
-    public readonly antecedentId: string,
-    public readonly type: string,
-    public readonly description: string,
-    public readonly historyId: string,
+    public  type: AntecedentType,
+    public description: string,
+    public historyId: number,
+    public readonly antecedentId?: number
   ) {}
-
-  static create(
-    antecedentId: string,
-    type: string,
-    description: string,
-    historyId: string,
-  ): Antecedent {
-    return new Antecedent(antecedentId, type, description, historyId);
-  }
-
-  updateDescription(description: string): Antecedent {
-    return new Antecedent(
-      this.antecedentId,
-      this.type,
-      description,
-      this.historyId,
-    );
-  }
 }
