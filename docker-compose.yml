@@ -72,11 +72,13 @@ services:
     ports:
       - "3002:3000"
     environment:
-      DB_HOST: users-db
-      DB_PORT: 5432
-      DB_NAME: users
-      DB_USER: users_user
-      DB_PASS: users_pass
+      USER_DB_HOST: users-db
+      USER_DB_PORT: 5432
+      USER_DB_NAME: users
+      USER_DB_USER: users_user
+      USER_DB_PASS: users_pass
+      USER_DB_URL: "postgresql://users_user:users_pass@users-db:5432/users"
+      JWT_SECRET: "Users_Secret"
     depends_on:
       - users-db
 
@@ -106,11 +108,12 @@ services:
     ports:
       - "3004:3000"
     environment:
-      DB_HOST: ehr-db
-      DB_PORT: 5432
-      DB_NAME: ehr
-      DB_USER: ehr_user
-      DB_PASS: ehr_pass
+      EHR_DB_HOST: ehr-db
+      EHR_DB_PORT: 5432
+      EHR_DB_NAME: ehr
+      EHR_DB_USER: ehr_user
+      EHR_DB_PASS: ehr_pass
+      EHR_DB_URL: "postgresql://ehr_user:ehr_pass@ehr-db:5432/ehr"
     depends_on:
       - ehr-db
 

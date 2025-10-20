@@ -1,12 +1,16 @@
 import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'; 
 import { ApiProperty } from '@nestjs/swagger';
-import { criterias } from 'apps/users/SwaggerUtility/Names';
+
+export enum criterias{
+  Id = "id",
+  Email = "email"
+}
 
 export class GetUserDto{
 
     @ApiProperty({
         description: "Email for searching",
-        example: "DunordMaldiceaKeiver123@gmail.com"
+        example: "Email@Email.com"
     })
     @IsString()
     @IsOptional()

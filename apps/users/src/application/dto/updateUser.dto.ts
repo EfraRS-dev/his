@@ -15,7 +15,7 @@ export class UpdateUserDto{
     
     @ApiProperty({
         description: "Email for Update",
-        example: "DunordMaldiceaKeiver123@gmail.com"
+        example: "Email@Email.com"
     })
     @IsString()
     @IsOptional()
@@ -25,7 +25,7 @@ export class UpdateUserDto{
 
     @ApiProperty({
         description: "Username for Update",
-        example: "DunordMaldiceaKeiver"
+        example: "Username"
     })
     @IsString()
     @IsOptional()
@@ -33,7 +33,7 @@ export class UpdateUserDto{
 
     @ApiProperty({
         description: "Password for Update",
-        example: "DunordMaldiceaKeiver123"
+        example: "Password"
     })
     @IsString()
     @IsOptional()
