@@ -88,11 +88,13 @@ services:
     ports:
       - "3003:3000"
     environment:
-      DB_HOST: triage-db
-      DB_PORT: 5432
-      DB_NAME: triage
-      DB_USER: triage_user
-      DB_PASS: triage_pass
+      TRIAGE_DB_HOST: triage-db
+      TRIAGE_DB_PORT: 5432
+      TRIAGE_DB_NAME: triage
+      TRIAGE_DB_USER: triage_user
+      TRIAGE_DB_PASS: triage_pass
+      TRIAGE_DB_URL: "postgresql://triage_user:triage_pass@triage-db:5432/triage"
+      PORT: 3000
     depends_on:
       - triage-db
 

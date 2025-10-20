@@ -1,8 +1,32 @@
 import { NestFactory } from '@nestjs/core';
 import { TriageModule } from './triage.module';
+import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(TriageModule);
-  await app.listen(process.env.port ?? 3000);
+
+  const configService = app.get<ConfigService>(ConfigService);
+
+  const config = new DocumentBuilder()
+    .setTitle('Servicio de Triage')
+    .setDescription('Documentación para microservicio de triage.')
+    .setVersion('1.0')
+    .addTag('triage')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+
+  const port = configService.get<number>('PORT');
+  await app.listen(port ?? 3000);
 }
 void bootstrap();

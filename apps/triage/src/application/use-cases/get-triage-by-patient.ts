@@ -4,13 +4,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { TRIAGE_REPOSITORY_TOKEN } from '../tokens';
 
 @Injectable()
-export class GetTriageUseCase {
+export class GetTriageByPatientUseCase {
   constructor(
     @Inject(TRIAGE_REPOSITORY_TOKEN)
     private readonly triageRepository: ITriageRepository,
   ) {}
 
-  async execute(triageId: number): Promise<Triage | null> {
-    return this.triageRepository.findById(triageId);
+  async execute(patientId: number): Promise<Triage | null> {
+    return this.triageRepository.findByPatientId(patientId);
   }
 }
