@@ -21,6 +21,8 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "paths": {
+      "@prisma/generated/*": ["apps/patients/prisma/generated/*"]
+    }
   }
 }

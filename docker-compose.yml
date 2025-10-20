@@ -55,11 +55,12 @@ services:
     ports:
       - "3001:3000"
     environment:
-      DB_HOST: patients-db
-      DB_PORT: 5432
-      DB_NAME: patients
-      DB_USER: patients_user
-      DB_PASS: patients_pass
+      PATIENTS_DB_HOST: patients-db
+      PATIENTS_DB_PORT: 5432
+      PATIENTS_DB_NAME: patients
+      PATIENTS_DB_USER: patients_user
+      PATIENTS_DB_PASS: patients_pass
+      PATIENTS_DB_URL: postgresql://patients_user:patients_pass@patients-db:5432/patients
     depends_on:
       - patients-db
 
@@ -71,11 +72,13 @@ services:
     ports:
       - "3002:3000"
     environment:
-      DB_HOST: users-db
-      DB_PORT: 5432
-      DB_NAME: users
-      DB_USER: users_user
-      DB_PASS: users_pass
+      USER_DB_HOST: users-db
+      USER_DB_PORT: 5432
+      USER_DB_NAME: users
+      USER_DB_USER: users_user
+      USER_DB_PASS: users_pass
+      USER_DB_URL: "postgresql://users_user:users_pass@users-db:5432/users"
+      JWT_SECRET: "Users_Secret"
     depends_on:
       - users-db
 
@@ -87,11 +90,13 @@ services:
     ports:
       - "3003:3000"
     environment:
-      DB_HOST: triage-db
-      DB_PORT: 5432
-      DB_NAME: triage
-      DB_USER: triage_user
-      DB_PASS: triage_pass
+      TRIAGE_DB_HOST: triage-db
+      TRIAGE_DB_PORT: 5432
+      TRIAGE_DB_NAME: triage
+      TRIAGE_DB_USER: triage_user
+      TRIAGE_DB_PASS: triage_pass
+      TRIAGE_DB_URL: "postgresql://triage_user:triage_pass@triage-db:5432/triage"
+      PORT: 3000
     depends_on:
       - triage-db
 
@@ -103,11 +108,12 @@ services:
     ports:
       - "3004:3000"
     environment:
-      DB_HOST: ehr-db
-      DB_PORT: 5432
-      DB_NAME: ehr
-      DB_USER: ehr_user
-      DB_PASS: ehr_pass
+      EHR_DB_HOST: ehr-db
+      EHR_DB_PORT: 5432
+      EHR_DB_NAME: ehr
+      EHR_DB_USER: ehr_user
+      EHR_DB_PASS: ehr_pass
+      EHR_DB_URL: "postgresql://ehr_user:ehr_pass@ehr-db:5432/ehr"
     depends_on:
       - ehr-db
 
