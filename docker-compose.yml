@@ -61,6 +61,7 @@ services:
       PATIENTS_DB_USER: patients_user
       PATIENTS_DB_PASS: patients_pass
       PATIENTS_DB_URL: postgresql://patients_user:patients_pass@patients-db:5432/patients
+      PORT: 3000
     depends_on:
       - patients-db
 
@@ -79,6 +80,7 @@ services:
       USER_DB_PASS: users_pass
       USER_DB_URL: "postgresql://users_user:users_pass@users-db:5432/users"
       JWT_SECRET: "Users_Secret"
+      PORT: 3000
     depends_on:
       - users-db
 
@@ -114,6 +116,7 @@ services:
       EHR_DB_USER: ehr_user
       EHR_DB_PASS: ehr_pass
       EHR_DB_URL: "postgresql://ehr_user:ehr_pass@ehr-db:5432/ehr"
+      PORT: 3000
     depends_on:
       - ehr-db
 
