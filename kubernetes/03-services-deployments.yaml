@@ -1,0 +1,421 @@
+---
+# Patients Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patients
+  namespace: his
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: patients
+  template:
+    metadata:
+      labels:
+        app: patients
+    spec:
+      containers:
+      - name: patients
+        image: his-patients:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: PATIENTS_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: patients-config
+              key: PATIENTS_DB_HOST
+        - name: PATIENTS_DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: patients-config
+              key: PATIENTS_DB_PORT
+        - name: PATIENTS_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: patients-config
+              key: PATIENTS_DB_NAME
+        - name: PATIENTS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: patients-db-secret
+              key: POSTGRES_USER
+        - name: PATIENTS_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: patients-db-secret
+              key: POSTGRES_PASSWORD
+        - name: PATIENTS_DB_URL
+          value: "postgresql://$(PATIENTS_DB_USER):$(PATIENTS_DB_PASS)@$(PATIENTS_DB_HOST):$(PATIENTS_DB_PORT)/$(PATIENTS_DB_NAME)"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+
+---
+# Patients Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: patients-service
+  namespace: his
+spec:
+  selector:
+    app: patients
+  ports:
+  - port: 3000
+    targetPort: 3000
+    name: http
+  type: ClusterIP
+
+---
+# Users Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users
+  namespace: his
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+      - name: users
+        image: his-users:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: USER_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: users-config
+              key: USER_DB_HOST
+        - name: USER_DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: users-config
+              key: USER_DB_PORT
+        - name: USER_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: users-config
+              key: USER_DB_NAME
+        - name: USER_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: users-db-secret
+              key: POSTGRES_USER
+        - name: USER_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: users-db-secret
+              key: POSTGRES_PASSWORD
+        - name: USER_DB_URL
+          value: "postgresql://$(USER_DB_USER):$(USER_DB_PASS)@$(USER_DB_HOST):$(USER_DB_PORT)/$(USER_DB_NAME)"
+        - name: JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: users-config
+              key: JWT_SECRET
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+
+---
+# Users Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-service
+  namespace: his
+spec:
+  selector:
+    app: users
+  ports:
+  - port: 3000
+    targetPort: 3000
+    name: http
+  type: ClusterIP
+
+---
+# Triage Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: triage
+  namespace: his
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: triage
+  template:
+    metadata:
+      labels:
+        app: triage
+    spec:
+      containers:
+      - name: triage
+        image: his-triage:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: TRIAGE_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: triage-config
+              key: TRIAGE_DB_HOST
+        - name: TRIAGE_DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: triage-config
+              key: TRIAGE_DB_PORT
+        - name: TRIAGE_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: triage-config
+              key: TRIAGE_DB_NAME
+        - name: TRIAGE_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: triage-db-secret
+              key: POSTGRES_USER
+        - name: TRIAGE_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: triage-db-secret
+              key: POSTGRES_PASSWORD
+        - name: TRIAGE_DB_URL
+          value: "postgresql://$(TRIAGE_DB_USER):$(TRIAGE_DB_PASS)@$(TRIAGE_DB_HOST):$(TRIAGE_DB_PORT)/$(TRIAGE_DB_NAME)"
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: triage-config
+              key: PORT
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+
+---
+# Triage Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: triage-service
+  namespace: his
+spec:
+  selector:
+    app: triage
+  ports:
+  - port: 3000
+    targetPort: 3000
+    name: http
+  type: ClusterIP
+
+---
+# EHR Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ehr
+  namespace: his
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ehr
+  template:
+    metadata:
+      labels:
+        app: ehr
+    spec:
+      containers:
+      - name: ehr
+        image: his-ehr:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: EHR_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: ehr-config
+              key: EHR_DB_HOST
+        - name: EHR_DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: ehr-config
+              key: EHR_DB_PORT
+        - name: EHR_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: ehr-config
+              key: EHR_DB_NAME
+        - name: EHR_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: ehr-db-secret
+              key: POSTGRES_USER
+        - name: EHR_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: ehr-db-secret
+              key: POSTGRES_PASSWORD
+        - name: EHR_DB_URL
+          value: "postgresql://$(EHR_DB_USER):$(EHR_DB_PASS)@$(EHR_DB_HOST):$(EHR_DB_PORT)/$(EHR_DB_NAME)"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+
+---
+# EHR Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ehr-service
+  namespace: his
+spec:
+  selector:
+    app: ehr
+  ports:
+  - port: 3000
+    targetPort: 3000
+    name: http
+  type: ClusterIP
+
+---
+# API Gateway Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: his
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: his-api-gateway:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: http
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+
+---
+# API Gateway Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+  namespace: his
+spec:
+  selector:
+    app: api-gateway
+  ports:
+  - port: 80
+    targetPort: 3000
+    name: http
+  type: ClusterIP
