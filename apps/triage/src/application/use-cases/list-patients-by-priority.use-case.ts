@@ -105,6 +105,7 @@ export class ListPatientsByPriorityUseCase {
         message: `Se encontraron ${patients.length} pacientes en la cola de triage`,
       };
     } catch (error: unknown) {
+      // Wrap other errors
       const message =
         error instanceof Error
           ? error.message

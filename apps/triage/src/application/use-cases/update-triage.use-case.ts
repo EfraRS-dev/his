@@ -7,7 +7,12 @@ import { UpdateTriageResponseDto } from '../dto/update-triage-response.dto';
 import {
   TRIAGE_REPOSITORY_TOKEN,
   VITAL_SIGNS_REPOSITORY_TOKEN,
+  PATIENTS_SERVICE_CLIENT_TOKEN,
+  USERS_SERVICE_CLIENT_TOKEN,
 } from '../tokens';
+import type { IPatientsServiceClient } from '../ports/patients-service.client.port';
+import type { IUsersServiceClient } from '../ports/users-service.client.port';
+import { UserRoles } from '../constants/user-roles';
 
 @Injectable()
 export class UpdateTriageUseCase {
@@ -16,12 +21,46 @@ export class UpdateTriageUseCase {
     private readonly triageRepository: ITriageRepository,
     @Inject(VITAL_SIGNS_REPOSITORY_TOKEN)
     private readonly vitalSignsRepository: IVitalSignsRepository,
+    @Inject(PATIENTS_SERVICE_CLIENT_TOKEN)
+    private readonly patientsClient: IPatientsServiceClient,
+    @Inject(USERS_SERVICE_CLIENT_TOKEN)
+    private readonly usersClient: IUsersServiceClient,
   ) {}
 
   async execute(
     triageId: number,
     dto: UpdateTriageRequestDto,
   ): Promise<UpdateTriageResponseDto> {
+    // Validate user performing the update exists and is active
+    const updateUser = await this.usersClient.getUserById(dto.updatedBy);
+    if (!updateUser) {
+      throw new Error(`User with ID ${dto.updatedBy} not found`);
+    }
+
+    // Validate user is active
+    const isActive = await this.usersClient.isUserActive(dto.updatedBy);
+    if (!isActive) {
+      throw new Error(
+        `User ${dto.updatedBy} is not active (status: ${updateUser.status}) and cannot perform updates`,
+      );
+    }
+
+    // Validate user has appropriate role (NURSE or DOCTOR)
+    const hasNurseRole = await this.usersClient.userHasRole(
+      dto.updatedBy,
+      UserRoles.NURSE,
+    );
+    const hasDoctorRole = await this.usersClient.userHasRole(
+      dto.updatedBy,
+      UserRoles.DOCTOR,
+    );
+
+    if (!hasNurseRole && !hasDoctorRole) {
+      throw new Error(
+        `User ${dto.updatedBy} does not have NURSE or DOCTOR role (current roleId: ${updateUser.roleId})`,
+      );
+    }
+
     // Get existing triage
     const existingTriage = await this.triageRepository.findById(triageId);
     if (!existingTriage) {

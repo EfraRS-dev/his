@@ -14,6 +14,6 @@ async function bootstrap() {
   SwaggerModule.setup('/patients/api', app, document);
   console.log('📖 Swagger docs disponibles en /api');
   const port = configService.get<number>('PORT');
-  await app.listen(port ?? 3000);
+  await app.listen(port ?? 3001);
 }
 void bootstrap();

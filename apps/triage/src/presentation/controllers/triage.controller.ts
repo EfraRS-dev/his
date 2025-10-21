@@ -17,6 +17,8 @@ import {
   ApiParam,
   ApiQuery,
   ApiTags,
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { TriageService } from '../../application/services/triage.service';
 import { CreateTriageDto } from '../../application/dto/create-triage.dto';
@@ -82,6 +84,10 @@ export class TriageController {
   @ApiOperation({ summary: 'Create a basic triage record' })
   @ApiBody({ type: CreateTriageDto })
   @ApiCreatedResponse({ description: 'Triage created' })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data or validation failed',
+  })
+  @ApiNotFoundResponse({ description: 'Patient or nurse not found' })
   async create(@Body() dto: CreateTriageDto) {
     return this.triageService.createTriage(dto);
   }
@@ -90,6 +96,10 @@ export class TriageController {
   @ApiOperation({ summary: 'Register a triage with initial vital signs' })
   @ApiBody({ type: RegisterTriageDto })
   @ApiCreatedResponse({ description: 'Triage and vital signs registered' })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data or validation failed',
+  })
+  @ApiNotFoundResponse({ description: 'Patient or nurse not found' })
   async register(@Body() dto: RegisterTriageDto) {
     return this.triageService.registerTriage(dto);
   }
@@ -98,6 +108,8 @@ export class TriageController {
   @ApiOperation({ summary: 'Get a triage by ID' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ description: 'Triage details' })
+  @ApiBadRequestResponse({ description: 'Invalid triage ID format' })
+  @ApiNotFoundResponse({ description: 'Triage not found' })
   async getById(@Param('id', ParseIntPipe) id: number) {
     return this.triageService.getTriage(id);
   }
@@ -107,6 +119,8 @@ export class TriageController {
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateTriageRequestDto })
   @ApiOkResponse({ description: 'Updated triage data' })
+  @ApiBadRequestResponse({ description: 'Invalid input data or triage ID' })
+  @ApiNotFoundResponse({ description: 'Triage or user not found' })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTriageRequestDto,
@@ -128,6 +142,8 @@ export class TriageController {
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdatePriorityDto })
   @ApiOkResponse({ description: 'Priority updated' })
+  @ApiBadRequestResponse({ description: 'Invalid priority level or triage ID' })
+  @ApiNotFoundResponse({ description: 'Triage not found' })
   async updatePriority(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdatePriorityDto,
@@ -140,6 +156,8 @@ export class TriageController {
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: DeleteTriageDto })
   @ApiOkResponse({ description: 'Deletion result' })
+  @ApiBadRequestResponse({ description: 'Invalid triage ID or user ID' })
+  @ApiNotFoundResponse({ description: 'Triage not found' })
   async remove(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: DeleteTriageDto,
@@ -156,6 +174,10 @@ export class TriageController {
   @ApiOperation({ summary: 'Get the triage history by patient' })
   @ApiParam({ name: 'patientId', type: Number })
   @ApiOkResponse({ description: 'Latest or historical triage for the patient' })
+  @ApiBadRequestResponse({ description: 'Invalid patient ID format' })
+  @ApiNotFoundResponse({
+    description: 'Patient not found or no triage records',
+  })
   async getByPatient(@Param('patientId', ParseIntPipe) patientId: number) {
     return this.triageService.getTriageByPatient(patientId);
   }
@@ -164,6 +186,8 @@ export class TriageController {
   @ApiOperation({ summary: 'Get the active triage by patient' })
   @ApiParam({ name: 'patientId', type: Number })
   @ApiOkResponse({ description: 'Active triage if any' })
+  @ApiBadRequestResponse({ description: 'Invalid patient ID format' })
+  @ApiNotFoundResponse({ description: 'Patient not found or no active triage' })
   async getActive(@Param('patientId', ParseIntPipe) patientId: number) {
     return this.triageService.getActiveTriage(patientId);
   }
@@ -174,6 +198,10 @@ export class TriageController {
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: CreateVitalSignsDto })
   @ApiCreatedResponse({ description: 'Vital signs stored' })
+  @ApiBadRequestResponse({
+    description: 'Invalid vital signs data or triage ID',
+  })
+  @ApiNotFoundResponse({ description: 'Triage not found' })
   async addVitalSigns(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: CreateVitalSignsDto,
@@ -185,6 +213,8 @@ export class TriageController {
   @ApiOperation({ summary: 'Get vital signs by triage ID' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ description: 'Vital signs for the triage if any' })
+  @ApiBadRequestResponse({ description: 'Invalid triage ID format' })
+  @ApiNotFoundResponse({ description: 'Triage or vital signs not found' })
   async getVitalSignsByTriage(@Param('id', ParseIntPipe) id: number) {
     return this.triageService.getVitalSignsByTriage(id);
   }
@@ -193,6 +223,8 @@ export class TriageController {
   @ApiOperation({ summary: 'Get vital signs by ID' })
   @ApiParam({ name: 'vitalSignsId', type: Number })
   @ApiOkResponse({ description: 'Vital signs record' })
+  @ApiBadRequestResponse({ description: 'Invalid vital signs ID format' })
+  @ApiNotFoundResponse({ description: 'Vital signs not found' })
   async getVitalSigns(
     @Param('vitalSignsId', ParseIntPipe) vitalSignsId: number,
   ) {
