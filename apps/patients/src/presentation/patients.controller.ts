@@ -84,12 +84,6 @@ export class PatientsController{
         return triage;
     }
 
-    @Get('/medical_history/:id')
-    async GetMedicalHistory(@Param('id', ParseIntPipe) id: number){
-        const medicalHistory = await this.getMedicalHistory.execute(id);
-        return medicalHistory;
-    }
-
     @Get('/:id')
     async GetPatientById(@Param('id', ParseIntPipe) id: number){
         const patient = await this.getPatient.execute({
@@ -97,5 +91,17 @@ export class PatientsController{
             criteria: 'id'
         });
         return patient;
+    }
+
+    @Get('ehr/:id')
+    async GetEhrByPatientId(@Param('id', ParseIntPipe) id: number) {
+        const ehrResponse = await this.getMedicalHistory.execute(id);
+        return ehrResponse;
+    }
+
+    @Get('triage/:id')
+    async GetTriageByPatientId(@Param('id', ParseIntPipe) id: number) {
+        const triageResponse = await this.getTriage.execute(id);
+        return triageResponse;
     }
 }
