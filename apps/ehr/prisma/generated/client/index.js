@@ -35,12 +35,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.16.3
- * Query Engine version: bb420e667c1820a8c05a38023385f6cc7ef8e83a
+ * Prisma Client JS version: 6.17.1
+ * Query Engine version: 272a37d34178c2894197e17273bf937f25acdeac
  */
 Prisma.prismaVersion = {
-  client: "6.16.3",
-  engine: "bb420e667c1820a8c05a38023385f6cc7ef8e83a"
+  client: "6.17.1",
+  engine: "272a37d34178c2894197e17273bf937f25acdeac"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -170,7 +170,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\miran\\Documents\\GitHub\\his\\apps\\ehr\\prisma\\generated\\client",
+      "value": "C:\\Users\\Efra's PC\\Downloads\\his\\apps\\ehr\\prisma\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -184,15 +184,16 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\miran\\Documents\\GitHub\\his\\apps\\ehr\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\Efra's PC\\Downloads\\his\\apps\\ehr\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../../../../.env"
   },
   "relativePath": "../..",
-  "clientVersion": "6.16.3",
-  "engineVersion": "bb420e667c1820a8c05a38023385f6cc7ef8e83a",
+  "clientVersion": "6.17.1",
+  "engineVersion": "272a37d34178c2894197e17273bf937f25acdeac",
   "datasourceNames": [
     "db"
   ],
@@ -215,8 +216,8 @@ const fs = require('fs')
 config.dirname = __dirname
 if (!fs.existsSync(path.join(__dirname, 'schema.prisma'))) {
   const alternativePaths = [
-    "prisma/generated/client",
-    "generated/client",
+    "apps/ehr/prisma/generated/client",
+    "ehr/prisma/generated/client",
   ]
   
   const alternativePath = alternativePaths.find((altPath) => {
@@ -246,7 +247,7 @@ Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node");
-path.join(process.cwd(), "prisma/generated/client/query_engine-windows.dll.node")
+path.join(process.cwd(), "apps/ehr/prisma/generated/client/query_engine-windows.dll.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
-path.join(process.cwd(), "prisma/generated/client/schema.prisma")
+path.join(process.cwd(), "apps/ehr/prisma/generated/client/schema.prisma")

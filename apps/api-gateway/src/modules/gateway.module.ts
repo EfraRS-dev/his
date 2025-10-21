@@ -13,7 +13,7 @@ import { UsersController } from '../controllers/users.controller';
     EhrController,
     RolesController,
     TriageController,
-    UsersController
-],
+    UsersController,
+  ],
 })
 export class GatewayModule {}

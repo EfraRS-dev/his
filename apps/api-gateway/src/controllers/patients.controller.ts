@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Param, Body, Query, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Body,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
 @Controller('patients')
