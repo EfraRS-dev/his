@@ -1,21 +1,27 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { PatientRepository } from '../../domain/patient.repository.port';
-import { MedicalHistory } from '../dto/medicalHistory.dto';
-import { PATIENT_REPOSITORY } from '../token';
+import { Triage } from '../dto/triage.dto';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class GetMedicalHistoryByPatientUseCase{
     constructor(
-        @Inject(PATIENT_REPOSITORY) private readonly patientRepo: PatientRepository
+        private readonly patientRepo: PatientRepository,
+        private readonly http: HttpService
     ) {}
 
-    async execute(Id: number): Promise<MedicalHistory[]>{
+    async execute(Id: number) {
         const patient = await this.patientRepo.findPatientById(Id);
         
         if(patient === null){
             throw new Error('Patient not found');
         }
 
-        return this.patientRepo.getMedicalHistories(Id);
+        try {
+            const { data } = await this.http.axiosRef.get(`http://ehr:3000/ehr/${Id}`);
+            return data;
+        } catch (error) {
+            throw new Error('Can not get the clinical history');
+        }
     }
 }

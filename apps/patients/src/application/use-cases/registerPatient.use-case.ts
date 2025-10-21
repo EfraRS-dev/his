@@ -2,12 +2,13 @@ import { Patient } from "../../domain/patient";
 import type { PatientRepository } from "../../domain/patient.repository.port";
 import { PatientRegisterDto } from '../dto/registerPatient.dto';
 import { Injectable, Inject } from "@nestjs/common";
-import { PATIENT_REPOSITORY } from "../token";
+import { HttpService } from "@nestjs/axios";
 
 @Injectable()
 export class PatientRegisterUseCase {
     constructor(
-        @Inject(PATIENT_REPOSITORY) private readonly patientRepo: PatientRepository
+        private readonly patientRepo: PatientRepository,
+        private readonly http: HttpService
     ) {}
 
     async execute(patientInput: PatientRegisterDto): Promise<Patient> {
@@ -31,6 +32,9 @@ export class PatientRegisterUseCase {
             new Date(),
             'active'
         )
-        return this.patientRepo.save(patient);
+
+        const savedPatient = await this.patientRepo.save(patient);
+        await this.http.axiosRef.post(`http://ehr:3000/ehr/${savedPatient.patientId}`);
+        return savedPatient;
     }
 }

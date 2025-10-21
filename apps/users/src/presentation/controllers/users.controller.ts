@@ -37,9 +37,9 @@ export class UsersController{
     }
   }
 
-  @Post('/inactivate/:id')
-  @ApiOperation({summary:"Inactivate User"})
-  @ApiOkResponse({description:"User Inactivated Correctly"})
+  @Post('/activate/:id')
+  @ApiOperation({summary:"Activate User"})
+  @ApiOkResponse({description:"User Activated Correctly"})
   async ActivateUserById(@Param('id', ParseIntPipe) id: number){
     const ActivateUser = await this.activateUser.execute(id)
     return ActivateUser

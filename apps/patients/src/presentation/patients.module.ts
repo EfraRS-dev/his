@@ -10,8 +10,10 @@ import { GetMedicalHistoryByPatientUseCase } from '../application/use-cases/getM
 import { ArchivePatientUseCase } from '../application/use-cases/archivePatient.use-case';
 import { PrismaService } from '../infrastructure/database/prisma.service';
 import { PrismaPatientRepository } from '../infrastructure/database/prisma-patient.repository';
+import { HttpModule, HttpService } from '@nestjs/axios';
 
 @Module({
+  imports: [HttpModule],
   controllers: [PatientsController],
   providers: [
     PrismaService,
@@ -27,8 +29,8 @@ import { PrismaPatientRepository } from '../infrastructure/database/prisma-patie
     },
     {
       provide: GetMedicalHistoryByPatientUseCase,
-      useFactory: (repo: PatientRepository) => new GetMedicalHistoryByPatientUseCase(repo),
-      inject: [PATIENT_REPOSITORY]
+      useFactory: (repo: PatientRepository, repo2: HttpService) => new GetMedicalHistoryByPatientUseCase(repo, repo2),
+      inject: [PATIENT_REPOSITORY, HttpService]
     },
     {
       provide: GetPatientUseCase,
@@ -37,13 +39,13 @@ import { PrismaPatientRepository } from '../infrastructure/database/prisma-patie
     },
     {
       provide: GetTriageByPatientUseCase,
-      useFactory: (repo: PatientRepository) => new GetTriageByPatientUseCase(repo),
-      inject: [PATIENT_REPOSITORY]
+      useFactory: (repo: PatientRepository, repo2: HttpService) => new GetTriageByPatientUseCase(repo, repo2),
+      inject: [PATIENT_REPOSITORY, HttpService]
     },
     {
       provide: PatientRegisterUseCase,
-      useFactory: (repo: PatientRepository) => new PatientRegisterUseCase(repo),
-      inject: [PATIENT_REPOSITORY]
+      useFactory: (repo: PatientRepository, repo2: HttpService) => new PatientRegisterUseCase(repo, repo2),
+      inject: [PATIENT_REPOSITORY, HttpService]
     },
     {
       provide: UpdatePatientUseCase,
