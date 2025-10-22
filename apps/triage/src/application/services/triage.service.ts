@@ -102,7 +102,7 @@ export class TriageService {
   ) {
     return await this.updateTriageUseCase.execute(triageId, {
       ...updates,
-      reason: 'Actualización desde servicio',
+      reason: 'Update from service',
       updatedBy: 1,
     });
   }
@@ -117,7 +117,7 @@ export class TriageService {
   ) {
     return await this.updatePriorityUseCase.execute(triageId, {
       urgencyLevel,
-      reason: reason || 'Actualización de prioridad',
+      reason: reason || 'Priority update',
       updatedBy: 1,
     });
   }
@@ -172,14 +172,14 @@ export class TriageService {
       totalPatients: allPatients.patients?.length || 0,
       urgencyLevelCounts: allPatients.urgencyLevelCounts || {},
       success: true,
-      message: 'Estadísticas obtenidas exitosamente',
+      message: 'Stats retrieved successfully',
     };
   }
 
   getHealthCheck(): { status: string; service: string; timestamp: Date } {
     return {
       status: 'OK',
-      service: 'Servicio funcionando...',
+      service: 'Service is running...',
       timestamp: new Date(),
     };
   }

@@ -29,19 +29,17 @@ export class GetVitalSignsUseCase {
       if (!vitalSigns) {
         return {
           success: false,
-          message: 'Signos vitales no encontrados',
+          message: 'Vital signs not found',
         };
       }
 
       return {
         success: true,
-        message: 'Signos vitales obtenidos exitosamente',
+        message: 'Vital signs retrieved successfully',
         vitalSigns,
       };
     } catch (error) {
-      throw new Error(
-        `Error al obtener signos vitales: ${(error as Error).message}`,
-      );
+      throw new Error(`Error getting vital signs: ${(error as Error).message}`);
     }
   }
 }

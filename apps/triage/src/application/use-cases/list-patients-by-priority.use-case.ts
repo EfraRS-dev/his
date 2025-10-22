@@ -102,7 +102,7 @@ export class ListPatientsByPriorityUseCase {
         totalCount: triages.length,
         urgencyLevelCounts,
         success: true,
-        message: `Se encontraron ${patients.length} pacientes en la cola de triage`,
+        message: `Found ${patients.length} patients in the triage queue`,
       };
     } catch (error: unknown) {
       // Wrap other errors
@@ -111,8 +111,8 @@ export class ListPatientsByPriorityUseCase {
           ? error.message
           : typeof error === 'string'
             ? error
-            : 'Error desconocido';
-      throw new Error(`Error al listar pacientes por prioridad: ${message}`);
+            : 'Unknown error';
+      throw new Error(`Error listing patients by priority: ${message}`);
     }
   }
 
@@ -154,7 +154,7 @@ export class ListPatientsByPriorityUseCase {
     const diffMins = Math.floor(diffMs / (1000 * 60));
 
     if (diffMins < 60) {
-      return `${diffMins} minutos`;
+      return `${diffMins} minutes`;
     } else {
       const hours = Math.floor(diffMins / 60);
       const minutes = diffMins % 60;

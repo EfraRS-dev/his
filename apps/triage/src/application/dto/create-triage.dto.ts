@@ -4,8 +4,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateTriageDto {
   @ApiProperty({
-    description: 'ID del paciente',
-    example: 101,
+    description: 'Patient ID',
+    example: 4,
     type: 'integer',
   })
   @IsNotEmpty()
@@ -14,7 +14,7 @@ export class CreateTriageDto {
   patientId: number;
 
   @ApiProperty({
-    description: 'Nivel de urgencia: 1 (crítico) a 5 (muy bajo)',
+    description: 'Urgency level: 1 (critical) to 5 (very low)',
     example: 3,
     enum: [1, 2, 3, 4, 5],
     enumName: 'UrgencyLevel',
@@ -25,9 +25,8 @@ export class CreateTriageDto {
   urgencyLevel: 1 | 2 | 3 | 4 | 5;
 
   @ApiPropertyOptional({
-    description: 'Observaciones iniciales sobre la condición del paciente',
-    example:
-      'El paciente se queja de dolor en el pecho y dificultad para respirar',
+    description: 'Initial observations about the patient condition',
+    example: 'Patient complains of chest pain and difficulty breathing',
     maxLength: 500,
   })
   @IsOptional()
@@ -35,7 +34,7 @@ export class CreateTriageDto {
   initialObservations: string;
 
   @ApiProperty({
-    description: 'ID del enfermero que realiza el triaje',
+    description: 'ID of the nurse performing the triage',
     example: 45,
     type: 'integer',
   })

@@ -33,20 +33,20 @@ export class GetVitalSignsByTriageUseCase {
       if (!vitalSigns) {
         return {
           success: true,
-          message: 'No se encontraron signos vitales para este triage',
+          message: 'Vital signs not found for the given triage',
           found: false,
         };
       }
 
       return {
         success: true,
-        message: 'Signos vitales obtenidos exitosamente',
+        message: 'Vital signs retrieved successfully',
         vitalSigns,
         found: true,
       };
     } catch (error) {
       throw new Error(
-        `Error al obtener signos vitales por triage: ${(error as Error).message}`,
+        `Error getting vital signs by triage: ${(error as Error).message}`,
       );
     }
   }

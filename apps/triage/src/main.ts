@@ -10,8 +10,8 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
 
   const config = new DocumentBuilder()
-    .setTitle('Servicio de Triage')
-    .setDescription('Documentación para microservicio de triage.')
+    .setTitle('Triage - Microservice')
+    .setDescription('API documentation for triage microservice.')
     .setVersion('1.0')
     .addTag('triage')
     .build();

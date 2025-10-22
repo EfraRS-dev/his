@@ -36,7 +36,7 @@ export class DeleteTriageUseCase {
       if (!triage) {
         return {
           success: false,
-          message: 'Triage no encontrado',
+          message: 'Triage not found',
         };
       }
 
@@ -45,18 +45,18 @@ export class DeleteTriageUseCase {
       if (!deleted) {
         return {
           success: false,
-          message: 'No se pudo eliminar el triage',
+          message: 'Could not delete triage',
         };
       }
 
       return {
         success: true,
-        message: 'Triage eliminado exitosamente',
+        message: 'Triage deleted successfully',
         deletedTriageId: triageId,
         deletedAt: new Date(),
       };
     } catch (error) {
-      throw new Error(`Error al eliminar triage: ${(error as Error).message}`);
+      throw new Error(`Error deleting triage: ${(error as Error).message}`);
     }
   }
 }

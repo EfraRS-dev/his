@@ -23,6 +23,16 @@ spec:
         - containerPort: 3000
           name: http
         env:
+        - name: PATIENTS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: patients-db-secret
+              key: POSTGRES_USER
+        - name: PATIENTS_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: patients-db-secret
+              key: POSTGRES_PASSWORD
         - name: PATIENTS_DB_HOST
           valueFrom:
             configMapKeyRef:
@@ -38,18 +48,10 @@ spec:
             configMapKeyRef:
               name: patients-config
               key: PATIENTS_DB_NAME
-        - name: PATIENTS_DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: patients-db-secret
-              key: POSTGRES_USER
-        - name: PATIENTS_DB_PASS
-          valueFrom:
-            secretKeyRef:
-              name: patients-db-secret
-              key: POSTGRES_PASSWORD
         - name: PATIENTS_DB_URL
           value: "postgresql://$(PATIENTS_DB_USER):$(PATIENTS_DB_PASS)@$(PATIENTS_DB_HOST):$(PATIENTS_DB_PORT)/$(PATIENTS_DB_NAME)"
+        - name: PORT
+          value: "3000"
         resources:
           requests:
             memory: "256Mi"
@@ -99,6 +101,16 @@ spec:
         - containerPort: 3000
           name: http
         env:
+        - name: USER_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: users-db-secret
+              key: POSTGRES_USER
+        - name: USER_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: users-db-secret
+              key: POSTGRES_PASSWORD
         - name: USER_DB_HOST
           valueFrom:
             configMapKeyRef:
@@ -114,16 +126,6 @@ spec:
             configMapKeyRef:
               name: users-config
               key: USER_DB_NAME
-        - name: USER_DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: users-db-secret
-              key: POSTGRES_USER
-        - name: USER_DB_PASS
-          valueFrom:
-            secretKeyRef:
-              name: users-db-secret
-              key: POSTGRES_PASSWORD
         - name: USER_DB_URL
           value: "postgresql://$(USER_DB_USER):$(USER_DB_PASS)@$(USER_DB_HOST):$(USER_DB_PORT)/$(USER_DB_NAME)"
         - name: JWT_SECRET
@@ -131,6 +133,8 @@ spec:
             configMapKeyRef:
               name: users-config
               key: JWT_SECRET
+        - name: PORT
+          value: "3000"
         resources:
           requests:
             memory: "256Mi"
@@ -180,6 +184,16 @@ spec:
         - containerPort: 3000
           name: http
         env:
+        - name: TRIAGE_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: triage-db-secret
+              key: POSTGRES_USER
+        - name: TRIAGE_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: triage-db-secret
+              key: POSTGRES_PASSWORD
         - name: TRIAGE_DB_HOST
           valueFrom:
             configMapKeyRef:
@@ -195,18 +209,12 @@ spec:
             configMapKeyRef:
               name: triage-config
               key: TRIAGE_DB_NAME
-        - name: TRIAGE_DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: triage-db-secret
-              key: POSTGRES_USER
-        - name: TRIAGE_DB_PASS
-          valueFrom:
-            secretKeyRef:
-              name: triage-db-secret
-              key: POSTGRES_PASSWORD
         - name: TRIAGE_DB_URL
           value: "postgresql://$(TRIAGE_DB_USER):$(TRIAGE_DB_PASS)@$(TRIAGE_DB_HOST):$(TRIAGE_DB_PORT)/$(TRIAGE_DB_NAME)"
+        - name: PATIENTS_SERVICE_URL
+          value: "http://patients-service:3000"
+        - name: USERS_SERVICE_URL
+          value: "http://users-service:3000"
         - name: PORT
           valueFrom:
             configMapKeyRef:
@@ -261,6 +269,16 @@ spec:
         - containerPort: 3000
           name: http
         env:
+        - name: EHR_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: ehr-db-secret
+              key: POSTGRES_USER
+        - name: EHR_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: ehr-db-secret
+              key: POSTGRES_PASSWORD
         - name: EHR_DB_HOST
           valueFrom:
             configMapKeyRef:
@@ -276,18 +294,10 @@ spec:
             configMapKeyRef:
               name: ehr-config
               key: EHR_DB_NAME
-        - name: EHR_DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: ehr-db-secret
-              key: POSTGRES_USER
-        - name: EHR_DB_PASS
-          valueFrom:
-            secretKeyRef:
-              name: ehr-db-secret
-              key: POSTGRES_PASSWORD
         - name: EHR_DB_URL
           value: "postgresql://$(EHR_DB_USER):$(EHR_DB_PASS)@$(EHR_DB_HOST):$(EHR_DB_PORT)/$(EHR_DB_NAME)"
+        - name: PORT
+          value: "3000"
         resources:
           requests:
             memory: "256Mi"
