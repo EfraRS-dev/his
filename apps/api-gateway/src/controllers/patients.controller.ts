@@ -6,12 +6,13 @@ import {
   Body,
   Query,
   ParseIntPipe,
+  Put
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
 @Controller('patients')
 export class PatientsController {
-  private readonly patientUrl = 'http://patients:3000';
+  private readonly patientUrl = 'http://localhost:3001';
 
   constructor(private readonly http: HttpService) {}
 
@@ -23,16 +24,16 @@ export class PatientsController {
   }
 
   // 🔹 POST /patients/update/:id
-  @Post('update/:id')
+  @Put('update/:id')
   async update(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
-    const { data } = await this.http.axiosRef.post(`${this.patientUrl}/patients/update/${id}`, body);
+    const { data } = await this.http.axiosRef.put(`${this.patientUrl}/patients/update/${id}`, body);
     return data;
   }
 
   // 🔹 POST /patients/archive/:id
-  @Post('archive/:id')
+  @Put('archive/:id')
   async archive(@Param('id', ParseIntPipe) id: number) {
-    const { data } = await this.http.axiosRef.post(`${this.patientUrl}/patients/archive/${id}`);
+    const { data } = await this.http.axiosRef.put(`${this.patientUrl}/patients/archive/${id}`);
     return data;
   }
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Query, ParseIntPipe, Put } from '@nestjs/common';
 import { ArchivePatientUseCase } from '../application/use-cases/archivePatient.use-case';
 import { GetMedicalHistoryByPatientUseCase } from '../application/use-cases/getMedicalHistoryByPatient.use-case';
 import { GetPatientUseCase } from '../application/use-cases/getPatient.use-case';
@@ -9,6 +9,7 @@ import { PatientRegisterDto } from '../application/dto/registerPatient.dto';
 import { UpdatePatientDto } from '../application/dto/updatePatient.dto';
 import { GetPatientDto } from '../application/dto/getPatient.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdatePatientRequestDto } from '../application/dto/updatePatientRequest.dto';
 
 @ApiTags('patients')
 @Controller('patients')
@@ -40,8 +41,8 @@ export class PatientsController{
         return patient;
     }
 
-    @Post('/update/:id')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdatePatientDto){
+    @Put('/update/:id')
+    async update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdatePatientRequestDto){
         const updatedPatient = await this.updatePatient.execute({
             patientId: id,
             address: body.address,
@@ -52,7 +53,7 @@ export class PatientsController{
         return updatedPatient;
     }
 
-    @Post('/archive/:id')
+    @Put('/archive/:id')
     async archive(@Param('id', ParseIntPipe) id: number){
         const archivedPatient = await this.archivePatient.execute(id);
         return archivedPatient;

@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./apps/his/test/jest-e2e.json",
     "start:users": "node dist/users/src/main.js ",
     "start:patient": "node dist/patients/src/main.js ",
-    "start:ehr": "node dist/ehr/src/main.js "
+    "start:ehr": "node dist/ehr/src/main.js ",
+    "test:integration": "jest --config ./test/jest-integration.json"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",

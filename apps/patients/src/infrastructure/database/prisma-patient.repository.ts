@@ -73,7 +73,8 @@ export class PrismaPatientRepository implements PatientRepository {
                 address: patient.address,
                 phone: patient.phone,
                 email: patient.email,
-                emergencyContact: patient.emergencyContact
+                emergencyContact: patient.emergencyContact,
+                status: patient.status
             }
         })
 

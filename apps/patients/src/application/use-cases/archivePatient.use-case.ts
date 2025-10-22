@@ -33,6 +33,8 @@ export class ArchivePatientUseCase {
             'archived'
         )
 
+        console.log(archivedPatient)
+
         return this.patientRepo.update(archivedPatient)
     }
 }
