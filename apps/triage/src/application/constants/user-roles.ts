@@ -3,10 +3,10 @@
  * Based on the roles defined in the Users microservice
  */
 export const UserRoles = {
-  ADMIN: 1,
-  DOCTOR: 2,
-  NURSE: 3,
-  RECEPTIONIST: 4,
+  Nurse: 1,
+  Doctor: 2,
+  Admin: 3,
+  Patient: 4,
 } as const;
 
 export type UserRoleId = (typeof UserRoles)[keyof typeof UserRoles];

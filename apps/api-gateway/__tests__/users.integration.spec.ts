@@ -5,6 +5,7 @@ import { AppModule } from '../src/app.module';
 
 describe('API Gateway -> Users Service (Integration)', () => {
   let app: INestApplication;
+  let user: any;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -13,25 +14,23 @@ describe('API Gateway -> Users Service (Integration)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    const response = await request(app.getHttpServer())
+      .post('/users/create')
+      .send({
+        username: "jlbarreneche",
+        password: "Password",
+        roleId: 1,
+        email: "jlbarreneche@uninorte.com"
+      });
+
+    expect(response.status).toBe(201);
+    expect(response.body.email).toBe('jlbarreneche@uninorte.com');
+    user = response.body;
   });
 
   afterAll(async () => {
     await app.close();
-  });
-
-  // 🔹 POST /users/create
-  it('/users/create (POST) should create a new user', async () => {
-    const response = await request(app.getHttpServer())
-      .post('/users/create')
-      .send({
-        name: 'Carlos',
-        email: 'carlos@example.com',
-        password: '123456',
-      });
-
-    expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('id');
-    expect(response.body.email).toBe('carlos@example.com');
   });
 
   // 🔹 POST /users/login
@@ -39,72 +38,58 @@ describe('API Gateway -> Users Service (Integration)', () => {
     const response = await request(app.getHttpServer())
       .post('/users/login')
       .send({
-        email: 'carlos@example.com',
-        password: '123456',
+        email: 'jlbarreneche@uninorte.com',
+        password: 'Password',
       });
 
-    expect([200, 401]).toContain(response.status);
+    expect([201, 401]).toContain(response.status);
   });
 
-  // 🔹 POST /users/update/:id
-  it('/users/update/:id (POST) should update user info', async () => {
-    const register = await request(app.getHttpServer())
-      .post('/users/create')
-      .send({
-        name: 'Update Test',
-        email: 'update@example.com',
-        password: '123456',
-      });
-
-    const id = register.body.id;
-
-    const update = await request(app.getHttpServer())
-      .post(`/users/update/${id}`)
-      .send({ name: 'Updated Name' });
-
-    expect(update.status).toBe(200);
-    expect(update.body.name).toBe('Updated Name');
-  });
-
-  // 🔹 POST /users/activate/:id
-  it('/users/activate/:id (POST) should activate user', async () => {
-    const register = await request(app.getHttpServer())
-      .post('/users/create')
-      .send({
-        name: 'Active Test',
-        email: 'active@example.com',
-        password: '123456',
-      });
-
-    const id = register.body.id;
-
+  // 🔹 PUT /users/activate/:id
+  it('/users/activate/:id (PUT) should activate user', async () => {
     const res = await request(app.getHttpServer())
-      .post(`/users/activate/${id}`);
+      .put(`/users/activate/${user.userId}`);
+    expect([200, 404]).toContain(res.status);
+  });
 
+  // 🔹 PUT /users/inactivate/:id
+  it('/users/inactivate/:id (PUT) should inactivate user', async () => {
+    const res = await request(app.getHttpServer())
+      .put(`/users/inactivate/${user.userId}`);
+    expect([200, 404]).toContain(res.status);
+  });
+
+  // 🔹 PUT /users/block/:id
+  it('/users/block/:id (PUT) should block user', async () => {
+    const res = await request(app.getHttpServer())
+      .put(`/users/block/${user.userId}`);
     expect([200, 404]).toContain(res.status);
   });
 
   // 🔹 GET /users/:id
   it('/users/:id (GET) should return user info', async () => {
-    const register = await request(app.getHttpServer())
-      .post('/users/create')
-      .send({
-        name: 'Getter Test',
-        email: 'getter@example.com',
-        password: '123456',
-      });
-
-    const id = register.body.id;
-
-    const res = await request(app.getHttpServer()).get(`/users/${id}`);
+    const res = await request(app.getHttpServer()).get(`/users/${user.userId}`);
     expect([200, 404]).toContain(res.status);
   });
 
   // 🔹 GET /users/email/:email
   it('/users/email/:email (GET) should return user by email', async () => {
     const res = await request(app.getHttpServer())
-      .get('/users/email/getter@example.com');
-
+      .get(`/users/email/${user.email}`);
     expect([200, 404]).toContain(res.status);
+  });
+
+   // 🔹 PUT /users/update/:id
+  it('/users/update/:id (PUT) should update user info', async () => {
+    const update = await request(app.getHttpServer())
+      .put(`/users/update/${user.userId}`)
+      .send({
+        email: 'Barreneche@gmail.com',
+        username: 'JBarren',
+        password: 'React'
+      });
+
+    expect(update.status).toBe(200);
+    expect(update.body.username).toBe('JBarren');
   });
 });

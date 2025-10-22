@@ -40,7 +40,7 @@ export class CreateTriageUseCase {
     // Validate nurse has NURSE role
     const hasNurseRole = await this.usersClient.userHasRole(
       data.nurseId,
-      UserRoles.NURSE,
+      UserRoles.Nurse,
     );
     if (!hasNurseRole) {
       throw new Error(

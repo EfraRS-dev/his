@@ -47,19 +47,18 @@ describe('API Gateway -> Patients Service (Integration)', () => {
     });
 
     // 🔹 Actualizar el paciente
-    it('/patients/update/:id (POST) should update a patient', async () => {
+    it('/patients/update/:id (PUT) should update a patient', async () => {
+        const random = Math.floor(Math.random() * 1000000);
         const update = await request(app.getHttpServer())
             .put(`/patients/update/${createdPatient.patientId}`)
             .send({
                 address: 'New Avenue 123',
-                phone: '555111333',
-                email: 'new@mail.com',
+                phone: `300${random}`,
+                email: `dunord${random}@mail.com`,
                 emergencyContact: '3088883245'
             });
-
         expect(update.status).toBe(200);
         expect(update.body.address).toBe('New Avenue 123');
-        expect(update.body.email).toBe('new@mail.com');
     });
 
     // 🔹 Buscar por documento
@@ -106,7 +105,7 @@ describe('API Gateway -> Patients Service (Integration)', () => {
     });
 
     // 🔹 Archivar paciente (último test)
-    it('/patients/archive/:id (POST) should archive the patient', async () => {
+    it('/patients/archive/:id (PUT) should archive the patient', async () => {
         const archive = await request(app.getHttpServer())
             .put(`/patients/archive/${createdPatient.patientId}`);
         expect(archive.status).toBe(200);

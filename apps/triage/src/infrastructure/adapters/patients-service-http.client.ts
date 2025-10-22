@@ -24,7 +24,7 @@ export class PatientsServiceHttpClient implements IPatientsServiceClient {
   ) {
     this.baseUrl = this.configService.get<string>(
       'PATIENTS_SERVICE_URL',
-      'http://patients-service:3000',
+      'http://patients:3000',
     );
     this.timeout = this.configService.get<number>('HTTP_CLIENT_TIMEOUT', 5000);
 

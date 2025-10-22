@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
 @Controller('users')
 export class UsersController {
-  private readonly usersUrl = 'http://users:3000/users';
+  private readonly usersUrl = 'http://localhost:3002/users';
 
   constructor(private readonly http: HttpService) {}
 
@@ -14,10 +14,10 @@ export class UsersController {
     return data;
   }
 
-  // 🔹 POST /users/activate/:id
-  @Post('activate/:id')
+  // 🔹 PUT /users/activate/:id
+  @Put('activate/:id')
   async activate(@Param('id', ParseIntPipe) id: number) {
-    const { data } = await this.http.axiosRef.post(`${this.usersUrl}/activate/${id}`);
+    const { data } = await this.http.axiosRef.put(`${this.usersUrl}/activate/${id}`);
     return data;
   }
 
@@ -28,24 +28,24 @@ export class UsersController {
     return data;
   }
 
-  // 🔹 POST /users/update/:id
-  @Post('update/:id')
+  // 🔹 PUT /users/update/:id
+  @Put('update/:id')
   async update(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
-    const { data } = await this.http.axiosRef.post(`${this.usersUrl}/update/${id}`, body);
+    const { data } = await this.http.axiosRef.put(`${this.usersUrl}/update/${id}`, body);
     return data;
   }
 
-  // 🔹 POST /users/block/:id
-  @Post('block/:id')
+  // 🔹 PUT /users/block/:id
+  @Put('block/:id')
   async block(@Param('id', ParseIntPipe) id: number) {
-    const { data } = await this.http.axiosRef.post(`${this.usersUrl}/block/${id}`);
+    const { data } = await this.http.axiosRef.put(`${this.usersUrl}/block/${id}`);
     return data;
   }
 
-  // 🔹 POST /users/inactivate/:id
-  @Post('inactivate/:id')
+  // 🔹 PUT /users/inactivate/:id
+  @Put('inactivate/:id')
   async inactivate(@Param('id', ParseIntPipe) id: number) {
-    const { data } = await this.http.axiosRef.post(`${this.usersUrl}/inactivate/${id}`);
+    const { data } = await this.http.axiosRef.put(`${this.usersUrl}/inactivate/${id}`);
     return data;
   }
 

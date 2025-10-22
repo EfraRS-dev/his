@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 
 @Controller('roles')
 export class RolesController {
-  private readonly rolesUrl = 'http://users:3000/roles';
+  private readonly rolesUrl = 'http://localhost:3002/roles';
 
   constructor(private readonly http: HttpService) {}
 

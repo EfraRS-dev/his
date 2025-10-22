@@ -48,11 +48,11 @@ export class UpdateTriageUseCase {
     // Validate user has appropriate role (NURSE or DOCTOR)
     const hasNurseRole = await this.usersClient.userHasRole(
       dto.updatedBy,
-      UserRoles.NURSE,
+      UserRoles.Nurse,
     );
     const hasDoctorRole = await this.usersClient.userHasRole(
       dto.updatedBy,
-      UserRoles.DOCTOR,
+      UserRoles.Doctor,
     );
 
     if (!hasNurseRole && !hasDoctorRole) {

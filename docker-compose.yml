@@ -98,6 +98,8 @@ services:
       TRIAGE_DB_USER: triage_user
       TRIAGE_DB_PASS: triage_pass
       TRIAGE_DB_URL: "postgresql://triage_user:triage_pass@triage-db:5432/triage"
+      PATIENTS_SERVICE_URL: 'http://patients:3000'
+      USERS_SERVICE_URL: 'http://users:3000'
       PORT: 3000
     depends_on:
       - triage-db

@@ -24,7 +24,7 @@ export class UsersServiceHttpClient implements IUsersServiceClient {
   ) {
     this.baseUrl = this.configService.get<string>(
       'USERS_SERVICE_URL',
-      'http://users-service:3000',
+      'http://users:3000',
     );
     this.timeout = this.configService.get<number>('HTTP_CLIENT_TIMEOUT', 5000);
 

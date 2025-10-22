@@ -49,7 +49,7 @@ export class RegisterTriageUseCase {
 
     const isNurse = await this.usersClient.userHasRole(
       dto.nurseId,
-      UserRoles.NURSE,
+      UserRoles.Nurse,
     );
     if (!isNurse) {
       throw new Error(

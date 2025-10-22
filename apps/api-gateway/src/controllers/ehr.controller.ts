@@ -4,7 +4,7 @@ import { HttpService } from '@nestjs/axios';
 @Controller('ehr')
 export class EhrController {
   // 🔹 URL interna del microservicio EHR (Docker)
-  private readonly ehrUrl = 'http://ehr:3000';
+  private readonly ehrUrl = 'http://localhost:3004';
 
   constructor(private readonly http: HttpService) {}
 
