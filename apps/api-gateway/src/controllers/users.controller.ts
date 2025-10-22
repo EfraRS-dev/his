@@ -1,11 +1,18 @@
 import { Controller, Get, Post, Body, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('users')
 export class UsersController {
-  private readonly usersUrl = 'http://localhost:3002/users';
+  private readonly usersUrl: string;
 
-  constructor(private readonly http: HttpService) {}
+  constructor(
+    private readonly http: HttpService,
+    private readonly configService: ConfigService
+  ) {
+    this.usersUrl = this.configService.get<string>('USERS_URL')!
+    console.log(this.usersUrl)
+  }
 
   // 🔹 POST /users/login
   @Post('login')

@@ -1,12 +1,18 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('ehr')
 export class EhrController {
   // 🔹 URL interna del microservicio EHR (Docker)
-  private readonly ehrUrl = 'http://localhost:3004';
+  private readonly ehrUrl: string;
 
-  constructor(private readonly http: HttpService) {}
+  constructor(
+    private readonly http: HttpService,
+    private readonly configService: ConfigService
+  ) {
+    this.ehrUrl = this.configService.get<string>('EHR_URL')!;
+  }
 
   // 🔹 POST /ehr/antecedent
   @Post('antecedent')

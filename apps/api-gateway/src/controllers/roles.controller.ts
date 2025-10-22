@@ -1,11 +1,17 @@
 import { Controller, Get, Post, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('roles')
 export class RolesController {
-  private readonly rolesUrl = 'http://localhost:3002/roles';
+  private readonly rolesUrl: string;
 
-  constructor(private readonly http: HttpService) {}
+  constructor(
+    private readonly http: HttpService,
+    private readonly configService: ConfigService
+  ) {
+    this.rolesUrl = this.configService.get<string>('ROLES_URL')!;
+  }
 
   // 🔹 POST /roles/create
   @Post('create')

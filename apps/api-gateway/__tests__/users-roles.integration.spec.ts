@@ -31,7 +31,7 @@ describe('API Gateway -> Users Service (Integration)', () => {
             .send({
                 username: "jlbarreneche",
                 password: "Password",
-                roleId: 1,
+                roleId: rol.roleId,
                 email: "jlbarreneche@uninorte.com"
             });
 

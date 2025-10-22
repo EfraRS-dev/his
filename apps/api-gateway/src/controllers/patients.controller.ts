@@ -9,12 +9,18 @@ import {
   Put
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('patients')
 export class PatientsController {
-  private readonly patientUrl = 'http://localhost:3001';
+  private readonly patientUrl: string;
 
-  constructor(private readonly http: HttpService) {}
+  constructor(
+    private readonly http: HttpService,
+    private readonly configService: ConfigService
+  ) {
+    this.patientUrl = this.configService.get<string>('PATIENTS_URL')!;
+  }
 
   // 🔹 POST /patients/register
   @Post('register')

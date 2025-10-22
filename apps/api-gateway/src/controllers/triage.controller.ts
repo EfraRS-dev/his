@@ -10,12 +10,18 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('triage')
 export class TriageController {
-  private readonly triageUrl = 'http://triage:3000';
+  private readonly triageUrl: string;
 
-  constructor(private readonly http: HttpService) {}
+  constructor(
+    private readonly http: HttpService,
+    private readonly configService: ConfigService
+  ) {
+    this.triageUrl = this.configService.get<string>('TRIAGE_URL')!;
+  }
 
   // 🔹 GET /triage/health
   @Get('health')

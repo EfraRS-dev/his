@@ -129,6 +129,12 @@ services:
     container_name: api-gateway
     ports:
       - "3005:3000"
+    environment:
+      ROLES_URL: 'http://roles:3000'
+      PATIENTS_URL: 'http://patients:3000'
+      USERS_URL: 'http://users:3000'
+      TRIAGE_URL: 'http://triage:3000'
+      EHR_URL: 'http://ehr:3000'
 
 volumes:
   patients-db-data:
