@@ -33,7 +33,7 @@ import {
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: join(__dirname, '..', '.env'), // apps/triage/.env
+      envFilePath: join(__dirname, '..', '..', '..', '.env'), // workspace root .env
       isGlobal: true,
       cache: true,
     }),

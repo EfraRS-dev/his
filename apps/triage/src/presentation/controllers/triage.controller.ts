@@ -28,13 +28,13 @@ import { UpdatePriorityDto } from '../../application/dto/update-priority.dto';
 import { CreateVitalSignsDto } from '../../application/dto/create-vital-signs.dto';
 import { DeleteTriageDto } from '../../application/dto/delete-triage.dto';
 
-@ApiTags('triage')
 @Controller('triage')
 export class TriageController {
   constructor(private readonly triageService: TriageService) {}
 
   // Health and stats
   @Get('health')
+  @ApiTags('health')
   @ApiOperation({ summary: 'Health check for the Triage service' })
   @ApiOkResponse({ description: 'Service status payload' })
   getHealth() {
@@ -42,6 +42,7 @@ export class TriageController {
   }
 
   @Get('stats')
+  @ApiTags('health')
   @ApiOperation({ summary: 'Get aggregated triage statistics' })
   @ApiOkResponse({
     description: 'Aggregate statistics including counts and averages',
@@ -52,6 +53,7 @@ export class TriageController {
 
   // Queue listing
   @Get('queue')
+  @ApiTags('health')
   @ApiOperation({ summary: 'List patients ordered by priority' })
   @ApiQuery({
     name: 'urgencyLevel',
@@ -81,6 +83,7 @@ export class TriageController {
   }
 
   @Post()
+  @ApiTags('triage')
   @ApiOperation({ summary: 'Create a basic triage record' })
   @ApiBody({ type: CreateTriageDto })
   @ApiCreatedResponse({ description: 'Triage created' })
@@ -93,6 +96,7 @@ export class TriageController {
   }
 
   @Post('register')
+  @ApiTags('triage')
   @ApiOperation({ summary: 'Register a triage with initial vital signs' })
   @ApiBody({ type: RegisterTriageDto })
   @ApiCreatedResponse({ description: 'Triage and vital signs registered' })
@@ -105,6 +109,7 @@ export class TriageController {
   }
 
   @Get(':id')
+  @ApiTags('triage')
   @ApiOperation({ summary: 'Get a triage by ID' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ description: 'Triage details' })
@@ -115,6 +120,7 @@ export class TriageController {
   }
 
   @Patch(':id')
+  @ApiTags('triage')
   @ApiOperation({ summary: 'Update a triage and/or vital signs' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateTriageRequestDto })
@@ -138,6 +144,7 @@ export class TriageController {
   }
 
   @Patch(':id/priority')
+  @ApiTags('triage')
   @ApiOperation({ summary: 'Update only the triage priority' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdatePriorityDto })
@@ -152,6 +159,7 @@ export class TriageController {
   }
 
   @Delete(':id')
+  @ApiTags('triage')
   @ApiOperation({ summary: 'Delete a triage entity' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: DeleteTriageDto })
@@ -171,6 +179,7 @@ export class TriageController {
 
   // Patient-centered endpoints
   @Get('patient/:patientId')
+  @ApiTags('triage')
   @ApiOperation({ summary: 'Get the triage history by patient' })
   @ApiParam({ name: 'patientId', type: Number })
   @ApiOkResponse({ description: 'Latest or historical triage for the patient' })
@@ -183,6 +192,7 @@ export class TriageController {
   }
 
   @Get('patient/:patientId/active')
+  @ApiTags('triage')
   @ApiOperation({ summary: 'Get the active triage by patient' })
   @ApiParam({ name: 'patientId', type: Number })
   @ApiOkResponse({ description: 'Active triage if any' })
@@ -194,6 +204,7 @@ export class TriageController {
 
   // Vital signs
   @Post(':id/vital-signs')
+  @ApiTags('vital-signs')
   @ApiOperation({ summary: 'Register vital signs for a triage' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: CreateVitalSignsDto })
@@ -210,6 +221,7 @@ export class TriageController {
   }
 
   @Get(':id/vital-signs')
+  @ApiTags('vital-signs')
   @ApiOperation({ summary: 'Get vital signs by triage ID' })
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ description: 'Vital signs for the triage if any' })
@@ -220,6 +232,7 @@ export class TriageController {
   }
 
   @Get('vital-signs/:vitalSignsId')
+  @ApiTags('vital-signs')
   @ApiOperation({ summary: 'Get vital signs by ID' })
   @ApiParam({ name: 'vitalSignsId', type: Number })
   @ApiOkResponse({ description: 'Vital signs record' })

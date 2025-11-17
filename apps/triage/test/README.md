@@ -169,33 +169,46 @@ npx jest --config apps/triage/test/jest-e2e.json --watch
 
 ## 📝 Test Data Setup
 
-Los tests asumen que existen los siguientes datos en la base de datos:
+Los tests utilizan los datos de seeding ya creados en el sistema. **IMPORTANTE:** Asegúrate de ejecutar los scripts de seed antes de correr los tests.
 
-### **Pacientes**
+### **Seed Data Reference**
 
-- `patientId: 1` - Paciente de prueba
+#### **Usuarios** (de `apps/users/prisma/seed.ts`)
 
-### **Usuarios**
+- `userId: 1` - admin (roleId: 1 - Admin)
+- `userId: 2` - dr.smith (roleId: 2 - Doctor)
+- `userId: 3` - dr.garcia (roleId: 2 - Doctor)
+- `userId: 4` - nurse.johnson (roleId: 3 - Nurse) - **✅ USADO EN TESTS**
+- `userId: 5` - nurse.martinez (roleId: 3 - Nurse)
+- `userId: 6` - nurse.brown (roleId: 3 - Nurse)
+- `userId: 7` - patient.doe (roleId: 4 - Patient)
+- `userId: 8` - patient.rodriguez (roleId: 4 - Patient)
 
-- `userId: 1` - Admin (roleId: 1)
-- `userId: 2` - Doctor (roleId: 2)
-- `userId: 3` - Enfermera (roleId: 3) - **ACTIVE**
-- `userId: 4` - Usuario inactivo (status: 'inactive')
+#### **Pacientes** (de `apps/patients/prisma/seed.ts`)
 
-### **Roles**
+- `patientId: 1` - John Doe (linked to userId: 7) - **✅ USADO EN TESTS**
+- `patientId: 2` - Maria Rodriguez (linked to userId: 8)
+- `patientId: 3` - Robert Chen
+- `patientId: 4` - Sarah Williams
+- `patientId: 5` - Ahmed Hassan
 
-- `roleId: 1` - ADMIN
-- `roleId: 2` - DOCTOR
-- `roleId: 3` - NURSE
-- `roleId: 4` - RECEPTIONIST
+#### **Roles**
 
-### Seed Data Script
+- `roleId: 1` - Admin
+- `roleId: 2` - Doctor
+- `roleId: 3` - Nurse - **✅ REQUERIDO PARA CREAR TRIAGE**
+- `roleId: 4` - Patient
 
-Puedes crear estos datos ejecutando:
+### Ejecutar Seed Scripts
 
 ```bash
-cd apps/triage
-npx prisma db seed
+# Desde el root del proyecto
+npm run seed:users
+npm run seed:patients
+npm run seed:triage
+
+# O ejecutar todos a la vez
+npm run seed:all
 ```
 
 O manualmente con SQL:
@@ -271,7 +284,7 @@ npm run test:e2e -- triage
 
 ## 📊 Expected Test Results
 
-```
+```bash
 PASS  apps/triage/test/triage.e2e-spec.ts
   Triage Module (e2e)
     Health Check
@@ -359,5 +372,3 @@ Todos los tests son asíncronos usando `async/await` o `return`.
 - [Prisma Testing](https://www.prisma.io/docs/guides/testing)
 
 ---
-
-**✨ Happy Testing!**
