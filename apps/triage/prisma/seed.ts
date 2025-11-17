@@ -19,8 +19,8 @@ type SeedTriage = {
 
 const TRIAGE_SEED_DATA: SeedTriage[] = [
   {
-    patientId: 101,
-    nurseId: 12,
+    patientId: 1, // Cambia por IDs reales del microservicio de pacientes
+    nurseId: 1, // Cambia por IDs reales del microservicio de usuarios (enfermeros)
     urgencyLevel: 3,
     initialObservations: 'Paciente con dolor moderado en el pecho.',
     vitalSigns: {
@@ -33,8 +33,8 @@ const TRIAGE_SEED_DATA: SeedTriage[] = [
     },
   },
   {
-    patientId: 102,
-    nurseId: 15,
+    patientId: 2,
+    nurseId: 1,
     urgencyLevel: 1,
     initialObservations: 'Paciente inconsciente, posible ACV.',
     vitalSigns: {
@@ -47,8 +47,8 @@ const TRIAGE_SEED_DATA: SeedTriage[] = [
     },
   },
   {
-    patientId: 103,
-    nurseId: 18,
+    patientId: 3,
+    nurseId: 2,
     urgencyLevel: 4,
     initialObservations: 'Paciente con cefalea persistente de 48 horas.',
     vitalSigns: {
@@ -60,16 +60,54 @@ const TRIAGE_SEED_DATA: SeedTriage[] = [
       additionalNotes: 'Refiere sensibilidad a la luz.',
     },
   },
+  {
+    patientId: 4,
+    nurseId: 2,
+    urgencyLevel: 2,
+    initialObservations: 'Fractura expuesta en brazo derecho tras caída.',
+    vitalSigns: {
+      temperature: 36.8,
+      bloodPressure: '130/85',
+      heartRate: 92,
+      respiratoryRate: 20,
+      oxygenSaturation: 96,
+      additionalNotes: 'Hemorragia controlada.',
+    },
+  },
+  {
+    patientId: 5,
+    nurseId: 3,
+    urgencyLevel: 5,
+    initialObservations: 'Control de rutina, sin síntomas agudos.',
+    vitalSigns: {
+      temperature: 36.5,
+      bloodPressure: '120/80',
+      heartRate: 72,
+      respiratoryRate: 16,
+      oxygenSaturation: 99,
+      additionalNotes: 'Paciente estable.',
+    },
+  },
 ];
 
+/**
+ * Limpia las tablas relacionadas antes de insertar nuevos datos
+ */
 async function resetTables(): Promise<void> {
+  console.info('🗑️  Limpiando tablas existentes...');
   await prisma.$transaction([
     prisma.vitalSigns.deleteMany(),
     prisma.triage.deleteMany(),
   ]);
+  console.info('✅ Tablas limpiadas correctamente');
 }
 
+/**
+ * Inserta los datos de triage y signos vitales
+ */
 async function seedTriageData(): Promise<void> {
+  console.info('📝 Insertando datos de triage...');
+
   await prisma.$transaction(
     TRIAGE_SEED_DATA.map((triage) =>
       prisma.triage.create({
@@ -92,20 +130,30 @@ async function seedTriageData(): Promise<void> {
       }),
     ),
   );
+
+  console.info(`✅ ${TRIAGE_SEED_DATA.length} registros de triage insertados`);
 }
 
+/**
+ * Función principal de seeding
+ */
 async function main(): Promise<void> {
-  console.info('🌱 Starting triage database seed...');
-  await resetTables();
-  await seedTriageData();
-  console.info(
-    `✅ Seed complete: ${TRIAGE_SEED_DATA.length} triage records inserted.`,
-  );
+  console.info('🌱 Iniciando seed de base de datos de triage...\n');
+
+  try {
+    await resetTables();
+    await seedTriageData();
+
+    console.info('\n✅ Seed completado exitosamente');
+  } catch (error) {
+    console.error('\n❌ Error durante el seed:', error);
+    throw error;
+  }
 }
 
 main()
   .catch((error) => {
-    console.error('❌ Seed failed:', error);
+    console.error('❌ El seed falló:', error);
     process.exitCode = 1;
   })
   .finally(() => {
