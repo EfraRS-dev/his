@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 
@@ -9,7 +18,7 @@ export class EhrController {
 
   constructor(
     private readonly http: HttpService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
     this.ehrUrl = this.configService.get<string>('EHR_URL')!;
   }
@@ -17,35 +26,55 @@ export class EhrController {
   // 🔹 POST /ehr/antecedent
   @Post('antecedent')
   async createAntecedent(@Body() body: any) {
-    const { data } = await this.http.axiosRef.post(`${this.ehrUrl}/ehr/antecedent`, body);
+    const { data } = await this.http.axiosRef.post(
+      `${this.ehrUrl}/ehr/antecedent`,
+      body,
+    );
     return data;
   }
 
   // 🔹 DELETE /ehr/antecedent/delete/:id
   @Delete('antecedent/delete/:id')
   async deleteAntecedent(@Param('id', ParseIntPipe) id: number) {
-    const { data } = await this.http.axiosRef.delete(`${this.ehrUrl}/ehr/antecedent/delete/${id}`);
+    const { data } = await this.http.axiosRef.delete(
+      `${this.ehrUrl}/ehr/antecedent/delete/${id}`,
+    );
     return data;
   }
 
   // 🔹 PUT /ehr/antecedent/update/:id
   @Put('antecedent/update/:id')
-  async updateAntecedent(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
-    const { data } = await this.http.axiosRef.put(`${this.ehrUrl}/ehr/antecedent/update/${id}`, body);
+  async updateAntecedent(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: any,
+  ) {
+    const { data } = await this.http.axiosRef.put(
+      `${this.ehrUrl}/ehr/antecedent/update/${id}`,
+      body,
+    );
     return data;
   }
 
   // 🔹 POST /ehr/clinicalEntry
   @Post('clinicalEntry')
   async createClinicalEntry(@Body() body: any) {
-    const { data } = await this.http.axiosRef.post(`${this.ehrUrl}/ehr/clinicalEntry`, body);
+    const { data } = await this.http.axiosRef.post(
+      `${this.ehrUrl}/ehr/clinicalEntry`,
+      body,
+    );
     return data;
   }
 
   // 🔹 PUT /ehr/clinicalEntry/update/:id
   @Put('clinicalEntry/update/:id')
-  async updateClinicalEntry(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
-    const { data } = await this.http.axiosRef.put(`${this.ehrUrl}/ehr/clinicalEntry/update/${id}`, body);
+  async updateClinicalEntry(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: any,
+  ) {
+    const { data } = await this.http.axiosRef.put(
+      `${this.ehrUrl}/ehr/clinicalEntry/update/${id}`,
+      body,
+    );
     return data;
   }
 
@@ -59,14 +88,18 @@ export class EhrController {
   // 🔹 PUT /ehr/archive/:id
   @Put('archive/:id')
   async archiveMedicalHistory(@Param('id', ParseIntPipe) id: number) {
-    const { data } = await this.http.axiosRef.put(`${this.ehrUrl}/ehr/archive/${id}`);
+    const { data } = await this.http.axiosRef.put(
+      `${this.ehrUrl}/ehr/archive/${id}`,
+    );
     return data;
   }
 
   // 🔹 PUT /ehr/unarchive/:id
   @Put('unarchive/:id')
   async unarchiveMedicalHistory(@Param('id', ParseIntPipe) id: number) {
-    const { data } = await this.http.axiosRef.put(`${this.ehrUrl}/ehr/unarchive/${id}`);
+    const { data } = await this.http.axiosRef.put(
+      `${this.ehrUrl}/ehr/unarchive/${id}`,
+    );
     return data;
   }
 
