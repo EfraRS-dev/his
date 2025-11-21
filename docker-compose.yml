@@ -86,8 +86,10 @@ services:
       PATIENTS_SERVICE_URL: 'http://patients:3000'
       USERS_SERVICE_URL: 'http://users:3000'
       PORT: 3000
+      RABBITMQ_URL: 'amqp://admin:admin@rabbitmq:5672'
     depends_on:
       - triage-db
+      - rabbitmq
 
   ehr:
     build:
@@ -116,8 +118,27 @@ services:
       TRIAGE_URL: 'http://triage:3000'
       EHR_URL: 'http://ehr:3000'
 
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: rmq
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   patients-db-data:
   users-db-data:
   triage-db-data:
   ehr-db-data:
+  rabbitmq-data:

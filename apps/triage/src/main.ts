@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { TriageModule } from './triage.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(TriageModule);
+  const logger = new Logger('Main');
 
   const configService = app.get<ConfigService>(ConfigService);
 
@@ -26,7 +28,23 @@ async function bootstrap() {
     }),
   );
 
-  const port = configService.get<number>('PORT');
-  await app.listen(port ?? 3005);
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [configService.get<string>('RABBITMQ_URL')],
+      queue: configService.get<string>('RABBITMQ_QUEUE') || 'my_queue',
+      queueOptions: { durable: true },
+      noAck: false,
+      prefetchCount: 1,
+    },
+  });
+
+  await app.startAllMicroservices();
+  const port = configService.get<number>('PORT') ?? 3005;
+  await app.listen(port);
+  logger.log(`🚀 Triage service running on port ${port}`);
+  logger.log(
+    `📚 Swagger documentation available at http://localhost:${port}/triage/api`,
+  );
 }
 void bootstrap();

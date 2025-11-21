@@ -1,8 +1,10 @@
+<!-- markdownlint-disable MD036 -->
+
 # HIS Kubernetes Deployment Guide
 
 ## Architecture Overview
 
-```
+```bash
 ┌─────────────────────────────────────────────────────────────┐
 │                         Ingress                              │
 │                    (his.local / HTTPS)                       │
@@ -591,7 +593,7 @@ kubectl get all -n his -o yaml > his-snapshot.yaml
 
 ## Support & Resources
 
-- Kubernetes Docs: https://kubernetes.io/docs/
-- NGINX Ingress: https://kubernetes.github.io/ingress-nginx/
-- Prisma K8s: https://www.prisma.io/docs/guides/deployment/deployment-guides/deploying-to-kubernetes
-- Helm Charts: https://helm.sh/
+- Kubernetes Docs: <https://kubernetes.io/docs/>
+- NGINX Ingress: <https://kubernetes.github.io/ingress-nginx/>
+- Prisma K8s: <https://www.prisma.io/docs/guides/deployment/deployment-guides/deploying-to-kubernetes>
+- Helm Charts: <https://helm.sh/>
