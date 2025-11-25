@@ -12,7 +12,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateVitalSignsDto {
   @ApiProperty({
     description: 'Body temperature in degrees Celsius',
-    example: 37.2,
+    example: 37.4,
     type: 'number',
   })
   @IsNotEmpty()
@@ -22,7 +22,7 @@ export class CreateVitalSignsDto {
 
   @ApiProperty({
     description: 'Blood pressure reading in format systolic/diastolic',
-    example: '120/80',
+    example: '125/82',
     pattern: '^\\d{2,3}/\\d{2,3}$',
   })
   @IsNotEmpty()
@@ -31,7 +31,7 @@ export class CreateVitalSignsDto {
 
   @ApiProperty({
     description: 'Heart rate in beats per minute',
-    example: 72,
+    example: 84,
     minimum: 30,
     maximum: 250,
     type: 'integer',
@@ -45,7 +45,7 @@ export class CreateVitalSignsDto {
 
   @ApiProperty({
     description: 'Respiratory rate in breaths per minute',
-    example: 16,
+    example: 18,
     type: 'integer',
   })
   @IsNotEmpty()
@@ -55,7 +55,7 @@ export class CreateVitalSignsDto {
 
   @ApiProperty({
     description: 'Oxygen saturation percentage',
-    example: 98,
+    example: 97,
     type: 'integer',
   })
   @IsNotEmpty()
@@ -65,7 +65,7 @@ export class CreateVitalSignsDto {
 
   @ApiPropertyOptional({
     description: 'Additional notes about the vital signs measurement',
-    example: 'Patient was calm during measurement',
+    example: 'Sin antecedentes relevantes.',
     maxLength: 500,
   })
   @IsOptional()

@@ -4,10 +4,10 @@ export interface DocumentMetadata {
   size?: string;
 }
 
-export enum ClinicalDocumentType{
-  LAB = "lab",
-  IMAGING = "imaging",
-  EXTERNAL_REPORT = "external report"
+export enum ClinicalDocumentType {
+  LAB = 'lab',
+  IMAGING = 'imaging',
+  EXTERNAL_REPORT = 'external report',
 }
 
 export class ClinicalDocument {
@@ -18,5 +18,4 @@ export class ClinicalDocument {
     public metadata?: DocumentMetadata,
     public readonly documentId?: number,
   ) {}
-
 }

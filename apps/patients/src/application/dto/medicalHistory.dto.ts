@@ -1,6 +1,6 @@
-export interface MedicalHistory{
-    historyId: number,
-    patientId: number,
-    openedAt: Date,
-    status: 'active' | 'closed'
+export interface MedicalHistory {
+  historyId: number;
+  patientId: number;
+  openedAt: Date;
+  status: 'active' | 'closed';
 }

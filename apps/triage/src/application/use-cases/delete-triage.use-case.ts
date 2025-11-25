@@ -4,7 +4,10 @@ import type { IVitalSignsRepository } from '../../domain/vital-signs.repository'
 import {
   TRIAGE_REPOSITORY_TOKEN,
   VITAL_SIGNS_REPOSITORY_TOKEN,
+  EVENT_PUBLISHER,
 } from '../tokens';
+import type { IEventPublisher } from '../ports/event-publisher.port';
+import { TriageDeletedEvent } from '../../domain/events';
 
 export interface DeleteTriageCommand {
   triageId: number;
@@ -26,6 +29,8 @@ export class DeleteTriageUseCase {
     private readonly triageRepository: ITriageRepository,
     @Inject(VITAL_SIGNS_REPOSITORY_TOKEN)
     private readonly vitalSignsRepository: IVitalSignsRepository,
+    @Inject(EVENT_PUBLISHER)
+    private readonly eventPublisher: IEventPublisher,
   ) {}
 
   async execute(command: DeleteTriageCommand): Promise<DeleteTriageResult> {
@@ -48,6 +53,15 @@ export class DeleteTriageUseCase {
           message: 'Could not delete triage',
         };
       }
+
+      // Publish triage deleted event
+      this.eventPublisher.publishEvent(
+        new TriageDeletedEvent(triageId, triage.patientId, {
+          timestamp: new Date(),
+          userId: command.userId,
+          source: 'triage-service',
+        }).toJSON(),
+      );
 
       return {
         success: true,

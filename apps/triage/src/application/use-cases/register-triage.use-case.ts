@@ -13,7 +13,13 @@ import {
   VITAL_SIGNS_REPOSITORY_TOKEN,
   PATIENTS_SERVICE_CLIENT_TOKEN,
   USERS_SERVICE_CLIENT_TOKEN,
+  EVENT_PUBLISHER,
 } from '../tokens';
+import type { IEventPublisher } from '../ports/event-publisher.port';
+import {
+  TriageCreatedEvent,
+  VitalSignsRegisteredEvent,
+} from '../../domain/events';
 
 @Injectable()
 export class RegisterTriageUseCase {
@@ -26,6 +32,8 @@ export class RegisterTriageUseCase {
     private readonly patientsClient: IPatientsServiceClient,
     @Inject(USERS_SERVICE_CLIENT_TOKEN)
     private readonly usersClient: IUsersServiceClient,
+    @Inject(EVENT_PUBLISHER)
+    private readonly eventPublisher: IEventPublisher,
   ) {}
 
   async execute(dto: RegisterTriageDto): Promise<RegisterTriageResponseDto> {
@@ -98,6 +106,35 @@ export class RegisterTriageUseCase {
 
     const savedVitalSigns = await this.vitalSignsRepository.create(vitalSigns);
 
+    // Publish events
+    this.eventPublisher.publishEvent(
+      new TriageCreatedEvent(
+        savedTriage.triageId,
+        savedTriage.patientId,
+        savedTriage.urgencyLevel,
+        savedTriage.nurseId,
+        {
+          timestamp: new Date(),
+          userId: dto.nurseId,
+          source: 'triage-service',
+        },
+      ).toJSON(),
+    );
+
+    this.eventPublisher.publishEvent(
+      new VitalSignsRegisteredEvent(
+        savedVitalSigns.vitalSignsId,
+        savedTriage.triageId,
+        savedTriage.patientId,
+        this.detectCriticalValues(savedVitalSigns),
+        {
+          timestamp: new Date(),
+          userId: dto.nurseId,
+          source: 'triage-service',
+        },
+      ).toJSON(),
+    );
+
     return {
       triage: {
         triageId: savedTriage.triageId,
@@ -118,6 +155,14 @@ export class RegisterTriageUseCase {
         oxygenSaturation: savedVitalSigns.oxygenSaturation,
         additionalNotes: savedVitalSigns.additionalNotes,
       },
+    };
+  }
+
+  private detectCriticalValues(vitalSigns: VitalSigns) {
+    return {
+      temperature: vitalSigns.temperature > 38.5 || vitalSigns.temperature < 35,
+      heartRate: vitalSigns.heartRate > 100 || vitalSigns.heartRate < 60,
+      oxygenSaturation: vitalSigns.oxygenSaturation < 90,
     };
   }
 }

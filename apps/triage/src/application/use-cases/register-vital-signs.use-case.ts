@@ -7,7 +7,10 @@ import { VitalSignsDto } from '../dto/vital-signs.dto';
 import {
   TRIAGE_REPOSITORY_TOKEN,
   VITAL_SIGNS_REPOSITORY_TOKEN,
+  EVENT_PUBLISHER,
 } from '../tokens';
+import type { IEventPublisher } from '../ports/event-publisher.port';
+import { VitalSignsRegisteredEvent } from '../../domain/events';
 
 @Injectable()
 export class RegisterVitalSignsUseCase {
@@ -16,6 +19,8 @@ export class RegisterVitalSignsUseCase {
     private readonly vitalSignsRepository: IVitalSignsRepository,
     @Inject(TRIAGE_REPOSITORY_TOKEN)
     private readonly triageRepository: ITriageRepository,
+    @Inject(EVENT_PUBLISHER)
+    private readonly eventPublisher: IEventPublisher,
   ) {}
 
   async execute(
@@ -41,6 +46,20 @@ export class RegisterVitalSignsUseCase {
 
     const savedVitalSigns = await this.vitalSignsRepository.create(vitalSigns);
 
+    // Publish vital signs registered event
+    this.eventPublisher.publishEvent(
+      new VitalSignsRegisteredEvent(
+        savedVitalSigns.vitalSignsId,
+        triageId,
+        triage.patientId,
+        this.detectCriticalValues(savedVitalSigns),
+        {
+          timestamp: new Date(),
+          source: 'triage-service',
+        },
+      ).toJSON(),
+    );
+
     return {
       vitalSignsId: savedVitalSigns.vitalSignsId,
       triageId: savedVitalSigns.triageId,
@@ -50,6 +69,14 @@ export class RegisterVitalSignsUseCase {
       respiratoryRate: savedVitalSigns.respiratoryRate,
       oxygenSaturation: savedVitalSigns.oxygenSaturation,
       additionalNotes: savedVitalSigns.additionalNotes,
+    };
+  }
+
+  private detectCriticalValues(vitalSigns: VitalSigns) {
+    return {
+      temperature: vitalSigns.temperature > 38.5 || vitalSigns.temperature < 35,
+      heartRate: vitalSigns.heartRate > 100 || vitalSigns.heartRate < 60,
+      oxygenSaturation: vitalSigns.oxygenSaturation < 90,
     };
   }
 }

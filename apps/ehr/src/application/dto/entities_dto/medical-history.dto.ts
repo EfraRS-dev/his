@@ -1,6 +1,6 @@
 export type MedicalHistoryDto = {
-    historyId: number,
-    patientId: number,
-    openedAt: Date,
-    status: boolean,
-}
+  historyId: number;
+  patientId: number;
+  openedAt: Date;
+  status: boolean;
+};

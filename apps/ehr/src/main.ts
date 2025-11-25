@@ -3,7 +3,6 @@ import { EhrModule } from './presentation/ehr.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-
   const app = await NestFactory.create(EhrModule);
 
   const config = new DocumentBuilder()

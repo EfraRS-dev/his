@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { IsEnum } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export enum RoleName {
   Doctor = 'Doctor',
@@ -9,18 +8,22 @@ export enum RoleName {
   Nurse = 'Nurse',
 }
 
-export class CreateRoleDto{
-@ApiProperty({
-    description: "name of the role",
-    enum:RoleName,
-    example: RoleName.Doctor
-})
+export class CreateRoleDto {
+  @ApiProperty({
+    description: 'name of the role',
+    enum: RoleName,
+    example: RoleName.Doctor,
+  })
+  @IsString()
+  @IsNotEmpty()
+  name: 'Admin' | 'Doctor' | 'Nurse' | 'Patient';
 
-    @IsString()
-    @IsNotEmpty()
-    name: 'Admin' | 'Doctor' | 'Nurse' | 'Patient'
-
-    @IsString()
-    @IsOptional()
-    permissions?: string | null
+  @ApiProperty({
+    description: 'Permissions for the role',
+    example: 'read,write,diagnose,prescribe',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  permissions?: string | null;
 }

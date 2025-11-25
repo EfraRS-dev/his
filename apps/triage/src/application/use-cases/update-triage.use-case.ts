@@ -9,10 +9,13 @@ import {
   VITAL_SIGNS_REPOSITORY_TOKEN,
   PATIENTS_SERVICE_CLIENT_TOKEN,
   USERS_SERVICE_CLIENT_TOKEN,
+  EVENT_PUBLISHER,
 } from '../tokens';
 import type { IPatientsServiceClient } from '../ports/patients-service.client.port';
 import type { IUsersServiceClient } from '../ports/users-service.client.port';
 import { UserRoles } from '../constants/user-roles';
+import type { IEventPublisher } from '../ports/event-publisher.port';
+import { TriageUpdatedEvent } from '../../domain/events';
 
 @Injectable()
 export class UpdateTriageUseCase {
@@ -25,6 +28,8 @@ export class UpdateTriageUseCase {
     private readonly patientsClient: IPatientsServiceClient,
     @Inject(USERS_SERVICE_CLIENT_TOKEN)
     private readonly usersClient: IUsersServiceClient,
+    @Inject(EVENT_PUBLISHER)
+    private readonly eventPublisher: IEventPublisher,
   ) {}
 
   async execute(
@@ -121,6 +126,25 @@ export class UpdateTriageUseCase {
           await this.vitalSignsRepository.findByTriageId(triageId);
         updatedFields.push('vitalSigns');
       }
+    }
+
+    // Publish triage updated event
+    if (updatedFields.length > 0) {
+      this.eventPublisher.publishEvent(
+        new TriageUpdatedEvent(
+          triageId,
+          existingTriage.patientId,
+          {
+            updatedFields,
+            reason: dto.reason,
+          },
+          {
+            timestamp: new Date(),
+            userId: dto.updatedBy,
+            source: 'triage-service',
+          },
+        ).toJSON(),
+      );
     }
 
     // Return response

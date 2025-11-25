@@ -5,15 +5,18 @@ import { join } from 'path';
 import { TriageController } from './presentation/controllers/triage.controller';
 import { TriageService } from './application/services/triage.service';
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
+import { RabbitMQModule } from './infrastructure/messaging/rabbitmq.module';
 import { PrismaTriageRepository } from './infrastructure/repositories/prisma-triage.repository';
 import { PrismaVitalSignsRepository } from './infrastructure/repositories/prisma-vital-signs.repository';
 import { PatientsServiceHttpClient } from './infrastructure/adapters/patients-service-http.client';
 import { UsersServiceHttpClient } from './infrastructure/adapters/users-service-http.client';
+import { RabbitMQService } from './infrastructure/messaging/rabbitmq.service';
 import {
   TRIAGE_REPOSITORY_TOKEN,
   VITAL_SIGNS_REPOSITORY_TOKEN,
   PATIENTS_SERVICE_CLIENT_TOKEN,
   USERS_SERVICE_CLIENT_TOKEN,
+  EVENT_PUBLISHER,
 } from './application/tokens';
 import {
   CreateTriageUseCase,
@@ -46,6 +49,7 @@ import {
       inject: [ConfigService],
     }),
     PrismaModule,
+    RabbitMQModule,
   ],
   controllers: [TriageController],
   providers: [
@@ -83,6 +87,10 @@ import {
     {
       provide: USERS_SERVICE_CLIENT_TOKEN,
       useExisting: UsersServiceHttpClient,
+    },
+    {
+      provide: EVENT_PUBLISHER,
+      useExisting: RabbitMQService,
     },
   ],
 })

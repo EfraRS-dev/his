@@ -5,7 +5,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateTriageDto {
   @ApiProperty({
     description: 'Patient ID',
-    example: 4,
+    example: 1,
     type: 'integer',
   })
   @IsNotEmpty()
@@ -26,7 +26,7 @@ export class CreateTriageDto {
 
   @ApiPropertyOptional({
     description: 'Initial observations about the patient condition',
-    example: 'Patient complains of chest pain and difficulty breathing',
+    example: 'Paciente con dolor moderado en el pecho.',
     maxLength: 500,
   })
   @IsOptional()
@@ -35,7 +35,7 @@ export class CreateTriageDto {
 
   @ApiProperty({
     description: 'ID of the nurse performing the triage',
-    example: 45,
+    example: 4,
     type: 'integer',
   })
   @IsNotEmpty()

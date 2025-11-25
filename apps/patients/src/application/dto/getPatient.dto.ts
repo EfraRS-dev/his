@@ -6,31 +6,35 @@ export class GetPatientDto {
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 1, description: 'Patient ID' })
   patientId?: number;
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'DNI', description: 'Document type' })
   documentType?: string;
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: '12345678', description: 'Document number' })
   documentNumber?: string;
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'John', description: 'First name' })
   firstName?: string;
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: 'Doe', description: 'Last name' })
   lastName?: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({
+    example: 'document',
+    description: 'Search criteria',
+    enum: ['document', 'name', 'id'],
+  })
   criteria: 'document' | 'name' | 'id';
 }

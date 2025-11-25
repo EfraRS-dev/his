@@ -3,9 +3,9 @@
  * Based on the roles defined in the Users microservice
  */
 export const UserRoles = {
-  Nurse: 1,
+  Admin: 1,
   Doctor: 2,
-  Admin: 3,
+  Nurse: 3,
   Patient: 4,
 } as const;
 
