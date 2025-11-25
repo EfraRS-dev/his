@@ -28,6 +28,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { AiDiagnosisUseCase } from '../../application/use-cases/clinical-entry/Ai-diagnosis.usecase';
 
 @ApiTags('ehr')
 @Controller('ehr')
@@ -38,6 +39,7 @@ export class EhrController {
     private readonly updateAntecedentUC: UpdateAntecedentUseCase,
     private readonly createClinicalEntryUC: CreateClinicalEntryUseCase,
     private readonly updateClinicalEntryUC: UpdateClinicalEntryUseCase,
+    private readonly aiDiagnosisUC: AiDiagnosisUseCase,
     private readonly createMedicalHistoryUC: CreateMedicalHistoryUseCase,
     private readonly archiveMedicalHistoryUC: ArchiveMedicalHistoryUseCase,
     private readonly unarchiveMedicalHistoryUC: UnarchiveMedicalHistoryUseCase,
@@ -97,6 +99,21 @@ export class EhrController {
     @Body() body: UpdateClinicalEntryDto,
   ) {
     return this.updateClinicalEntryUC.execute(id, body);
+  }
+
+  @Post('clinicalEntry/ai-diagnosis/:patientId')
+  @ApiOperation({ summary: 'Get AI Diagnosis for clinical entry' })
+  @ApiParam({ name: 'patientId', type: Number })
+  @ApiBody({ type: String, description: 'Information for AI diagnosis' })
+  @ApiResponse({
+    status: 200,
+    description: 'AI diagnosis successfully retrieved.',
+  })
+  async getAiDiagnosis(
+    @Param('patientId', ParseIntPipe) patientId: number,
+    @Body('information') information: string,
+  ) {
+    return this.aiDiagnosisUC.execute(patientId, information);
   }
 
   @Post(':id')

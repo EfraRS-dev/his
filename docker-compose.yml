@@ -108,6 +108,8 @@ services:
       RABBITMQ_URL: 'amqp://admin:admin@rabbitmq:5672'
       RABBITMQ_QUEUE_EHR_EVENTS: 'ehr.events'
       RABBITMQ_EXCHANGE_EHR: 'ehr.exchange'
+      HUGGINGFACE_API_KEY: ${HUGGINGFACE_API_KEY}
+      HUGGINGFACE_MODEL: 'NousResearch/Nous-Hermes-2-Medical'
     depends_on:
       - ehr-db
       - rabbitmq

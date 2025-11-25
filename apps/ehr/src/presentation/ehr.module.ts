@@ -24,6 +24,7 @@ import { GetMedicalHistoryCompleteUseCase } from '../application/use-cases/medic
 import { UnarchiveMedicalHistoryUseCase } from '../application/use-cases/medical-history/unarchive-medicalHistory.usecase';
 import { RabbitMQModule } from '../infrastructure/messaging/rabbitmq.module';
 import { RabbitMQService } from '../infrastructure/messaging/rabbitmq.service';
+import { AiDiagnosisUseCase } from '../application/use-cases/clinical-entry/Ai-diagnosis.usecase';
 
 @Module({
   imports: [RabbitMQModule],
@@ -104,6 +105,14 @@ import { RabbitMQService } from '../infrastructure/messaging/rabbitmq.service';
         repo: ClinicalEntryRepositoryPort,
         historyRepo: MedicalHistoryRepositoryPort,
       ) => new UpdateClinicalEntryUseCase(repo, historyRepo),
+      inject: [CLINICAL_ENTRY_REPOSITORY, MEDICAL_HISTORY_REPOSITORY],
+    },
+    {
+      provide: AiDiagnosisUseCase,
+      useFactory: (
+        clinicalEntryRepo: ClinicalEntryRepositoryPort,
+        medicalHistoryRepo: MedicalHistoryRepositoryPort,
+      ) => new AiDiagnosisUseCase(clinicalEntryRepo, medicalHistoryRepo),
       inject: [CLINICAL_ENTRY_REPOSITORY, MEDICAL_HISTORY_REPOSITORY],
     },
     {
