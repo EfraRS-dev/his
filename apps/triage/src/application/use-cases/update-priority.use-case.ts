@@ -41,10 +41,7 @@ export class UpdatePriorityUseCase {
         oldUrgencyLevel,
         dto.urgencyLevel,
         dto.reason || 'Priority updated',
-        {
-          timestamp: new Date(),
-          source: 'triage-service',
-        },
+        new Date(),
       ).toJSON(),
     );
 

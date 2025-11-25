@@ -138,11 +138,7 @@ export class UpdateTriageUseCase {
             updatedFields,
             reason: dto.reason,
           },
-          {
-            timestamp: new Date(),
-            userId: dto.updatedBy,
-            source: 'triage-service',
-          },
+          new Date(),
         ).toJSON(),
       );
     }

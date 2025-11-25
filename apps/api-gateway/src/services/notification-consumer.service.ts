@@ -1,11 +1,18 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleInit,
+  OnModuleDestroy,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as amqp from 'amqp-connection-manager';
 import { ChannelWrapper } from 'amqp-connection-manager';
 import { NotificationStore } from './notification-store.service';
 
 @Injectable()
-export class NotificationConsumerService implements OnModuleInit {
+export class NotificationConsumerService
+  implements OnModuleInit, OnModuleDestroy
+{
   private readonly logger = new Logger(NotificationConsumerService.name);
   private connection: amqp.AmqpConnectionManager;
   private channelWrappers: ChannelWrapper[] = [];
@@ -108,21 +115,21 @@ export class NotificationConsumerService implements OnModuleInit {
       // Acknowledge the message
       channel.ack(msg);
     } catch (error) {
+      this.logger.error(`Error handling message from ${source}`, error.stack);
+      // Reject and don't requeue the message if it's malformed
+      channel.nack(msg, false, false);
+    }
+  }
+
+  getNotificationStore(): NotificationStore {
+    return this.notificationStore;
+  }
+
   async onModuleDestroy() {
     try {
       // Close all channel wrappers
       for (const wrapper of this.channelWrappers) {
         await wrapper.close();
-      }
-      if (this.connection) {
-        await this.connection.close();
-      }
-      this.logger.log('RabbitMQ connection closed');
-    } catch (error) {
-      this.logger.error('Error closing RabbitMQ connection', error.stack);
-    }
-  }
-}       await this.channelWrapper.close();
       }
       if (this.connection) {
         await this.connection.close();

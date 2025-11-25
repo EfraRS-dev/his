@@ -56,11 +56,7 @@ export class DeleteTriageUseCase {
 
       // Publish triage deleted event
       this.eventPublisher.publishEvent(
-        new TriageDeletedEvent(triageId, triage.patientId, {
-          timestamp: new Date(),
-          userId: command.userId,
-          source: 'triage-service',
-        }).toJSON(),
+        new TriageDeletedEvent(triageId, triage.patientId, new Date()).toJSON(),
       );
 
       return {

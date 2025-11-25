@@ -91,6 +91,8 @@ services:
       USERS_SERVICE_URL: 'http://users:3000'
       PORT: 3000
       RABBITMQ_URL: 'amqp://admin:admin@rabbitmq:5672'
+      RABBITMQ_QUEUE_TRIAGE_EVENTS: 'triage.events'
+      RABBITMQ_EXCHANGE_TRIAGE: 'triage.exchange'
     depends_on:
       - triage-db
       - rabbitmq

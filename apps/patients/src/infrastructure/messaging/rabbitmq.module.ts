@@ -12,8 +12,13 @@ import { RabbitMQService } from './rabbitmq.service';
         useFactory: (configService: ConfigService) => ({
           transport: Transport.RMQ,
           options: {
-            urls: [configService.get<string>('RABBITMQ_URL')],
-            queue: configService.get<string>('RABBITMQ_QUEUE_PATIENTS_EVENTS'),
+            urls: [
+              configService.get<string>('RABBITMQ_URL') ||
+                'amqp://localhost:5672',
+            ],
+            queue:
+              configService.get<string>('RABBITMQ_QUEUE_PATIENTS_EVENTS') ||
+              'patients.events',
             queueOptions: {
               durable: true,
             },

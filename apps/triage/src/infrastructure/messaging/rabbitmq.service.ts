@@ -22,16 +22,32 @@ export class RabbitMQService
 
   publishEvent(event: TriageEvent): void {
     try {
-      this.client.emit(event.eventType, event);
-      this.logger.log(`📤 Event published: ${event.eventType}`, {
-        eventType: event.eventType,
-        metadata: event.metadata,
-      });
+      // Determine event type based on the properties present in the event
+      let eventType = 'triage.event';
+      if (
+        'triageId' in event &&
+        'urgencyLevel' in event &&
+        'nurseId' in event
+      ) {
+        eventType = 'triage.created';
+      } else if ('triageId' in event && 'changes' in event) {
+        eventType = 'triage.updated';
+      } else if ('oldUrgencyLevel' in event && 'newUrgencyLevel' in event) {
+        eventType = 'priority.changed';
+      } else if ('vitalSignsId' in event && 'criticalValues' in event) {
+        eventType = 'vital-signs.registered';
+      } else if (
+        'triageId' in event &&
+        'patientId' in event &&
+        Object.keys(event).length === 3
+      ) {
+        eventType = 'triage.deleted';
+      }
+
+      this.client.emit(eventType, event);
+      this.logger.log(`📤 Event published: ${eventType}`, event);
     } catch (error) {
-      this.logger.error(
-        `❌ Failed to publish event: ${event.eventType}`,
-        error,
-      );
+      this.logger.error(`❌ Failed to publish event`, error);
       throw error;
     }
   }

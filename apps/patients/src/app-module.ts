@@ -5,10 +5,10 @@ import { join } from 'path';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ 
+    ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: join(__dirname, '..', '..', '..', '.env'),
-     }),
+    }),
     PatientsModule,
   ],
 })

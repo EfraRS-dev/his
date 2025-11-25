@@ -53,10 +53,7 @@ export class RegisterVitalSignsUseCase {
         triageId,
         triage.patientId,
         this.detectCriticalValues(savedVitalSigns),
-        {
-          timestamp: new Date(),
-          source: 'triage-service',
-        },
+        new Date(),
       ).toJSON(),
     );
 
