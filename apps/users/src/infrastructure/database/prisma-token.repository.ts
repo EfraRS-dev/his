@@ -17,7 +17,9 @@ export class JwtTokenService implements TokenServicePort {
   // ✅ Verifica un access token y devuelve el payload si es válido
   verifyAccessToken(token: string): TokenPayload | null {
     try {
-      return this.jwtService.verify(token);
+      const tokenPayload = this.jwtService.verify(token);
+      if (!tokenPayload) return null;
+      return tokenPayload;
     } catch {
       return null;
     }

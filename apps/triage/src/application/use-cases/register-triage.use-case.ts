@@ -113,11 +113,7 @@ export class RegisterTriageUseCase {
         savedTriage.patientId,
         savedTriage.urgencyLevel,
         savedTriage.nurseId,
-        {
-          timestamp: new Date(),
-          userId: dto.nurseId,
-          source: 'triage-service',
-        },
+        new Date(),
       ).toJSON(),
     );
 
@@ -127,11 +123,7 @@ export class RegisterTriageUseCase {
         savedTriage.triageId,
         savedTriage.patientId,
         this.detectCriticalValues(savedVitalSigns),
-        {
-          timestamp: new Date(),
-          userId: dto.nurseId,
-          source: 'triage-service',
-        },
+        new Date(),
       ).toJSON(),
     );
 
