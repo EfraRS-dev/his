@@ -5,13 +5,12 @@ import { PATIENT_REPOSITORY } from '../token';
 
 @Injectable()
 export class GetAllPatientsUseCase {
-    constructor(
-        @Inject(PATIENT_REPOSITORY) private readonly patientRepo: PatientRepository
-    ) {}
+  constructor(
+    @Inject(PATIENT_REPOSITORY) private readonly patientRepo: PatientRepository,
+  ) {}
 
-    async execute(includeArchived: Boolean): Promise<Patient[]> {
-        const patients = await this.patientRepo.getAllPatients(includeArchived);
-        return patients;
-    }
-
+  async execute(includeArchived: boolean): Promise<Patient[]> {
+    const patients = await this.patientRepo.getAllPatients(includeArchived);
+    return patients;
+  }
 }

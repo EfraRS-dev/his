@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { ITriageRepository } from '../../domain/triage.repository';
 import { Triage } from '../../domain/triage.entity';
+import { TRIAGE_REPOSITORY_TOKEN } from '../tokens';
 
 @Injectable()
 export class GetAllTriagesUseCase {
-  constructor(private readonly triageRepository: ITriageRepository) {}
+  constructor(
+    @Inject(TRIAGE_REPOSITORY_TOKEN)
+    private readonly triageRepository: ITriageRepository,
+  ) {}
 
   /**
    * Get all triages in the system
