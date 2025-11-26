@@ -6,6 +6,7 @@ import {
   Param,
   Body,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
@@ -15,7 +16,11 @@ import {
   ApiParam,
   ApiBody,
   ApiResponse,
+  ApiBasicAuth,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
+
+
 
 @ApiTags('users')
 @Controller('users')
@@ -160,6 +165,7 @@ export class UsersController {
   }
 
   // 🔹 GET /users/:id
+
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiParam({ name: 'id', type: 'number', description: 'User ID' })

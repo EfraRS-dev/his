@@ -3,7 +3,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
 import { UsersController } from "../controllers/users.controller";
-import { TOKEN_SERVICE, USER_REPOSITORY } from "../../application/tokens";
+import { ROLE_REPOSITORY, TOKEN_SERVICE, USER_REPOSITORY } from "../../application/tokens";
 import { UserRepository } from "../../domain/repositories/user.repository.port";
 import { TokenServicePort } from "../../domain/repositories/token.repository.port";
 
@@ -18,6 +18,8 @@ import { BlockUserUseCase } from "../../application/use-cases/blockUser.use-case
 import { InactivateUserUseCase } from "../../application/use-cases/inactivateUser.user-case";
 import { ActivateUserUseCase } from "../../application/use-cases/activateUser.user-case";
 import { LoginUseCase } from "../../application/use-cases/login.use-case";
+import { PrismaRoleRepository } from "../../infrastructure/database/prisma-role.repository";
+import { JwtStrategy } from "../shared/strategies/jwt.strategy";
 
 @Module({
   imports: [
@@ -35,6 +37,7 @@ import { LoginUseCase } from "../../application/use-cases/login.use-case";
   controllers: [UsersController],
   providers: [
     PrismaService,
+    JwtStrategy,
 
     {
       provide: USER_REPOSITORY,
@@ -45,7 +48,10 @@ import { LoginUseCase } from "../../application/use-cases/login.use-case";
       provide: TOKEN_SERVICE,
       useClass: JwtTokenService,
     },
-
+    {
+      provide: ROLE_REPOSITORY,
+      useClass: PrismaRoleRepository,
+    },
     {
       provide: CreateUserUseCase,
       useFactory: (repo: UserRepository) => new CreateUserUseCase(repo),

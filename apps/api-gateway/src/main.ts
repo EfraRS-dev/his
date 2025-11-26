@@ -14,6 +14,15 @@ async function bootstrap() {
     .setTitle('HIS API Gateway')
     .setDescription('API Gateway del HIS')
     .setVersion('1.0')
+        .addBearerAuth({
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'bearer',)
     .addTag('patients', 'Patient management operations')
     .addTag('users', 'User authentication and management')
     .addTag('triage', 'Triage and vital signs management')

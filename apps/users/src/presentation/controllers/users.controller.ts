@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, ParseIntPipe, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, ParseIntPipe, Put, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from '../../application/dto/createUser.dto';
 import { GetUserDto } from '../../application/dto/getUser.dto';
 import { UpdateUserDto } from '../../application/dto/updateUser.dto';
@@ -7,12 +7,16 @@ import { GetUserUseCase } from '../../application/use-cases/get-user.use-case';
 import { UpdateUserUseCase } from '../../application/use-cases/updateUser.use-case';
 import { BlockUserUseCase } from '../../application/use-cases/blockUser.use-case';
 import { InactivateUserUseCase } from '../../application/use-cases/inactivateUser.user-case';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ActivateUserUseCase } from '../../application/use-cases/activateUser.user-case';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { LoginDto } from '../../application/dto/login.dto';
 import { User } from '../../../prisma/generated/client';
 import { UpdateUserRequestDto } from '../../application/dto/updateUserRequest.dto';
+import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
+import { RolesGuard } from '../shared/guards/roles.guard';
+import { Roles } from '../shared/decorators/roles.decorator';
+import { Role } from '../../domain/entities/role.entity';
 
 @ApiTags("Users")
 @Controller('users')
@@ -80,7 +84,7 @@ export class UsersController{
     const blockedUser = await this.blockUser.execute(id)
     return blockedUser
   }
-
+  
   @Put('/inactivate/:id')
   @ApiOperation({summary:"Inactivate User"})
   @ApiOkResponse({description:"User Inactivated Correctly"})
@@ -88,10 +92,13 @@ export class UsersController{
     const inactivatedUser = await this.inactivateUser.execute(id)
     return inactivatedUser
   }
-
-  @Get('/:id')
+  
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles('Doctor')
+  @ApiBearerAuth()
   @ApiOperation({summary: "Find Id"})
   @ApiOkResponse({description:"User Found Correctly"})
+  @Get('/:id')
   async GetUserById(@Param('id', ParseIntPipe) id: number){
     const user = await this.getUser.execute({
       userId: id,
@@ -100,6 +107,9 @@ export class UsersController{
     return user
   }
 
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles('Admin','Doctor')
+  @ApiBearerAuth()
   @ApiOperation({summary:"Find Email"})
   @ApiOkResponse({description:"User Found Correctly"})
   @Get('/email/:email')

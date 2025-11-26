@@ -11,6 +11,15 @@ async function bootstrap() {
     .setTitle('Servicio de Usuarios')
     .setDescription('Documentacion para el microservicio de usuarios')
     .setVersion('1.0')
+    .addBearerAuth({
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'bearer',)
     .addTag('Usuarios')
     .build();
 
