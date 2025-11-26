@@ -16,7 +16,7 @@ import axios from 'axios';
 export class PrismaClinicalEntryRepository
   implements ClinicalEntryRepositoryPort {
   constructor(private readonly prisma: PrismaService) { }
-  private readonly apiUrl = `https://api-inference.huggingface.co/models/${process.env.HUGGINGFACE_MODEL}`;
+  //private readonly apiUrl = `https://api-inference.huggingface.co/models/${process.env.HUGGINGFACE_MODEL}`;
   private readonly apiKey = process.env.HUGGINGFACE_API_KEY;
 
   async save(entry: ClinicalEntry): Promise<ClinicalEntry> {
@@ -111,12 +111,16 @@ export class PrismaClinicalEntryRepository
     );
   }
 
-  async AiDiagnosis(information: string): Promise<string> {
-    try {
-      const response = await axios.post(
-        this.apiUrl,
-        {
-          inputs: `
+async AiDiagnosis(information: string): Promise<string> {
+  try {
+    const response = await axios.post(
+      'https://router.huggingface.co/v1/chat/completions',
+      {
+        model: process.env.HUGGINGFACE_MODEL, // ahora en el body
+        messages: [
+          {
+            role: 'user',
+            content: `
 You are a medical assistant AI. Analyze the patient's medical information
 and generate possible preliminary diagnoses.
 
@@ -129,31 +133,35 @@ Provide:
 - Initial recommendations (not definitive)
 
 Generate the response in the same language used in the medical history provided.
-        `,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json',
+            `,
           },
-          timeout: 120000, // 2 minutos porque estos modelos tardan
+        ],
+        max_tokens: 512, // ajusta según necesites
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
         },
-      );
+        timeout: 120000, // 2 minutos
+      },
+    );
 
-      const generated = response.data?.[0]?.generated_text;
+    // nuevo formato de router
+    const generated = response.data?.choices?.[0]?.message?.content;
 
-      if (!generated) {
-        throw new Error('Unexpected response from the model');
-      }
-
-      return generated;
-    } catch (error: any) {
-      throw new HttpException(
-        'No se pudo generar el diagnóstico con HuggingFace: ' + error.message,
-        500,
-      );
+    if (!generated) {
+      throw new Error('Unexpected response from the model');
     }
+
+    return generated;
+  } catch (error: any) {
+    throw new HttpException(
+      'No se pudo generar el diagnóstico con HuggingFace: ' + error.message,
+      500,
+    );
   }
+}
 
 
   async filterInfoToAi(entry: string, history: MedicalHistory): Promise<string> {

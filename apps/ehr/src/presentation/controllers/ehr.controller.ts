@@ -29,6 +29,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AiDiagnosisUseCase } from '../../application/use-cases/clinical-entry/Ai-diagnosis.usecase';
+import { AiDiagnosisDto } from '../../application/dto/entities_dto/aiDiagnosis.dto';
 
 @ApiTags('ehr')
 @Controller('ehr')
@@ -104,16 +105,16 @@ export class EhrController {
   @Post('clinicalEntry/ai-diagnosis/:patientId')
   @ApiOperation({ summary: 'Get AI Diagnosis for clinical entry' })
   @ApiParam({ name: 'patientId', type: Number })
-  @ApiBody({ type: String, description: 'Information for AI diagnosis' })
+  @ApiBody({ type: AiDiagnosisDto })
   @ApiResponse({
     status: 200,
     description: 'AI diagnosis successfully retrieved.',
   })
   async getAiDiagnosis(
     @Param('patientId', ParseIntPipe) patientId: number,
-    @Body('information') information: string,
+    @Body() body: AiDiagnosisDto,
   ) {
-    return this.aiDiagnosisUC.execute(patientId, information);
+    return this.aiDiagnosisUC.execute(patientId, body.information);
   }
 
   @Post(':id')
