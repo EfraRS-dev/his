@@ -1,4 +1,5 @@
 import { PrismaClient, RolesName, Status } from './generated/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -54,13 +55,19 @@ async function seedRoles(): Promise<void> {
 async function seedUsers(): Promise<void> {
   console.info('👥 Creando usuarios...');
 
+  // Hash de contraseñas
+  const adminPassword = await bcrypt.hash('admin123', 10);
+  const doctorPassword = await bcrypt.hash('doctor123', 10);
+  const nursePassword = await bcrypt.hash('nurse123', 10);
+  const patientPassword = await bcrypt.hash('patient123', 10);
+
   await prisma.user.createMany({
     data: [
       // Admin
       {
         userId: 1,
         username: 'admin',
-        passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456', // "admin123"
+        passwordHash: adminPassword,
         roleId: 1,
         email: 'admin@hospital.com',
         status: Status.active,
@@ -69,7 +76,7 @@ async function seedUsers(): Promise<void> {
       {
         userId: 2,
         username: 'dr.smith',
-        passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456', // "doctor123"
+        passwordHash: doctorPassword,
         roleId: 2,
         email: 'dr.smith@hospital.com',
         status: Status.active,
@@ -77,7 +84,7 @@ async function seedUsers(): Promise<void> {
       {
         userId: 3,
         username: 'dr.garcia',
-        passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456', // "doctor123"
+        passwordHash: doctorPassword,
         roleId: 2,
         email: 'dr.garcia@hospital.com',
         status: Status.active,
@@ -86,7 +93,7 @@ async function seedUsers(): Promise<void> {
       {
         userId: 4,
         username: 'nurse.johnson',
-        passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456', // "nurse123"
+        passwordHash: nursePassword,
         roleId: 3,
         email: 'nurse.johnson@hospital.com',
         status: Status.active,
@@ -94,7 +101,7 @@ async function seedUsers(): Promise<void> {
       {
         userId: 5,
         username: 'nurse.martinez',
-        passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456', // "nurse123"
+        passwordHash: nursePassword,
         roleId: 3,
         email: 'nurse.martinez@hospital.com',
         status: Status.active,
@@ -102,7 +109,7 @@ async function seedUsers(): Promise<void> {
       {
         userId: 6,
         username: 'nurse.brown',
-        passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456', // "nurse123"
+        passwordHash: nursePassword,
         roleId: 3,
         email: 'nurse.brown@hospital.com',
         status: Status.active,
@@ -111,7 +118,7 @@ async function seedUsers(): Promise<void> {
       {
         userId: 7,
         username: 'patient.doe',
-        passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456', // "patient123"
+        passwordHash: patientPassword,
         roleId: 4,
         email: 'john.doe@email.com',
         status: Status.active,
@@ -119,7 +126,7 @@ async function seedUsers(): Promise<void> {
       {
         userId: 8,
         username: 'patient.rodriguez',
-        passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456', // "patient123"
+        passwordHash: patientPassword,
         roleId: 4,
         email: 'maria.rodriguez@email.com',
         status: Status.active,
@@ -144,7 +151,9 @@ async function main(): Promise<void> {
     console.info('\n✅ Seed completado exitosamente');
     console.info('\n📊 Resumen:');
     console.info('  - 4 roles');
-    console.info('  - 8 usuarios (1 admin, 2 doctores, 3 enfermeros, 2 pacientes)');
+    console.info(
+      '  - 8 usuarios (1 admin, 2 doctores, 3 enfermeros, 2 pacientes)',
+    );
     console.info('\n🔑 Credenciales de prueba:');
     console.info('  Admin: admin / admin123');
     console.info('  Doctor: dr.smith / doctor123');

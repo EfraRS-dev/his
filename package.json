@@ -14,6 +14,7 @@
     "migrate:patients": "npx prisma migrate dev --schema=./apps/patients/prisma/schema.prisma",
     "migrate:triage": "npx prisma migrate dev --schema=./apps/triage/prisma/schema.prisma",
     "migrate:ehr": "npx prisma migrate dev --schema=./apps/ehr/prisma/schema.prisma",
+    "migrate:all": "npm run migrate:users && npm run migrate:patients && npm run migrate:triage && npm run migrate:ehr",
     "seed:users-db": "npx tsx apps/users/prisma/seed.ts",
     "seed:patients-db": "npx tsx apps/patients/prisma/seed.ts",
     "seed:triage-db": "npx tsx apps/triage/prisma/seed.ts",
