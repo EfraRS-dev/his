@@ -11,6 +11,8 @@ import { ArchivePatientUseCase } from '../application/use-cases/archivePatient.u
 import { PrismaService } from '../infrastructure/database/prisma.service';
 import { PrismaPatientRepository } from '../infrastructure/database/prisma-patient.repository';
 import { HttpModule, HttpService } from '@nestjs/axios';
+import { GetAllPatientsUseCase } from '../application/use-cases/getAllPatients.use-case';
+import { UnarchivePatientUseCase } from '../application/use-cases/unarchivePatient.use-case';
 
 @Module({
   imports: [HttpModule],
@@ -50,6 +52,16 @@ import { HttpModule, HttpService } from '@nestjs/axios';
     {
       provide: UpdatePatientUseCase,
       useFactory: (repo: PatientRepository) => new UpdatePatientUseCase(repo),
+      inject: [PATIENT_REPOSITORY]
+    },
+    {
+      provide: GetAllPatientsUseCase,
+      useFactory: (repo: PatientRepository) => new GetAllPatientsUseCase(repo),
+      inject: [PATIENT_REPOSITORY]
+    },
+    {
+      provide: UnarchivePatientUseCase,
+      useFactory: (repo: PatientRepository) => new UnarchivePatientUseCase(repo),
       inject: [PATIENT_REPOSITORY]
     },
   ],

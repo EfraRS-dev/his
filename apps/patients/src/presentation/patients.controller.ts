@@ -18,6 +18,8 @@ import { PatientRegisterDto } from '../application/dto/registerPatient.dto';
 import { GetPatientDto } from '../application/dto/getPatient.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdatePatientRequestDto } from '../application/dto/updatePatientRequest.dto';
+import { GetAllPatientsUseCase } from '../application/use-cases/getAllPatients.use-case';
+import { UnarchivePatientUseCase } from '../application/use-cases/unarchivePatient.use-case';
 
 @ApiTags('patients')
 @Controller('patients')
@@ -29,7 +31,9 @@ export class PatientsController {
     private readonly getTriage: GetTriageByPatientUseCase,
     private readonly patientRegister: PatientRegisterUseCase,
     private readonly updatePatient: UpdatePatientUseCase,
-  ) {}
+    private readonly getAllPatients: GetAllPatientsUseCase,
+    private readonly unarchivePatient: UnarchivePatientUseCase,
+  ) { }
 
   @Post('/register')
   async register(@Body() body: PatientRegisterDto) {
@@ -67,6 +71,12 @@ export class PatientsController {
   @Put('/archive/:id')
   async archive(@Param('id', ParseIntPipe) id: number) {
     const archivedPatient = await this.archivePatient.execute(id);
+    return archivedPatient;
+  }
+
+  @Put('/unarchive/:id')
+  async unarchive(@Param('id', ParseIntPipe) id: number) {
+    const archivedPatient = await this.unarchivePatient.execute(id);
     return archivedPatient;
   }
 
@@ -109,5 +119,12 @@ export class PatientsController {
       criteria: 'id',
     });
     return patient;
+  }
+
+  @Get('/')
+  async GetAllPatients(@Query('includeArchived') includeArchived: string) {
+    const include = includeArchived === 'true';
+    const patients = await this.getAllPatients.execute(include);
+    return patients;
   }
 }

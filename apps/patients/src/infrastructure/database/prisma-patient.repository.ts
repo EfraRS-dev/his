@@ -4,6 +4,7 @@ import type { PatientRepository } from "../../domain/patient.repository.port";
 import { Patient } from "../../domain/patient";
 import { Triage } from "../../application/dto/triage.dto";
 import { MedicalHistory } from "../../application/dto/medicalHistory.dto";
+import e from "express";
 
 @Injectable()
 export class PrismaPatientRepository implements PatientRepository {
@@ -96,11 +97,18 @@ export class PrismaPatientRepository implements PatientRepository {
         );
     }
 
-    async getTriages(patientId: number): Promise<Triage[]> {
-        return [];
-    }
-
-    async getMedicalHistories(patientId: number): Promise<MedicalHistory[]> {
-        return [];
+    async getAllPatients(includeArchived: Boolean): Promise<Patient[]> {
+        let patients: Patient[] = [];
+        if (!includeArchived) {
+            patients = await this.prisma.patient.findMany({
+                where: {
+                    status: { not: 'archived' }
+                }
+            });
+            return patients;
+        } else {
+            patients = await this.prisma.patient.findMany();
+        }
+        return patients;
     }
 }

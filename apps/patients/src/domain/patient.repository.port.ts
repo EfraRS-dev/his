@@ -1,6 +1,4 @@
 import { Patient } from './patient';
-import { Triage } from '../application/dto/triage.dto';
-import { MedicalHistory } from '../application/dto/medicalHistory.dto'; 
 
 export interface PatientRepository{
     save(patient: Patient): Promise<Patient>;
@@ -8,6 +6,5 @@ export interface PatientRepository{
     findPatientById(patientId: number): Promise<Patient | null>;
     findPatientByName(firstName: string, lastName: string): Promise<Patient | null>;
     update(patient: Patient): Promise<Patient>;
-    getTriages(patientId: number): Promise<Triage[]>;
-    getMedicalHistories(patientId: number): Promise<MedicalHistory[]>;
+    getAllPatients(includeArchived:Boolean): Promise<Patient[]>;
 }

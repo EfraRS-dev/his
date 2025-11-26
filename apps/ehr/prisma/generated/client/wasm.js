@@ -169,7 +169,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\Efra's PC\\Downloads\\his\\apps\\ehr\\prisma\\generated\\client",
+      "value": "C:\\Users\\miran\\Documents\\GitHub\\his\\apps\\ehr\\prisma\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -183,12 +183,12 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Efra's PC\\Downloads\\his\\apps\\ehr\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\miran\\Documents\\GitHub\\his\\apps\\ehr\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
     "rootEnvPath": null,
-    "schemaEnvPath": "../../../../../.env"
+    "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../..",
   "clientVersion": "6.17.1",

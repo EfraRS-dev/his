@@ -147,7 +147,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\Gow14\\Documents\\GitHub\\his\\apps\\triage\\prisma\\generated\\client",
+      "value": "C:\\Users\\miran\\Documents\\GitHub\\his\\apps\\triage\\prisma\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -161,12 +161,12 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Gow14\\Documents\\GitHub\\his\\apps\\triage\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\miran\\Documents\\GitHub\\his\\apps\\triage\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
     "rootEnvPath": null,
-    "schemaEnvPath": "../../../../../.env"
+    "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../..",
   "clientVersion": "6.17.1",
