@@ -18,6 +18,7 @@
     "seed:patients-db": "npx tsx apps/patients/prisma/seed.ts",
     "seed:triage-db": "npx tsx apps/triage/prisma/seed.ts",
     "seed:ehr-db": "npx tsx apps/ehr/prisma/seed.ts",
+    "seed:all": "npm run seed:users-db && npm run seed:patients-db && npm run seed:triage-db && npm run seed:triage-db",
     "docker:dbs": "docker compose up -d patients-db users-db ehr-db triage-db rabbitmq",
     "docker:all": "docker compose up -d",
     "docker:stop": "docker compose down",
