@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("PATIENTS_DB_URL")
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum Status {
+  active
+  archived
+}
+
+model Patient {
+  patientId        Int      @id @default(autoincrement()) @db.Integer
+  userId           Int?
+  documentType     String
+  documentNumber   String   @unique
+  firstName        String
+  lastName         String
+  birthDate        DateTime
+  gender           Gender
+  address          String
+  phone            String   @unique
+  email            String   @unique
+  emergencyContact String
+  createdAt        DateTime @default(now())
+  status           Status
+}

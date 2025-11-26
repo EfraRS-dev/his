@@ -1,20 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { IsEnum } from 'class-validator';
-import { RoleName } from 'apps/users/SwaggerUtility/Names';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateRoleDto{
-@ApiProperty({
-    description: "name of the role",
-    enum:RoleName,
-    example: RoleName.Doctor
-})
+export enum RoleName {
+  Doctor = 'Doctor',
+  Admin = 'Admin',
+  Patient = 'Patient',
+  Nurse = 'Nurse',
+}
 
-    @IsString()
-    @IsNotEmpty()
-    name: 'Admin' | 'Doctor' | 'Nurse' | 'Patient'
+export class CreateRoleDto {
+  @ApiProperty({
+    description: 'name of the role',
+    enum: RoleName,
+    example: RoleName.Doctor,
+  })
+  @IsString()
+  @IsNotEmpty()
+  name: 'Admin' | 'Doctor' | 'Nurse' | 'Patient';
 
-    @IsString()
-    @IsOptional()
-    permissions?: string | null
+  @ApiProperty({
+    description: 'Permissions for the role',
+    example: 'read,write,diagnose,prescribe',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  permissions?: string | null;
 }

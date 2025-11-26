@@ -1,0 +1,121 @@
+### 1. CREAR ROLES (Ejecutar primero)
+
+# 1A. Crear rol ADMIN (roleId: 1)
+curl -X POST http://localhost:3002/roles/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Admin",
+    "description": "Administrador del sistema"
+  }'
+
+###
+
+# 1B. Crear rol DOCTOR (roleId: 2)
+curl -X POST http://localhost:3002/roles/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Doctor",
+    "description": "Médico del hospital"
+  }'
+
+###
+
+# 1C. Crear rol NURSE (roleId: 3)
+curl -X POST http://localhost:3002/roles/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Nurse",
+    "description": "Enfermera del hospital"
+  }'
+
+###
+
+# 1D. Crear rol RECEPTIONIST (roleId: 4)
+curl -X POST http://localhost:3002/roles/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Patient",
+    "description": "Paciente del hospital"
+  }'
+
+###
+
+### 2. CREAR USUARIOS (Después de crear roles)
+
+# 2A. Crear enfermera (roleId: 3 = NURSE)
+curl -X POST http://localhost:3002/users/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "nurse.maria",
+    "password": "password123",
+    "email": "maria@hospital.com",
+    "roleId": 3
+  }'
+
+###
+
+# 2A. Crear usuario del paciente (roleId: 4 = PATIENT)
+curl -X POST http://localhost:3002/users/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "patient.juan",
+    "password": "password123",
+    "email": "juan@hospital.com",
+    "roleId": 4
+  }'
+
+###
+
+### 3. CREAR PACIENTE
+
+# 3A. Registrar paciente
+curl -X POST http://localhost:3001/patients/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": null,
+    "documentType": "DNI",
+    "documentNumber": "12345678",
+    "firstName": "Juan",
+    "lastName": "Pérez",
+    "birthDate": "1990-01-01T00:00:00.000Z",
+    "gender": "Male",
+    "address": "Av. Test 123",
+    "phone": "+51999888777",
+    "email": "juan@test.com",
+    "emergencyContact": "+51999888776"
+  }'
+
+###
+
+curl -X POST http://localhost:3005/triage/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "patientId": 1,
+    "nurseId": 2,
+    "urgencyLevel": 2,
+    "initialObservations": "Paciente con dolor abdominal moderado",
+    "vitalSigns": {
+      "temperature": 37.5,
+      "bloodPressure": "120/80",
+      "heartRate": 75,
+      "respiratoryRate": 16,
+      "oxygenSaturation": 98
+    }
+  }'
+
+### 3B. Registrar triage
+curl -X POST http://localhost:3005/triage/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "patientId": 9999,
+    "nurseId": 10,
+    "urgencyLevel": 2,
+    "initialObservations": "Test",
+    "vitalSigns": {
+      "temperature": 37.5,
+      "bloodPressure": "120/80",
+      "heartRate": 75,
+      "respiratoryRate": 16,
+      "oxygenSaturation": 98
+    }
+  }'

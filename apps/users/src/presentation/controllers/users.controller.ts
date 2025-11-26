@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, ParseIntPipe, Put } from '@nestjs/common';
 import { CreateUserDto } from '../../application/dto/createUser.dto';
 import { GetUserDto } from '../../application/dto/getUser.dto';
 import { UpdateUserDto } from '../../application/dto/updateUser.dto';
@@ -11,7 +11,8 @@ import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ActivateUserUseCase } from '../../application/use-cases/activateUser.user-case';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { LoginDto } from '../../application/dto/login.dto';
-import { User } from '@prisma/client';
+import { User } from '../../../prisma/generated/client';
+import { UpdateUserRequestDto } from '../../application/dto/updateUserRequest.dto';
 
 @ApiTags("Users")
 @Controller('users')
@@ -37,9 +38,9 @@ export class UsersController{
     }
   }
 
-  @Post('/inactivate/:id')
-  @ApiOperation({summary:"Inactivate User"})
-  @ApiOkResponse({description:"User Inactivated Correctly"})
+  @Put('/activate/:id')
+  @ApiOperation({summary:"Activate User"})
+  @ApiOkResponse({description:"User Activated Correctly"})
   async ActivateUserById(@Param('id', ParseIntPipe) id: number){
     const ActivateUser = await this.activateUser.execute(id)
     return ActivateUser
@@ -58,11 +59,11 @@ export class UsersController{
     return user;
   }
 
-  @Post('/update/:id')
+  @Put('/update/:id')
   @ApiOperation({summary:"Update User"})
   @ApiOkResponse({description:"User updated correctly"})
 
-  async update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateUserDto){
+  async update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateUserRequestDto){
     const updatedUser = await this.updateUser.execute({
       userId: id,
       email: body.email,
@@ -72,7 +73,7 @@ export class UsersController{
     return updatedUser;
   }
 
-  @Post('/block/:id')
+  @Put('/block/:id')
   @ApiOperation({summary:"Block User"})
   @ApiOkResponse({description:"User Blocked Correctly"})
   async BlockUserById(@Param('id', ParseIntPipe) id: number){
@@ -80,7 +81,7 @@ export class UsersController{
     return blockedUser
   }
 
-  @Post('/inactivate/:id')
+  @Put('/inactivate/:id')
   @ApiOperation({summary:"Inactivate User"})
   @ApiOkResponse({description:"User Inactivated Correctly"})
   async InactivateUserById(@Param('id', ParseIntPipe) id: number){

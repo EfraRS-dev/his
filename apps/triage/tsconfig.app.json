@@ -2,8 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "declaration": false,
-    "outDir": "../../dist/apps/triage"
+    "outDir": "../../dist/apps/triage",
+    "baseUrl": "./",
+    "paths": {}
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "generated/prisma/**/*", "prisma/schema.prisma"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }

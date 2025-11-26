@@ -1,120 +1,160 @@
-export interface RegisterTriageCommand {
-  patientId: string;
-  nurseId: string;
-  urgencyLevel: 1 | 2 | 3 | 4 | 5;
-  initialObservations: string;
-  vitalSigns: {
-    temperature: number;
-    bloodPressure: string;
-    heartRate: number;
-    respiratoryRate: number;
-    oxygenSaturation: number;
-    additionalNotes?: string;
-  };
-}
+import { Inject, Injectable } from '@nestjs/common';
+import { Triage } from '../../domain/triage.entity';
+import { VitalSigns } from '../../domain/vital-signs.entity';
+import type { ITriageRepository } from '../../domain/triage.repository';
+import type { IVitalSignsRepository } from '../../domain/vital-signs.repository';
+import type { IPatientsServiceClient } from '../ports/patients-service.client.port';
+import type { IUsersServiceClient } from '../ports/users-service.client.port';
+import { RegisterTriageDto } from '../dto/register-triage.dto';
+import { RegisterTriageResponseDto } from '../dto/register-triage-response.dto';
+import { UserRoles } from '../constants/user-roles';
+import {
+  TRIAGE_REPOSITORY_TOKEN,
+  VITAL_SIGNS_REPOSITORY_TOKEN,
+  PATIENTS_SERVICE_CLIENT_TOKEN,
+  USERS_SERVICE_CLIENT_TOKEN,
+  EVENT_PUBLISHER,
+} from '../tokens';
+import type { IEventPublisher } from '../ports/event-publisher.port';
+import {
+  TriageCreatedEvent,
+  VitalSignsRegisteredEvent,
+} from '../../domain/events';
 
-export interface RegisterTriageResult {
-  triageId: string;
-  patientId: string;
-  urgencyLevel: 1 | 2 | 3 | 4 | 5;
-  urgencyDescription: string;
-  createdAt: Date;
-  nurseId: string;
-  vitalSignsId: string;
-  estimatedWaitTime: string;
-  success: boolean;
-  message: string;
-}
-
+@Injectable()
 export class RegisterTriageUseCase {
   constructor(
-    private readonly triageRepository: any, // Replace with proper interface
-    private readonly vitalSignsRepository: any, // Replace with proper interface
+    @Inject(TRIAGE_REPOSITORY_TOKEN)
+    private readonly triageRepository: ITriageRepository,
+    @Inject(VITAL_SIGNS_REPOSITORY_TOKEN)
+    private readonly vitalSignsRepository: IVitalSignsRepository,
+    @Inject(PATIENTS_SERVICE_CLIENT_TOKEN)
+    private readonly patientsClient: IPatientsServiceClient,
+    @Inject(USERS_SERVICE_CLIENT_TOKEN)
+    private readonly usersClient: IUsersServiceClient,
+    @Inject(EVENT_PUBLISHER)
+    private readonly eventPublisher: IEventPublisher,
   ) {}
 
-  async execute(command: RegisterTriageCommand): Promise<RegisterTriageResult> {
-    try {
-      // Check if patient already has an active triage
-      const existingTriage = await this.triageRepository.findActiveByPatientId(command.patientId);
-      if (existingTriage) {
-        throw new Error('Patient already has an active triage. Please update the existing one instead.');
-      }
-
-      // Create triage
-      const triageId = this.generateTriageId();
-      const triage = {
-        triageId,
-        patientId: command.patientId,
-        createdAt: new Date(),
-        urgencyLevel: command.urgencyLevel,
-        initialObservations: command.initialObservations,
-        nurseId: command.nurseId,
-      };
-
-      await this.triageRepository.save(triage);
-
-      // Create vital signs
-      const vitalSignsId = this.generateVitalSignsId();
-      const vitalSigns = {
-        vitalSignsId,
-        triageId,
-        temperature: command.vitalSigns.temperature,
-        bloodPressure: command.vitalSigns.bloodPressure,
-        heartRate: command.vitalSigns.heartRate,
-        respiratoryRate: command.vitalSigns.respiratoryRate,
-        oxygenSaturation: command.vitalSigns.oxygenSaturation,
-        additionalNotes: command.vitalSigns.additionalNotes,
-      };
-
-      await this.vitalSignsRepository.save(vitalSigns);
-
-      // Calculate estimated wait time based on urgency level
-      const estimatedWaitTime = this.calculateEstimatedWaitTime(command.urgencyLevel);
-
-      return {
-        triageId,
-        patientId: command.patientId,
-        urgencyLevel: command.urgencyLevel,
-        urgencyDescription: this.getUrgencyDescription(command.urgencyLevel),
-        createdAt: triage.createdAt,
-        nurseId: command.nurseId,
-        vitalSignsId,
-        estimatedWaitTime,
-        success: true,
-        message: 'Triage registered successfully',
-      };
-    } catch (error) {
-      throw new Error(`Failed to register triage: ${error}`);
+  async execute(dto: RegisterTriageDto): Promise<RegisterTriageResponseDto> {
+    // 1. Validate that patient exists
+    const patientExists = await this.patientsClient.patientExists(
+      dto.patientId,
+    );
+    if (!patientExists) {
+      throw new Error(
+        `Patient with ID ${dto.patientId} not found in Patients Service`,
+      );
     }
-  }
 
-  private generateTriageId(): string {
-    return 'triage-' + Math.random().toString(36).substr(2, 9);
-  }
+    // 2. Validate that nurse exists and has NURSE role
+    const nurse = await this.usersClient.getUserById(dto.nurseId);
+    if (!nurse) {
+      throw new Error(
+        `Nurse with ID ${dto.nurseId} not found in Users Service`,
+      );
+    }
 
-  private generateVitalSignsId(): string {
-    return 'vitals-' + Math.random().toString(36).substr(2, 9);
-  }
+    const isNurse = await this.usersClient.userHasRole(
+      dto.nurseId,
+      UserRoles.Nurse,
+    );
+    if (!isNurse) {
+      throw new Error(
+        `User with ID ${dto.nurseId} does not have NURSE role. Current roleId: ${nurse.roleId}`,
+      );
+    }
 
-  private getUrgencyDescription(level: 1 | 2 | 3 | 4 | 5): string {
-    const descriptions = {
-      1: 'Critical - Immediate attention required',
-      2: 'High - Urgent care needed',
-      3: 'Medium - Moderate urgency',
-      4: 'Low - Less urgent',
-      5: 'Very Low - Non-urgent',
+    const isActive = await this.usersClient.isUserActive(dto.nurseId);
+    if (!isActive) {
+      throw new Error(
+        `Nurse with ID ${dto.nurseId} is not active (status: ${nurse.status}) and cannot register triage`,
+      );
+    }
+
+    // 3. Check for existing active triage
+    const existingTriage = await this.triageRepository.findActiveByPatientId(
+      dto.patientId,
+    );
+
+    if (existingTriage) {
+      throw new Error('Patient already has an active triage');
+    }
+
+    // 4. Create triage
+    const triage = Triage.create(
+      0, // Id temporal
+      dto.patientId,
+      dto.urgencyLevel,
+      dto.initialObservations || '',
+      dto.nurseId,
+    );
+
+    const savedTriage = await this.triageRepository.create(triage);
+
+    // 5. Create vital signs
+    const vitalSigns = VitalSigns.create(
+      0, // Id temporal
+      savedTriage.triageId,
+      dto.vitalSigns.temperature,
+      dto.vitalSigns.bloodPressure,
+      dto.vitalSigns.heartRate,
+      dto.vitalSigns.respiratoryRate,
+      dto.vitalSigns.oxygenSaturation,
+      dto.vitalSigns.additionalNotes,
+    );
+
+    const savedVitalSigns = await this.vitalSignsRepository.create(vitalSigns);
+
+    // Publish events
+    this.eventPublisher.publishEvent(
+      new TriageCreatedEvent(
+        savedTriage.triageId,
+        savedTriage.patientId,
+        savedTriage.urgencyLevel,
+        savedTriage.nurseId,
+        new Date(),
+      ).toJSON(),
+    );
+
+    this.eventPublisher.publishEvent(
+      new VitalSignsRegisteredEvent(
+        savedVitalSigns.vitalSignsId,
+        savedTriage.triageId,
+        savedTriage.patientId,
+        this.detectCriticalValues(savedVitalSigns),
+        new Date(),
+      ).toJSON(),
+    );
+
+    return {
+      triage: {
+        triageId: savedTriage.triageId,
+        patientId: savedTriage.patientId,
+        isActive: savedTriage.isActive,
+        createdAt: savedTriage.createdAt,
+        urgencyLevel: savedTriage.urgencyLevel,
+        initialObservations: savedTriage.initialObservations,
+        nurseId: savedTriage.nurseId,
+      },
+      vitalSigns: {
+        vitalSignsId: savedVitalSigns.vitalSignsId,
+        triageId: savedVitalSigns.triageId,
+        temperature: savedVitalSigns.temperature,
+        bloodPressure: savedVitalSigns.bloodPressure,
+        heartRate: savedVitalSigns.heartRate,
+        respiratoryRate: savedVitalSigns.respiratoryRate,
+        oxygenSaturation: savedVitalSigns.oxygenSaturation,
+        additionalNotes: savedVitalSigns.additionalNotes,
+      },
     };
-    return descriptions[level];
   }
 
-  private calculateEstimatedWaitTime(urgencyLevel: 1 | 2 | 3 | 4 | 5): string {
-    const waitTimes = {
-      1: 'Immediate',
-      2: '15-30 minutes',
-      3: '30-60 minutes',
-      4: '1-2 hours',
-      5: '2+ hours',
+  private detectCriticalValues(vitalSigns: VitalSigns) {
+    return {
+      temperature: vitalSigns.temperature > 38.5 || vitalSigns.temperature < 35,
+      heartRate: vitalSigns.heartRate > 100 || vitalSigns.heartRate < 60,
+      oxygenSaturation: vitalSigns.oxygenSaturation < 90,
     };
-    return waitTimes[urgencyLevel];
   }
 }

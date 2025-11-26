@@ -1,98 +1,370 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Hospital Information System (HIS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A microservices-based Hospital Information System built with NestJS, Prisma, and PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📋 Table of Contents
 
-## Description
+- [Architecture]
+- [Microservices]
+- [Prerequisites]
+- [Getting Started]
+  - [Local Development]
+  - [Docker Compose]
+- [Database Setup]
+- [Building the Project]
+- [Running Tests]
+- [API Documentation]
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🏗️ Architecture
 
-## Project setup
+This system follows a microservices architecture with the following services:
 
-```bash
-$ npm install
-```
+- **API Gateway**: Routes requests to appropriate microservices
+- **Patients Service**: Manages patient demographics and records
+- **Users Service**: Handles authentication and user management
+- **Triage Service**: Manages emergency triage and vital signs
+- **EHR Service**: Electronic Health Records management
 
-## Compile and run the project
+Each microservice has its own PostgreSQL database for complete data isolation.
 
-```bash
-# development
-$ npm run start
+## 🔧 Microservices
 
-# watch mode
-$ npm run start:dev
+| Service | Port | Database Port | Description |
+|---------|------|---------------|-------------|
+| API Gateway | 3005 | - | Main entry point |
+| Patients | 3001 | 5433 | Patient management |
+| Users | 3002 | 5434 | User & authentication |
+| Triage | 3003 | 5435 | Triage & vital signs |
+| EHR | 3004 | 5436 | Medical records |
 
-# production mode
-$ npm run start:prod
-```
+## 📦 Prerequisites
 
-## Run tests
+- Node.js 20+ and npm
+- Docker and Docker Compose
+- PostgreSQL 16 (for local development)
 
-```bash
-# unit tests
-$ npm run test
+## 🚀 Getting Started
 
-# e2e tests
-$ npm run test:e2e
+### Local Development
 
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+#### 1. Clone the repository
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+git clone https://github.com/EfraRS-dev/his.git
+cd his
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### 2. Install dependencies
 
-## Resources
+```bash
+npm install
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+#### 3. Set up environment variables
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Create `.env` files for each microservice:
 
-## Support
+**`apps/patients/.env`**
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```env
+PATIENTS_DB_URL=postgresql://patients_user:patients_pass@localhost:5433/patients
+PORT=3001
+```
 
-## Stay in touch
+**`apps/users/.env`**
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```env
+USER_DB_URL=postgresql://users_user:users_pass@localhost:5434/users
+JWT_SECRET=Users_Secret
+PORT=3002
+```
 
-## License
+**`apps/triage/.env`**
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```env
+TRIAGE_DB_URL=postgresql://triage_user:triage_pass@localhost:5435/triage
+PATIENTS_SERVICE_URL=http://localhost:3001
+USERS_SERVICE_URL=http://localhost:3002
+PORT=3003
+```
+
+**`apps/ehr/.env`**
+
+```env
+EHR_DB_URL=postgresql://ehr_user:ehr_pass@localhost:5436/ehr
+PORT=3004
+```
+
+**`apps/api-gateway/.env`**
+
+```env
+PATIENTS_URL=http://localhost:3001
+USERS_URL=http://localhost:3002
+TRIAGE_URL=http://localhost:3003
+EHR_URL=http://localhost:3004
+PORT=3005
+```
+
+#### 4. Start databases only (using Docker Compose)
+
+```bash
+docker-compose up -d patients-db users-db triage-db ehr-db
+```
+
+#### 5. Generate Prisma clients
+
+```bash
+npx prisma generate --schema apps/patients/prisma/schema.prisma
+npx prisma generate --schema apps/users/prisma/schema.prisma
+npx prisma generate --schema apps/triage/prisma/schema.prisma
+npx prisma generate --schema apps/ehr/prisma/schema.prisma
+```
+
+#### 6. Run database migrations
+
+```bash
+npm run migrate:patients
+npm run migrate:users
+npm run migrate:triage
+npm run migrate:ehr
+```
+
+#### 7. Seed databases (optional)
+
+```bash
+npm run seed
+```
+
+Or seed individually:
+
+```bash
+npx prisma db seed --schema apps/patients/prisma/schema.prisma
+npx prisma db seed --schema apps/users/prisma/schema.prisma
+npx prisma db seed --schema apps/triage/prisma/schema.prisma
+npx prisma db seed --schema apps/ehr/prisma/schema.prisma
+```
+
+#### 8. Start microservices in development mode
+
+Open separate terminals for each service:
+
+```bash
+# Terminal 1 - Patients
+npm run start:dev patients
+
+# Terminal 2 - Users
+npm run start:dev users
+
+# Terminal 3 - Triage
+npm run start:dev triage
+
+# Terminal 4 - EHR
+npm run start:dev ehr
+
+# Terminal 5 - API Gateway
+npm run start:dev api-gateway
+```
+
+### Docker Compose
+
+#### 1. Build and start all services
+
+```bash
+docker-compose up --build
+```
+
+Or in detached mode:
+
+```bash
+docker-compose up -d --build
+```
+
+#### 2. View logs
+
+```bash
+# All services
+docker-compose logs -f
+
+# Specific service
+docker-compose logs -f patients
+```
+
+#### 3. Stop services
+
+```bash
+docker-compose down
+```
+
+#### 4. Stop and remove volumes (⚠️ deletes data)
+
+```bash
+docker-compose down -v
+```
+
+## 🗄️ Database Setup
+
+### Generate Prisma Clients
+
+```bash
+# All services
+npx prisma generate --schema apps/patients/prisma/schema.prisma
+npx prisma generate --schema apps/users/prisma/schema.prisma
+npx prisma generate --schema apps/triage/prisma/schema.prisma
+npx prisma generate --schema apps/ehr/prisma/schema.prisma
+```
+
+### Run Migrations
+
+```bash
+# Development migrations
+npm run migrate:patients
+npm run migrate:users
+npm run migrate:triage
+npm run migrate:ehr
+
+# Or manually
+npx prisma migrate dev --schema apps/patients/prisma/schema.prisma
+```
+
+### Deploy Migrations (Production)
+
+```bash
+npx prisma migrate deploy --schema apps/patients/prisma/schema.prisma
+npx prisma migrate deploy --schema apps/users/prisma/schema.prisma
+npx prisma migrate deploy --schema apps/triage/prisma/schema.prisma
+npx prisma migrate deploy --schema apps/ehr/prisma/schema.prisma
+```
+
+### Database Push (Quick sync without migrations)
+
+```bash
+npx prisma db push --schema apps/triage/prisma/schema.prisma
+```
+
+### Open Prisma Studio
+
+```bash
+npx prisma studio --schema apps/patients/prisma/schema.prisma
+```
+
+## 🔨 Building the Project
+
+### Build all microservices
+
+```bash
+npm run build
+```
+
+### Build specific microservice
+
+```bash
+# Using NestJS CLI
+npx nest build patients
+npx nest build users
+npx nest build triage
+npx nest build ehr
+npx nest build api-gateway
+```
+
+### Build for production
+
+```bash
+NODE_ENV=production npm run build
+```
+
+### Docker builds
+
+```bash
+# Build specific service
+docker-compose build patients
+
+# Build all services
+docker-compose build
+
+# Build without cache
+docker-compose build --no-cache
+```
+
+## 🧪 Running Tests
+
+### Unit tests
+
+```bash
+npm run test
+```
+
+### Watch mode
+
+```bash
+npm run test:watch
+```
+
+### Test coverage
+
+```bash
+npm run test:cov
+```
+
+### E2E tests
+
+```bash
+npm run test:e2e
+```
+
+### Integration tests
+
+```bash
+npm run test:integration
+```
+
+## 📚 API Documentation
+
+Each microservice exposes Swagger documentation:
+
+- **API Gateway**: <http://localhost:3005/api>
+- **Patients Service**: <http://localhost:3001/api>
+- **Users Service**: <http://localhost:3002/api>
+- **Triage Service**: <http://localhost:3003/api>
+- **EHR Service**: <http://localhost:3004/api>
+
+## 🐳 Kubernetes Deployment
+
+For Kubernetes deployment, see the [`kubernetes/`](kubernetes/) directory.
+
+```bash
+# Apply manifests in order
+kubectl apply -f kubernetes/00-namespace.yaml
+kubectl apply -f kubernetes/01-secrets-configmaps.yaml
+kubectl apply -f kubernetes/02-postgres-statefulsets-and-services.yaml
+kubectl apply -f kubernetes/03-services-deployments.yaml
+kubectl apply -f kubernetes/04-ingress.yaml
+```
+
+## 📝 Environment Variables Reference
+
+### Common Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `PORT` | Service port | `3000` |
+| `*_DB_URL` | Database connection string | `postgresql://user:pass@host:port/db` |
+
+### Service-Specific Variables
+
+#### **Users Service**
+
+- `JWT_SECRET`: Secret key for JWT token signing
+
+#### **Triage Service**
+
+- `PATIENTS_SERVICE_URL`: URL to patients service
+- `USERS_SERVICE_URL`: URL to users service
+
+#### **API Gateway**
+
+- `PATIENTS_URL`: Patients service URL
+- `USERS_URL`: Users service URL
+- `TRIAGE_URL`: Triage service URL
+- `EHR_URL`: EHR service URL
+
+Built with ❤️ using [NestJS](https://nestjs.com/)

@@ -1,0 +1,64 @@
+---
+# Ingress for API Gateway (using nginx ingress controller)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: his-ingress
+  namespace: his
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # Rate limiting (optional)
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    # CORS (optional)
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+spec:
+  rules:
+  - host: his.local
+    http:
+      paths:
+      # API Gateway routes
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway-service
+            port:
+              number: 80
+      
+      # Acceso directo a 
+      - path: /patients
+        pathType: Prefix
+        backend:
+          service:
+            name: patients-service
+            port:
+              number: 3000
+      
+      - path: /users
+        pathType: Prefix
+        backend:
+          service:
+            name: users-service
+            port:
+              number: 3000
+      
+      - path: /triage
+        pathType: Prefix
+        backend:
+          service:
+            name: triage-service
+            port:
+              number: 3000
+      
+      - path: /ehr
+        pathType: Prefix
+        backend:
+          service:
+            name: ehr-service
+            port:
+              number: 3000

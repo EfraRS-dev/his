@@ -1,0 +1,10 @@
+*.http
+node_modules
+dist
+.env
+.vscode
+.git
+.gitignore
+*.md
+*.log
+kubernetes

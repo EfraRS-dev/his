@@ -55,13 +55,14 @@ services:
     ports:
       - "3001:3000"
     environment:
-      DB_HOST: patients-db
-      DB_PORT: 5432
-      DB_NAME: patients
-      DB_USER: patients_user
-      DB_PASS: patients_pass
+      PATIENTS_DB_URL: postgresql://patients_user:patients_pass@patients-db:5432/patients
+      PORT: 3000
+      RABBITMQ_URL: 'amqp://admin:admin@rabbitmq:5672'
+      RABBITMQ_QUEUE_PATIENTS_EVENTS: 'patients.events'
+      RABBITMQ_EXCHANGE_PATIENTS: 'patients.exchange'
     depends_on:
       - patients-db
+      - rabbitmq
 
   users:
     build:
@@ -71,11 +72,9 @@ services:
     ports:
       - "3002:3000"
     environment:
-      DB_HOST: users-db
-      DB_PORT: 5432
-      DB_NAME: users
-      DB_USER: users_user
-      DB_PASS: users_pass
+      USER_DB_URL: "postgresql://users_user:users_pass@users-db:5432/users"
+      JWT_SECRET: "Users_Secret"
+      PORT: 3000
     depends_on:
       - users-db
 
@@ -87,13 +86,16 @@ services:
     ports:
       - "3003:3000"
     environment:
-      DB_HOST: triage-db
-      DB_PORT: 5432
-      DB_NAME: triage
-      DB_USER: triage_user
-      DB_PASS: triage_pass
+      TRIAGE_DB_URL: "postgresql://triage_user:triage_pass@triage-db:5432/triage"
+      PATIENTS_SERVICE_URL: 'http://patients:3000'
+      USERS_SERVICE_URL: 'http://users:3000'
+      PORT: 3000
+      RABBITMQ_URL: 'amqp://admin:admin@rabbitmq:5672'
+      RABBITMQ_QUEUE_TRIAGE_EVENTS: 'triage.events'
+      RABBITMQ_EXCHANGE_TRIAGE: 'triage.exchange'
     depends_on:
       - triage-db
+      - rabbitmq
 
   ehr:
     build:
@@ -103,13 +105,16 @@ services:
     ports:
       - "3004:3000"
     environment:
-      DB_HOST: ehr-db
-      DB_PORT: 5432
-      DB_NAME: ehr
-      DB_USER: ehr_user
-      DB_PASS: ehr_pass
+      EHR_DB_URL: "postgresql://ehr_user:ehr_pass@ehr-db:5432/ehr"
+      PORT: 3000
+      RABBITMQ_URL: 'amqp://admin:admin@rabbitmq:5672'
+      RABBITMQ_QUEUE_EHR_EVENTS: 'ehr.events'
+      RABBITMQ_EXCHANGE_EHR: 'ehr.exchange'
+      HUGGINGFACE_API_KEY: ${HUGGINGFACE_API_KEY}
+      HUGGINGFACE_MODEL: 'deepseek-ai/DeepSeek-V3'
     depends_on:
       - ehr-db
+      - rabbitmq
 
   api-gateway:
     build:
@@ -118,9 +123,40 @@ services:
     container_name: api-gateway
     ports:
       - "3005:3000"
+    environment:
+      ROLES_URL: 'http://roles:3000'
+      PATIENTS_URL: 'http://patients:3000'
+      USERS_URL: 'http://users:3000'
+      TRIAGE_URL: 'http://triage:3000'
+      EHR_URL: 'http://ehr:3000'
+      RABBITMQ_URL: 'amqp://admin:admin@rabbitmq:5672'
+      RABBITMQ_QUEUE_TRIAGE_EVENTS: 'triage.events'
+      RABBITMQ_QUEUE_PATIENTS_EVENTS: 'patients.events'
+      RABBITMQ_QUEUE_EHR_EVENTS: 'ehr.events'
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: rmq
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   patients-db-data:
   users-db-data:
   triage-db-data:
   ehr-db-data:
+  rabbitmq-data:
