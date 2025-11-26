@@ -4,6 +4,7 @@ import { GetUserDto } from '../../application/dto/getUser.dto';
 import { UpdateUserDto } from '../../application/dto/updateUser.dto';
 import { CreateUserUseCase } from '../../application/use-cases/createUser.use-case';
 import { GetUserUseCase } from '../../application/use-cases/get-user.use-case';
+import { GetAllUsersUseCase } from '../../application/use-cases/getAllUsers.use-case';
 import { UpdateUserUseCase } from '../../application/use-cases/updateUser.use-case';
 import { BlockUserUseCase } from '../../application/use-cases/blockUser.use-case';
 import { InactivateUserUseCase } from '../../application/use-cases/inactivateUser.user-case';
@@ -24,14 +25,13 @@ export class UsersController{
   constructor(
     private readonly createUser: CreateUserUseCase,
     private readonly getUser: GetUserUseCase,
+    private readonly getAllUsers: GetAllUsersUseCase,
     private readonly updateUser: UpdateUserUseCase,
     private readonly blockUser: BlockUserUseCase,
     private readonly inactivateUser: InactivateUserUseCase,
     private readonly activateUser: ActivateUserUseCase,
-    private readonly login: LoginUseCase
-    
-  ){}
-
+    private readonly login: LoginUseCase,
+  ) {}
 
   @Post ("login")
   async Login(@Body() body:LoginDto): Promise<{user:User;token:String}> {
@@ -94,6 +94,31 @@ export class UsersController{
   }
   
   @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles('Admin', 'Doctor')
+  @ApiBearerAuth()
+  @ApiOperation({summary: "Get All Users"})
+  @ApiOkResponse({description:"Users Retrieved Correctly"})
+  @Get()
+  async GetAllUsers(){
+    const users = await this.getAllUsers.execute();
+    return users;
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('Admin', 'Doctor')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Find Email" })
+  @ApiOkResponse({description:"User Found Correctly"})
+  @Get('/email/:email')
+  async GetUserByEmail(@Param("email") email: string){
+    const user = await this.getUser.execute({
+      email: email,
+      criteria: 'email'
+    })
+    return user
+  }
+
+  @UseGuards(JwtAuthGuard,RolesGuard)
   @Roles('Doctor')
   @ApiBearerAuth()
   @ApiOperation({summary: "Find Id"})
@@ -103,20 +128,6 @@ export class UsersController{
     const user = await this.getUser.execute({
       userId: id,
       criteria: 'id'
-    })
-    return user
-  }
-
-  @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles('Admin','Doctor')
-  @ApiBearerAuth()
-  @ApiOperation({summary:"Find Email"})
-  @ApiOkResponse({description:"User Found Correctly"})
-  @Get('/email/:email')
-  async GetUserByEmail(@Param("email") email: string){
-    const user = await this.getUser.execute({
-      email: email,
-      criteria: 'email'
     })
     return user
   }

@@ -77,6 +77,14 @@ describe('API Gateway -> Users Service (Integration)', () => {
         expect([200, 404]).toContain(res.status);
     });
 
+    // 🔹 GET /users
+    it('/users (GET) should return all users', async () => {
+        const res = await request(app.getHttpServer()).get('/users');
+        expect([200]).toContain(res.status);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThan(0);
+    });
+
     // 🔹 GET /users/:id
     it('/users/:id (GET) should return user info', async () => {
         const res = await request(app.getHttpServer()).get(`/users/${user.userId}`);

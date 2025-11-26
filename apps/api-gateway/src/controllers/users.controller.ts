@@ -7,6 +7,7 @@ import {
   Body,
   ParseIntPipe,
   UseGuards,
+  Headers,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
@@ -164,21 +165,17 @@ export class UsersController {
     return data;
   }
 
-  // 🔹 GET /users/:id
-
-  @Get(':id')
-  @ApiOperation({ summary: 'Get user by ID' })
-  @ApiParam({ name: 'id', type: 'number', description: 'User ID' })
-  @ApiResponse({ status: 200, description: 'User details' })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  async getById(@Param('id', ParseIntPipe) id: number) {
-    const { data } = await this.http.axiosRef.get(
-      `${this.usersUrl}/users/${id}`,
-    );
+  // 🔹 GET /users
+  @Get()
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, description: 'List of all users' })
+  async getAll(@Headers('authorization') auth?: string) {
+    const headers = auth ? { Authorization: auth } : {};
+    const { data } = await this.http.axiosRef.get(`${this.usersUrl}/users`, { headers });
     return data;
   }
 
-  // 🔹 GET /users/email/:email
+  // 🔹 GET /users/email/:email (must be before :id to avoid route conflict)
   @Get('email/:email')
   @ApiOperation({ summary: 'Get user by email' })
   @ApiParam({
@@ -188,9 +185,27 @@ export class UsersController {
   })
   @ApiResponse({ status: 200, description: 'User details' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async getByEmail(@Param('email') email: string) {
+  async getByEmail(@Param('email') email: string, @Headers('authorization') auth?: string) {
+    const headers = auth ? { Authorization: auth } : {};
     const { data } = await this.http.axiosRef.get(
       `${this.usersUrl}/users/email/${email}`,
+      { headers },
+    );
+    return data;
+  }
+
+  // 🔹 GET /users/:id
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiParam({ name: 'id', type: 'number', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User details' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getById(@Param('id', ParseIntPipe) id: number, @Headers('authorization') auth?: string) {
+    const headers = auth ? { Authorization: auth } : {};
+    const { data } = await this.http.axiosRef.get(
+      `${this.usersUrl}/users/${id}`,
+      { headers },
     );
     return data;
   }

@@ -13,6 +13,7 @@ import { JwtTokenService } from "../../infrastructure/database/prisma-token.repo
 
 import { CreateUserUseCase } from "../../application/use-cases/createUser.use-case";
 import { GetUserUseCase } from "../../application/use-cases/get-user.use-case";
+import { GetAllUsersUseCase } from "../../application/use-cases/getAllUsers.use-case";
 import { UpdateUserUseCase } from "../../application/use-cases/updateUser.use-case";
 import { BlockUserUseCase } from "../../application/use-cases/blockUser.use-case";
 import { InactivateUserUseCase } from "../../application/use-cases/inactivateUser.user-case";
@@ -60,6 +61,11 @@ import { JwtStrategy } from "../shared/strategies/jwt.strategy";
     {
       provide: GetUserUseCase,
       useFactory: (repo: UserRepository) => new GetUserUseCase(repo),
+      inject: [USER_REPOSITORY],
+    },
+    {
+      provide: GetAllUsersUseCase,
+      useFactory: (repo: UserRepository) => new GetAllUsersUseCase(repo),
       inject: [USER_REPOSITORY],
     },
     {

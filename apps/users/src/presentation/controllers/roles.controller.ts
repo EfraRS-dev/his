@@ -19,10 +19,9 @@ export class RolesController{
     async create(@Body() body:CreateRoleDto){
         const role = await this.createRole.execute({
             name: body.name
-        })
-        return role;
-    
-}
+    });
+    return role;
+  }
 
     @Get ("/find/:id")
     @ApiOperation({summary: "Find Role"})
@@ -30,6 +29,5 @@ export class RolesController{
     async findRoleById(@Param("id", ParseIntPipe) id:number){
         const role = await this.getRole.execute(id)
         return role
-    }
+  }
 }
-
