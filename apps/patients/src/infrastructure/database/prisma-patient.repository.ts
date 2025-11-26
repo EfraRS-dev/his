@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import type { PatientRepository } from '../../domain/patient.repository.port';
 import { Patient } from '../../domain/patient';
-import { Triage } from '../../application/dto/triage.dto';
-import { MedicalHistory } from '../../application/dto/medicalHistory.dto';
 
 @Injectable()
 export class PrismaPatientRepository implements PatientRepository {
@@ -118,6 +116,6 @@ export class PrismaPatientRepository implements PatientRepository {
         } else {
             patients = await this.prisma.patient.findMany();
         }
-        return patients;
-    }
+    return patients;
+  }
 }

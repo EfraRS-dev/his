@@ -72,12 +72,13 @@ import { RabbitMQService } from '../infrastructure/messaging/rabbitmq.service';
     {
       provide: GetAllPatientsUseCase,
       useFactory: (repo: PatientRepository) => new GetAllPatientsUseCase(repo),
-      inject: [PATIENT_REPOSITORY]
+      inject: [PATIENT_REPOSITORY],
     },
     {
       provide: UnarchivePatientUseCase,
-      useFactory: (repo: PatientRepository) => new UnarchivePatientUseCase(repo),
-      inject: [PATIENT_REPOSITORY]
+      useFactory: (repo: PatientRepository) =>
+        new UnarchivePatientUseCase(repo),
+      inject: [PATIENT_REPOSITORY],
     },
   ],
 })
