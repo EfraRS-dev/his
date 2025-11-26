@@ -190,6 +190,37 @@ export class EhrController {
     return data;
   }
 
+    @Post('clinicalEntry/ai-diagnosis/:patientId')
+    @ApiOperation({ summary: 'Get AI Diagnosis for clinical entry' })
+    @ApiParam({ name: 'patientId', type: Number })
+    @ApiBody({ description: 'Information for AI diagnostics',
+      schema: {
+        type: 'object',
+        required: ['information'],
+        properties: {
+          information: {
+            type: 'string',
+            example: 'The patient has been experiencing an allergy for a few hours, apparently after lunch',
+            description: 'Information about the patient in the actual clinical entry to generate AI diagnosis'
+          }
+        }
+      },
+    })
+    @ApiResponse({
+      status: 200,
+      description: 'AI diagnosis successfully retrieved.',
+    })
+    async getAiDiagnosis(
+      @Param('patientId', ParseIntPipe) patientId: number,
+      @Body() body: any,
+    ) {
+      const { data } = await this.http.axiosRef.post(
+      `${this.ehrUrl}/ehr/clinicalEntry/ai-diagnosis/${patientId}`,
+      body,
+    );
+    return data;
+    }
+
   // 🔹 POST /ehr/:id  → Crear historia clínica
   @Post(':id')
   @ApiOperation({ summary: 'Create medical history for a patient' })
