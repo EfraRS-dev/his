@@ -7,9 +7,14 @@ import { TriageController } from '../controllers/triage.controller';
 import { UsersController } from '../controllers/users.controller';
 import { NotificationsController } from '../controllers/notifications.controller';
 import { NotificationConsumerService } from '../services/notification-consumer.service';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 
 @Module({
-  imports: [HttpModule],
+  imports: [
+    HttpModule
+  ],
   controllers: [
     PatientsController,
     EhrController,
