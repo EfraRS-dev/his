@@ -140,7 +140,7 @@ export class PatientsController {
     return data;
   }
 
-  // 🔹 POST /patients/archive/:id
+  // 🔹 PUT /patients/archive/:id
   @Put('archive/:id')
   @ApiOperation({ summary: 'Archive a patient record' })
   @ApiParam({ name: 'id', type: 'number', description: 'Patient ID' })
@@ -149,6 +149,15 @@ export class PatientsController {
   async archive(@Param('id', ParseIntPipe) id: number) {
     const { data } = await this.http.axiosRef.put(
       `${this.patientUrl}/patients/archive/${id}`,
+    );
+    return data;
+  }
+
+  // 🔹 PUT /patients/unarchive/:id
+  @Put('unarchive/:id')
+  async unarchive(@Param('id', ParseIntPipe) id: number) {
+    const { data } = await this.http.axiosRef.put(
+      `${this.patientUrl}/patients/unarchive/${id}`,
     );
     return data;
   }
@@ -233,6 +242,19 @@ export class PatientsController {
   async getEhr(@Param('id', ParseIntPipe) id: number) {
     const { data } = await this.http.axiosRef.get(
       `${this.patientUrl}/patients/ehr/${id}`,
+    );
+    return data;
+  }
+
+  // 🔹 GET /patients
+  @Get()
+  async getAllPatients(@Query('includeArchived') includeArchived: string) {
+    const include = includeArchived === 'true';
+    const { data } = await this.http.axiosRef.get(
+      `${this.patientUrl}/patients`,
+      {
+        params: { includeArchived: include },
+      }
     );
     return data;
   }
