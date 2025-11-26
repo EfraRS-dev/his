@@ -1,6 +1,7 @@
 export { CreateTriageUseCase } from './create-triage.use-case';
 export { DeleteTriageUseCase } from './delete-triage.use-case';
 export { GetActiveTriageUseCase } from './get-active-triage.use-case';
+export { GetAllTriagesUseCase } from './get-all-triages.use-case';
 export { GetTriageByPatientUseCase } from './get-triage-by-patient';
 export { GetTriageUseCase } from './get-triage.use-case';
 export { GetVitalSignsByTriageUseCase } from './get-vital-signs-by-triage.use-case';

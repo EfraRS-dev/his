@@ -70,6 +70,22 @@ export class TriageController {
     }
   }
 
+  // Get all triages
+  @Get()
+  @ApiTags('Triage')
+  @ApiOperation({ summary: 'Get all triages' })
+  @ApiOkResponse({ description: 'List of all triages' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  async getAll() {
+    try {
+      return await this.triageService.getAllTriages();
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error.message || 'Failed to retrieve triages',
+      );
+    }
+  }
+
   // Queue listing
   @Get('queue')
   @ApiTags('Triage')

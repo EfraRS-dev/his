@@ -4,6 +4,7 @@ import {
   CreateTriageUseCase,
   RegisterTriageUseCase,
   GetTriageUseCase,
+  GetAllTriagesUseCase,
   GetActiveTriageUseCase,
   GetTriageByPatientUseCase,
   ListPatientsByPriorityUseCase,
@@ -24,6 +25,7 @@ export class TriageService {
     private readonly createTriageUseCase: CreateTriageUseCase,
     private readonly registerTriageUseCase: RegisterTriageUseCase,
     private readonly getTriageUseCase: GetTriageUseCase,
+    private readonly getAllTriagesUseCase: GetAllTriagesUseCase,
     private readonly getActiveTriageUseCase: GetActiveTriageUseCase,
     private readonly getTriageByPatientUseCase: GetTriageByPatientUseCase,
     private readonly listPatientsByPriorityUseCase: ListPatientsByPriorityUseCase,
@@ -55,6 +57,13 @@ export class TriageService {
    */
   async getTriage(triageId: number) {
     return await this.getTriageUseCase.execute(triageId);
+  }
+
+  /**
+   * Obtener todos los triages
+   */
+  async getAllTriages() {
+    return await this.getAllTriagesUseCase.execute();
   }
 
   /**

@@ -21,6 +21,7 @@ import {
 import {
   CreateTriageUseCase,
   GetTriageUseCase,
+  GetAllTriagesUseCase,
   RegisterTriageUseCase,
   GetActiveTriageUseCase,
   GetTriageByPatientUseCase,
@@ -59,6 +60,7 @@ import {
     CreateTriageUseCase,
     RegisterTriageUseCase,
     GetTriageUseCase,
+    GetAllTriagesUseCase,
     GetActiveTriageUseCase,
     GetTriageByPatientUseCase,
     ListPatientsByPriorityUseCase,
