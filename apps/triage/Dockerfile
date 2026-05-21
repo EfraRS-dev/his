@@ -7,29 +7,31 @@ COPY nest-cli.json ./
 
 COPY apps/triage ./apps/triage
 
-RUN npm install
-
-RUN npx prisma generate --schema=apps/triage/prisma/schema.prisma
-
-RUN npx nest build triage
+RUN npm install && \
+    npx prisma generate --schema=apps/triage/prisma/schema.prisma && \
+    npx nest build triage
 
 FROM node:20-alpine AS production
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 WORKDIR /usr/src/app
 
-# Copy package files and install production dependencies
-COPY --from=development /usr/src/app/package*.json ./
-RUN npm install --omit=dev
-
-# Copy built app
+# Copy production dependencies and built app from development stage
+COPY --from=development /usr/src/app/node_modules ./node_modules
 COPY --from=development /usr/src/app/dist ./dist
 
 # Copy the generated Prisma client
-COPY --from=development /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=development /usr/src/app/apps/triage/prisma/generated ./apps/triage/prisma/generated
 
-# Copy the Prisma schema
-COPY --from=development /usr/src/app/apps/triage/prisma ./apps/triage/prisma
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nestjs -u 1001
+
+USER nestjs
 
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+
 CMD ["node", "dist/apps/triage/main.js"]

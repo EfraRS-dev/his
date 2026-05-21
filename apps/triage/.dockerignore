@@ -1,7 +1,6 @@
 # ==========================================
-# Root-level .dockerignore
-# Applied when building any service with
-# context set to the repo root (compose.yml)
+# Triage Service — .dockerignore
+# Excludes files not needed for this service
 # ==========================================
 
 # Version control
@@ -25,15 +24,9 @@ dist
 # Logs
 *.log
 
-# Kubernetes manifests (not needed in containers)
-kubernetes
-
-# Docs (not needed in containers)
+# Docs
 *.md
 LICENSE
-
-# HTTP test files
-*.http
 
 # OS files
 .DS_Store
@@ -46,6 +39,25 @@ Thumbs.db
 # Test coverage
 coverage
 .nyc_output
+
+# Other microservices (not needed for this build)
+apps/api-gateway
+apps/patients
+apps/users
+apps/ehr
+
+# Prisma from other services
+apps/api-gateway/prisma
+apps/patients/prisma
+apps/users/prisma
+apps/ehr/prisma
+
+# Prisma migrations & seed (not needed at runtime)
+prisma/migrations
+prisma/seed.ts
+
+# Kubernetes
+kubernetes
 
 # ESLint cache
 .eslintcache
