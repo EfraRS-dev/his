@@ -30,7 +30,7 @@ Each microservice has its own PostgreSQL database for complete data isolation.
 ## 🔧 Microservices
 
 | Service | Port | Database Port | Description |
-|---------|------|---------------|-------------|
+| --------- | ------ | --------------- | ------------- |
 | API Gateway | 3005 | - | Main entry point |
 | Patients | 3001 | 5433 | Patient management |
 | Users | 3002 | 5434 | User & authentication |
